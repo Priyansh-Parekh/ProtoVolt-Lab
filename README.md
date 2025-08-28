@@ -1,5 +1,6 @@
 # ProtoVolt-Lab
 
+```mermaid
 flowchart TD
     %% --- Section 1: Authentication ---
     A[User visits Circuit Simulator] --> B{Have an account?}
@@ -52,3 +53,4 @@ flowchart TD
     AI --> AJ{Action?}
     AJ -->|Work on Circuit| AI
     AJ -->|Submit| AK[Save Submission to DB] & AK --> AG
+    ```
