@@ -1,8 +1,7 @@
 # ProtoVolt-Lab
-
-```mermaid
+```
 flowchart TD
-    %% --- Section 1: Authentication ---
+    --- Section 1: Authentication ---
     A[User visits Circuit Simulator] --> B{Have an account?}
     B -->|Yes| C[Login Page]
     B -->|No| D[Registration Page]
@@ -39,7 +38,7 @@ flowchart TD
     %% Professor Path
     W --> Y{Action?}
     Y -->|Create Class| Z[Create Class Form] & Z --> W
-    Y -->|Select Class| AA[Individual Class Page (Prof. View)]
+    Y -->|Select Class| AA["Individual Class Page (Prof. View)"]
     AA --> AB{Action?}
     AB -->|Create Assignment| AC[Create Assignment Page] & AC --> AA
     AB -->|View Submissions| AD[Grading Dashboard] & AD --> AA
@@ -47,10 +46,10 @@ flowchart TD
     %% Student Path
     X --> AE{Action?}
     AE -->|Join Class| AF[Enter Class Code] & AF --> X
-    AE -->|Select Class| AG[Individual Class Page (Stud. View)]
+    AE -->|Select Class| AG["Individual Class Page (Stud. View)"]
     AG --> AH[Select Assignment]
     AH --> AI[Assignment Workspace]
     AI --> AJ{Action?}
     AJ -->|Work on Circuit| AI
     AJ -->|Submit| AK[Save Submission to DB] & AK --> AG
-    ```
+```
