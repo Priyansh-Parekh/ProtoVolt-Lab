@@ -61,8 +61,6 @@ const dComponentSchema = new mongoose.Schema({
 
 
 const EComponent = mongoose.model('EComponent', ElectricalComponentSchema, 'EComponents');
-
-
 const DComponent = mongoose.model('DComponent', dComponentSchema, 'DComponents');
 
 export default{ EComponent,DComponent};
