@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
 const ElectricalComponentSchema = new mongoose.Schema({
+    id:{
+        type:String,
+        unique:true,
+    },
     type: {
         type: String,
         enum:  ['resistor', 'capacitor', 'inductor','dc-source', 'ac-source', 'ground', 'transistor-npn'],
@@ -28,11 +32,14 @@ const ElectricalComponentSchema = new mongoose.Schema({
             default: null,
         }
     }]
-});
+},{_id:false});
 
 
 const dComponentSchema = new mongoose.Schema({
-
+    id:{
+        type:String,
+        unique:true,
+    },
     type: {
         type: String,
         enum: ['and-gate', 'or-gate', 'not-gate', 'xor-gate', 'nand-gate', 'nor-gate'],
@@ -57,7 +64,7 @@ const dComponentSchema = new mongoose.Schema({
             default: null,
         }
     }]
-});
+},{_id:false});
 
 
 const EComponent = mongoose.model('EComponent', ElectricalComponentSchema, 'EComponents');
