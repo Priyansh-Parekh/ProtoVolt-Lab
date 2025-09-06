@@ -1,12 +1,9 @@
-src/pages/Home.jsx
 import React from 'react';
-import Navbar from '../components/Navbar';
 
 const Home = () => {
   return (
-    <div>
-      <Navbar />
-      <h1 className="p-8 text-center text-4xl font-bold">Welcome to ProtoVolt!</h1>
+    <div className='bg-[#030712]'>
+      <h1 className="p-8 text-center text-4xl font-bold text-[#00f7ff]">Welcome to ProtoVolt!</h1>
     </div>
   );
 };
