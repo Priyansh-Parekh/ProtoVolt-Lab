@@ -20,7 +20,7 @@ const Navbar = () => {
     <div className="bg-[#0a0e17] h-16 px-8 flex justify-between items-center shadow-md">
       {/* Logo */}
       <NavLink
-        className="text-2xl font-bold text-white relative z-20
+        className="text-2xl font-bold text-white relative z-20 animate-bounce
            hover:bg-gradient-to-r hover:from-[#ae3575] hover:via-[#00f7ff] hover:to-[#a855f7]
            hover:bg-clip-text hover:text-transparent transition-all duration-500 ease-in-out"
         to="/"
