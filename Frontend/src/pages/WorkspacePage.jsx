@@ -1,24 +1,18 @@
-// src/pages/WorkspacePage.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useProjects from '../hooks/useProjects';
-import Navbar from '../components/navbar';
+import Loading from '../helper/Loading';
 import { FiPlus } from 'react-icons/fi';
 
 const WorkspacePage = () => {
   const { projects, isLoading } = useProjects();
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-900 text-white">
-        <h1 className="text-3xl animate-pulse">Loading...</h1>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* <Navbar /> */}
       <div className="container mx-auto px-4 py-12">
         <h1 className="text-4xl font-extrabold mb-8 text-center text-sky-400">Personal Workspace</h1>
         

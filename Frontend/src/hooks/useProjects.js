@@ -1,4 +1,3 @@
-// src/hooks/useProjects.js
 import { useState, useEffect } from 'react';
 
 const useProjects = () => {
