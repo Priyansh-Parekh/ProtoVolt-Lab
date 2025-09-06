@@ -1,13 +1,12 @@
 import React from 'react'
 import { FiPlus, FiLogIn } from 'react-icons/fi'; // Import icons
 
-const Header = () => {
+const Classroom_header = () => {
     return (
 
         <header
             className="
       bg-transparent
-      mb-10
       h-30
       flex flex-col md:flex-row
       md:justify-between
@@ -66,6 +65,7 @@ const Header = () => {
                 {/* Primary Action Button */}
                 <button
                     className="
+                    mr-3
             font-ChakraPetch font-bold text-[#0a0e17]
             bg-[#00d4ff] rounded-lg
             px-4 sm:px-5 py-2.5
@@ -85,4 +85,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default Classroom_header
