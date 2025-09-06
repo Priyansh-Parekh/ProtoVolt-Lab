@@ -17,7 +17,7 @@ const Navbar = () => {
      }`;
 
   return (
-    <div className="bg-[#0a0e17] h-16 px-8 flex justify-between items-center shadow-md">
+    <div className="bg-[var(--color-tertiary)] h-16 px-8 flex justify-between items-center shadow-md">
       {/* Logo */}
       <NavLink
         className="text-2xl font-bold text-white relative z-20 animate-bounce
@@ -64,7 +64,7 @@ const Navbar = () => {
 
       {/* Login Button with Icon */}
       <NavLink
-        className="bg-[#00d4ff] hover:bg-[#00b8e6] text-[#0a0e17] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2"
+        className="bg-[#00d4ff] hover:bg-[#00b8e6] text-[var(--color-tertiary)] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2"
         to="/login"
       >
         <FiUser />

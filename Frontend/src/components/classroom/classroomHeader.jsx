@@ -1,7 +1,7 @@
 import React from 'react'
 import { FiPlus, FiLogIn } from 'react-icons/fi'; // Import icons
 
-const Classroom_header = () => {
+const Classroom_header = ({setJoinPopup, setCreatePopup}) => {
     return (
 
         <header
@@ -48,12 +48,13 @@ const Classroom_header = () => {
 
                 {/* Secondary Action Button */}
                 <button
+                    onClick={() => setJoinPopup(prev => !prev)}
                     className="
             font-ChakraPetch font-semibold text-[#00d4ff]
             border border-[#00d4ff] rounded-lg
             px-4 sm:px-5 py-2.5
             transition-all duration-300
-            hover:bg-[#00d4ff] hover:text-[#0a0e17]
+            hover:bg-[#00d4ff] hover:text-[var(--color-tertiary)]
             focus:outline-none focus:ring-2 focus:ring-[#00d4ff]/50
             flex items-center gap-2         /* NEW: For aligning icon and text */
             "
@@ -64,9 +65,10 @@ const Classroom_header = () => {
 
                 {/* Primary Action Button */}
                 <button
+                    onClick={() => setCreatePopup(prev => !prev)}
                     className="
                     mr-3
-            font-ChakraPetch font-bold text-[#0a0e17]
+            font-ChakraPetch font-bold text-[var(--color-tertiary)]
             bg-[#00d4ff] rounded-lg
             px-4 sm:px-5 py-2.5
             transition-all duration-300

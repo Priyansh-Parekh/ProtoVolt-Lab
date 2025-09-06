@@ -11,7 +11,7 @@ const ClassroomCard = ({ classroom }) => {
     <Link to={`/classroom/class/${classroom._id}`}>
       <div 
         className="
-          bg-[#1a1f2c] rounded-xl overflow-hidden shadow-lg h-full
+          bg-[var(--color-secondary)] rounded-xl overflow-hidden shadow-lg h-full
           border border-gray-800 hover:border-[#00d4ff]
           group transition-all duration-300 ease-in-out
           transform hover:-translate-y-2 flex flex-col
