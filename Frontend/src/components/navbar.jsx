@@ -8,7 +8,7 @@ const Navbar = () => {
       
       {/* Logo */}
       <Link
-  className="text-2xl font-ChakraPetch font-bold text-white 
+  className="text-4xl font-ChakraPetch font-bold text-white animate-float1
              hover:bg-gradient-to-r hover:from-[#ae3575] hover:via-[#00f7ff] hover:to-[#a855f7]
              hover:bg-clip-text hover:text-transparent transition-all duration-500 ease-in-out"
   to="/"
