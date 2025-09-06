@@ -6,6 +6,12 @@ import ClassroomCreatePopup from '../components/classroom/classroomCreatePopup'
 import Classroom_header from '../components/classroom/classroomHeader'
 import Classroom_card from '../components/classroom/classroomCard'
 
+//helpers
+import Loading from '../helper/Loading'
+
+//hooks
+
+
 //seeds
 import {classroomSeed} from '../seeds/data'
 
@@ -14,6 +20,12 @@ import { useState } from 'react'
 
 
 const Classroom = () => {
+
+    
+    // it will work after DB is connected
+    // if (isLoading) {
+    //   return <Loading />;
+    // }
 
     const [joinPopup,setJoinPopup] = useState(false);
     const [createPopup,setCreatePopup] = useState(false);
