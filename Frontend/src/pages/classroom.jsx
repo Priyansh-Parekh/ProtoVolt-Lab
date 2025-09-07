@@ -1,5 +1,6 @@
 import React from 'react'
-
+import { useRef } from 'react';
+// import { useBgMotion } from '../hooks/useBgMotion';
 //components
 import ClassroomJoinPopup from '../components/classroom/ClassroomJoinPopup'
 import ClassroomCreatePopup from '../components/classroom/classroomCreatePopup'
@@ -26,6 +27,9 @@ const Classroom = () => {
     // if (isLoading) {
     //   return <Loading />;
     // }
+    //   const containerRef = useRef(null);
+
+//   useBgMotion(containerRef);
 
     const [joinPopup,setJoinPopup] = useState(false);
     const [createPopup,setCreatePopup] = useState(false);

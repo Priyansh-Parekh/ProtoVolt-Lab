@@ -9,6 +9,8 @@ import Workspace from './components/workspace'; // Your existing canvas componen
 import Home from './pages/home';
 import WorkspacePage from './pages/WorkspacePage';
 import Classroom from './pages/classroom';
+import ClassroomClass from './pages/classroomClass.jsx';
+import ClassMembers from './pages/classMembers.jsx';
 
 function App() {
   return (
@@ -19,9 +21,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/classroom" element={<Classroom />} />
-          {/* A dedicated route for creating a new circuit */}
+          <Route path="/classroom/class/:id" element={<ClassroomClass />} />
+          <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
           <Route path="/workspace/new" element={<Workspace />} />
-          {/* A dynamic route for opening existing projects */}
           <Route path="/workspace/:projectId" element={<Workspace />} />
         </Routes>
       </div>

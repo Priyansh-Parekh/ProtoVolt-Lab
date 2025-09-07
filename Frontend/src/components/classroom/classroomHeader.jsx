@@ -1,7 +1,7 @@
 import React from 'react'
 import { FiPlus, FiLogIn } from 'react-icons/fi'; // Import icons
 
-const Classroom_header = ({setJoinPopup, setCreatePopup}) => {
+const Classroom_header = ({ setJoinPopup, setCreatePopup }) => {
     return (
 
         <header
@@ -25,12 +25,11 @@ const Classroom_header = ({setJoinPopup, setCreatePopup}) => {
             bg-gradient-to-r from-[#a855f7] to-[#00d4ff] /* NEW: Gradient on hover */
             bg-clip-text text-transparent                     /* NEW: Makes gradient show through text */
             transition-all duration-300 ease-in-out
-            "
-                >
-                    My Classroom
-                </h1>
+            ">
+             My Classroom
+            </h1>
                 <p className="
-        pl-80
+    pl-10
     font-serif italic                        /* NEW Font Style */
     text-lg text-stone-200                  /* NEW Color */
     mt-4
