@@ -1,15 +1,24 @@
 @import "tailwindcss";
 
+@layer base {
+  a {
+    @apply no-underline;
+  }
+}
+
 :root {
   /* Base Background Shades */
   --color-primary: #030712;      /* Deep Dark Background */
   --color-secondary: #1a1f2c;    /* Dark Bluish Container */
   --color-tertiary: #0a0e17;     /* Slightly Lighter Dark */
 
-  /* Accent Colors */
-  --color-accent-purple: #a855f7;   /* Vibrant Neon Purple */
-  --color-accent-violet: #7e22ce;   /* Deep Violet */
-  --color-accent-indigo: #4c1d95;   /* Dark Indigo */
+  /* Accent Colors (rebalanced: more cyan, less purple) */
+  --color-accent-cyan: #00d4ff;     /* Bright Cyan */
+  --color-accent-teal: #00b8e6;     /* Deep Teal */
+  --color-accent-green: #10b981;    /* Emerald */
+  --color-accent-purple: #a855f7;   /* Vibrant Neon Purple (reduced usage) */
+  --color-accent-violet: #7e22ce;   /* Deep Violet (reduced usage) */
+  --color-accent-indigo: #4c1d95;   /* Dark Indigo (reduced usage) */
 
   /* Supporting Colors */
   --color-border: #2e3345;        /* Subtle Border Color */
@@ -17,22 +26,22 @@
   --color-text-light: #d1d5db;    /* Muted Text */
   --color-text-bright: #ffffff;   /* Main White Text */
 
-  /* Gradient Presets */
+  /* Gradient Presets (cyan-forward) */
   --gradient-primary: linear-gradient(
     to right,
-    var(--color-accent-purple),
-    var(--color-accent-violet),
-    var(--color-accent-indigo)
+    var(--color-accent-cyan),
+    var(--color-accent-teal),
+    var(--color-accent-green)
   );
 
   --gradient-secondary: linear-gradient(
     to right,
-    #ff6bff,
-    #a855f7
+    var(--color-accent-cyan),
+    var(--color-accent-purple)
   );
 
   /* Shadows */
-  --shadow-neon: 0 0 15px rgba(168, 85, 247, 0.5);
+  --shadow-neon: 0 0 15px rgba(0, 212, 255, 0.45); /* cyan glow */
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
