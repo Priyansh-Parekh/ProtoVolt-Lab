@@ -16,13 +16,16 @@ const ClassHeader = ({setAssigned,setAnnounced}) => {
     return (
         <header
             className="
+            border-b border-gray-700
       bg-transparent
       h-auto
       flex flex-col md:flex-row
       md:justify-between
       md:items-center
       gap-6 md:gap-4
-      p-6
+      px-6
+      pt-6
+      mb-3
       animate-fadeIn
     "
         >

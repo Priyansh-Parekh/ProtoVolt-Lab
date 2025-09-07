@@ -136,10 +136,13 @@ const Sidebar3DModel = () => {
 
   return (
     <div
+    className="w-full md:w-[240px] h-full bg-transparent  border-r border-gray-700"
+    style={{ cursor: "pointer" }}>
+    <div
       ref={mountRef}
-      className="w-full md:w-[240px] h-[300px] bg-transparent flex items-center justify-center border-r border-gray-700"
-      style={{ cursor: "pointer" }}
+      className="w-full h-[300px] bg-transparent flex items-center justify-center"
     />
+  </div>
   );
 };
 
