@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                // 1. Correctly uses the VS Code variable for your project root.
+                "${workspaceFolder}/**", 
+                
+                // 2. Uses the standard variable for the user's home/profile folder.
+                // This correctly points to the Node.js headers downloaded by node-gyp.
+                "${HOME}/.node-gyp/**/include/node" 
+            ],
+            // ... other settings
+            "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-gcc-x64"
+        }
+    ],
+    "version": 4
+}
