@@ -11,6 +11,8 @@ import WorkspacePage from './pages/WorkspacePage';
 import Classroom from './pages/classroom';
 import ClassroomClass from './pages/classroomClass.jsx';
 import ClassMembers from './pages/classMembers.jsx';
+import Login from './pages/Login.jsx';
+import Signup from './pages/Signup.jsx';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
           <Route path="/workspace/new" element={<Workspace />} />
           <Route path="/workspace/:projectId" element={<Workspace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
     </Router>
