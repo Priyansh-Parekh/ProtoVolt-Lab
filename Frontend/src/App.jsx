@@ -33,6 +33,8 @@ const MainContent = () => {
           <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
           <Route path="/workspace/new" element={<Workspace />} />
           <Route path="/workspace/:projectId" element={<Workspace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </Loading>
     </>
