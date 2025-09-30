@@ -12,8 +12,8 @@ import WorkspacePage from './pages/WorkspacePage';
 import Classroom from './pages/classroom';
 import ClassroomClass from './pages/classroomClass';
 import ClassMembers from './pages/classMembers';
-import Login from './pages/login.jsx';
-import Signup from './pages/signup.jsx';
+import Login from './pages/Login.jsx';
+import Signup from './pages/Signup.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
