@@ -2,13 +2,12 @@ import React, { useState, useRef } from 'react'
 // import { useBgMotion } from '../hooks/useBgMotion';
 
 //components
-import ClassHeader from '../components/classroomClass/classHeader'
-import ClassAssignmentPopup from '../components/classroomClass/classAssignmentPopup';
-import ClassAnnouncementPopup from '../components/classroomClass/classAnnouncementPopup';
-import ClassTimeline from '../components/classroomClass/classTimeline';
-import Sidebar3DModel from '../components/classroomClass/sideBar3DModel';
+import ClassHeader from '../components/specificClass/classHeader'
+import ClassAssignmentPopup from '../components/specificClass/classAssignmentPopup';
+import ClassAnnouncementPopup from '../components/specificClass/classAnnouncementPopup';
+import ClassroomHubPage from '../components/specificClass/classroomHubPage';
 
-const ClassroomClass = () => {
+const SpecificClass = () => {
   const [assigned,setAssigned] = useState(false);
   const [announced,setAnnounced] = useState(false);
 
@@ -22,14 +21,9 @@ const ClassroomClass = () => {
         {assigned&& <ClassAssignmentPopup setAssigned={setAssigned}  />}
         {announced&& <ClassAnnouncementPopup setAnnounced={setAnnounced} /> }
         <div className="flex">
-  {/* Left Sidebar */}
-  <div className="w-64 mt-10 ml-2 h-screen bg-transparent relative">
-    <Sidebar3DModel />
-  </div>
-
   {/* Main Content */}
-  <div className="flex-1 px-6 mr-60">
-    <ClassTimeline />
+  <div className="flex-1 px-6 ">
+    <ClassroomHubPage />
   </div>
 </div>
 
@@ -37,4 +31,4 @@ const ClassroomClass = () => {
   )
 }
 
-export default ClassroomClass
+export default SpecificClass

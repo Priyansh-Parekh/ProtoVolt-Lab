@@ -100,8 +100,8 @@ const Navbar = () => {
 
         {/* Login Button with Icon */}
         <NavLink
-          className="bg-[#00D4FF] hover:bg-[#00B8E6] text-[#0A0E17] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2 shadow-lg"
-          to="/login"
+          className="bg-[#00D4FF] hover:bg-[#00B8E6] text-[#0A0E17] font-bold px-4 py-2 animate-pulse rounded-lg transition-colors duration-300 flex items-center space-x-2 shadow-lg"
+          to="/user/login"
         >
           <FiUser />
           <span>Login</span>

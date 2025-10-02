@@ -8,7 +8,7 @@ import { BsCpu } from 'react-icons/bs';
 import LeftHalfVer from '../components/Auth/LeftHalfVer';
 
 
-const OtpForgotPass = () => {
+const OtpVerification = () => {
   const [otp, setOtp] = useState('');
 
   const handleVerify = (e) => {
@@ -98,4 +98,4 @@ const OtpForgotPass = () => {
   );
 };
 
-export default OtpForgotPass;
+export default OtpVerification;

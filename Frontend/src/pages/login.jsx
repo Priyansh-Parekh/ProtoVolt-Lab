@@ -65,7 +65,7 @@ const Login = () => {
               <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="custom-input w-full p-3 rounded-md text-sm"/>
 
               <div className="text-right text-sm">
-                <a href="#" className="font-medium hover:underline" style={{color: 'var(--color-accent-cyan)'}}>
+                <a href="/user/otpVerification" className="font-medium hover:underline" style={{color: 'var(--color-accent-cyan)'}}>
                   Forgot Password?
                 </a>
               </div>
@@ -77,7 +77,7 @@ const Login = () => {
 
             <p className="mt-6 text-center text-sm" style={{color: 'var(--color-text-light)'}}>
               Don't have an account?{' '}
-              <a href="/signup" className="font-medium hover:underline" style={{color: 'var(--color-accent-cyan)'}}>
+              <a href="/user/signup" className="font-medium hover:underline" style={{color: 'var(--color-accent-cyan)'}}>
                 Sign Up
               </a>
             </p>

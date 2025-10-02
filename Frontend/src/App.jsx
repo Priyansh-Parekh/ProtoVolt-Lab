@@ -10,10 +10,11 @@ import Workspace from './components/workspace';
 import Home from './pages/home';
 import WorkspacePage from './pages/WorkspacePage';
 import Classroom from './pages/classroom';
-import ClassroomClass from './pages/classroomClass';
+import SpecificClass from './pages/specificClass.jsx';
 import ClassMembers from './pages/classMembers';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
+import OtpVerification from './pages/otpVerification.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
@@ -31,12 +32,14 @@ const MainContent = () => {
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/classroom" element={<Classroom />} />
-          <Route path="/classroom/class/:id" element={<ClassroomClass />} />
+          <Route path="/classroom/class/:id" element={<SpecificClass />} />
           <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
           <Route path="/workspace/new" element={<Workspace />} />
           <Route path="/workspace/:projectId" element={<Workspace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/user/login" element={<Login />} />
+          <Route path="/user/signup" element={<Signup />} />
+          <Route path="/user/otpVerification" element={<OtpVerification />} />
+
         </Routes>
       </Loading>
     </>
