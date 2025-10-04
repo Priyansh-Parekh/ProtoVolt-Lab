@@ -16,6 +16,7 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import OtpVerification from './pages/otpVerification.jsx';
 import CreateClassroom from './pages/createClassroom.jsx';
+import CreateAssignment from './pages/createAssignment.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
@@ -34,6 +35,7 @@ const MainContent = () => {
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/classroom" element={<Classroom />} />
           <Route path="/classroom/create" element={<CreateClassroom />} />
+          <Route path="/classroom/createAssignment" element={<CreateAssignment />} />
           <Route path="/classroom/class/:id" element={<SpecificClass />} />
           <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
           <Route path="/workspace/new" element={<Workspace />} />

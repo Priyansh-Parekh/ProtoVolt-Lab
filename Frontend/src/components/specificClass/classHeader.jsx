@@ -63,8 +63,8 @@ const ClassHeader = ({setAssigned,setAnnounced}) => {
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
 
                 {/* New Assignment Button */}
-                <button
-                onClick={()=> setAssigned(prev => !prev)}
+                <Link
+                    to={'/classroom/createAssignment'}
                     className=" 
           flex items-center gap-2
           font-ChakraPetch font-semibold
@@ -79,7 +79,7 @@ const ClassHeader = ({setAssigned,setAnnounced}) => {
                 >
                     <FaPlusCircle className="h-5 w-5" />
                     <span>New Assignment</span>
-                </button>
+                </Link>
 
                 {/* New Announcement Button */}
                 <button
