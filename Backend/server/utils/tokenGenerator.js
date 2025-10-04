@@ -1,4 +1,4 @@
-import jwt from jsonWebToken
+import jwt from "jsonwebtoken";
 
 // A helper function to generate a token
 const generateToken = (id) => {
