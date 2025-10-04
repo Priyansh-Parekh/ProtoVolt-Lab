@@ -13,9 +13,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role:{
+    role: {
         type: String,
-        enum: ['student','professor', 'admin'],
+        enum: ['student', 'professor', 'admin'],
         required: true,
     },
     profilePicture: {
@@ -23,11 +23,17 @@ const userSchema = new mongoose.Schema({
         // here default cloudinary url will be provided
         default: null,
     },
-    bio:{
+    bio: {
         type: String,
-    }
+    },
+    otp: { 
+        type: String 
+    },
+    otpExpiresAt: {
+        type: Date
+    } // expiration time
 });
 
-const User = mongoose.model('User', userSchema,'Users');
+const User = mongoose.model('User', userSchema, 'Users');
 
 export default User;

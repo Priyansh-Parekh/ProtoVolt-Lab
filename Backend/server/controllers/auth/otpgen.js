@@ -1,13 +1,19 @@
 import nodemailer from "nodemailer";
+import express from "express";
+const app = express();
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (optional, for forms)
 
-// Utility function to generate 6-digit OTP
-function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
+
+import {generateOtp , generateExpiry} from '../../utils/otpGenerator.js'
+import User from '../../models/users.js'
+
 
 const otpGen = async (req, res) => {
-  const otp = generateOTP();
-
+  const otp = generateOtp();
+  const expiry = generateExpiry();
+  const {type,email} = req.query;
+  console.log(type)
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -29,7 +35,22 @@ const otpGen = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     console.log("OTP sent:", otp);
-    res.json({ success: true, message: "OTP sent successfully" });
+    if(type === "signUp"){
+
+      let userExists = await User.findOne({ email });
+      if(userExists){
+        userExists.otp = otp;
+        userExists.otpExpiresAt = expiry;
+        userExists.save();
+      }else{
+        console.log("user not exist");
+        
+      }
+
+      res.json({ success: true, message: "OTP sent successfully for registration" });
+      res.redirect('http://localhost:5173/user/otpVerification')
+    }
+    
 
     // In production: save `otp` in DB/Redis with expiry and don't return it directly
   } catch (error) {

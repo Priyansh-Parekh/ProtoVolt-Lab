@@ -19,8 +19,12 @@ const Signup = () => {
   const handleSignup = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
+        setPassword("");
+        setConfirmPassword("");
       alert("Passwords do not match!");
       return;
+    }else{
+        res.redirect('/user/auth/otpGen',{type:"signUp"})
     }
     console.log('Signing up with:', { name, email, password, role });
   };
