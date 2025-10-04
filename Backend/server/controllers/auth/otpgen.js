@@ -46,8 +46,6 @@ const otpGen = async (req, res) => {
         console.log("user not exist");
         
       }
-
-      res.json({ success: true, message: "OTP sent successfully for registration" });
       res.redirect('http://localhost:5173/user/otpVerification')
     }
     
