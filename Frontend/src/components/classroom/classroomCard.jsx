@@ -32,7 +32,7 @@ const ClassroomCard = ({ classroom }) => {
               {/* Using `classroom.name` for the title */}
               {classroom.name}
             </h3>
-            <span className="bg-gray-700 text-[#00d4ff] text-xs font-bold font-ChakraPetch px-2.5 py-1 rounded-full">
+            <span className="bg-gray-700 text-[#00d4ff] min-w-fit text-xs font-bold font-ChakraPetch px-2.5 py-1 rounded-full">
               {/* Added the course code from `classroom.course` */}
               {classroom.course}
             </span>
