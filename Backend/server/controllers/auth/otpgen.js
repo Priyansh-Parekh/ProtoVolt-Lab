@@ -1,27 +1,33 @@
 import nodemailer from "nodemailer";
+import express from "express";
+const app = express();
+app.use(express.json()); // Parse JSON bodies
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (optional, for forms)
 
-// Utility function to generate 6-digit OTP
-function generateOTP() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
+
+import { generateOtp, generateExpiry } from '../../utils/otpGenerator.js'
+import User from '../../models/users.js'
+
 
 const otpGen = async (req, res) => {
-  const otp = generateOTP();
-
+  const otp = generateOtp();
+  const expiry = generateExpiry();
+  const { type, email } = req.query;
+  console.log(type)
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       secure: true,
       port: 465,
       auth: {
-        user: "caggarwal025@gmail.com", 
+        user: "caggarwal025@gmail.com",
         pass: "pzrt qgcf kmut ebzo"  // Gmail App Password -> not your account password
       }
     });
 
     const mailOptions = {
       from: "caggarwal025@gmail.com",
-      to: "pppsvm0224@gmail.com",  
+      to: "pppsvm0224@gmail.com",
       subject: "OTP Verification",
       text: `Your OTP is ${otp}. It will expire in 5 minutes.`
     };
@@ -29,7 +35,32 @@ const otpGen = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     console.log("OTP sent:", otp);
-    res.json({ success: true, message: "OTP sent successfully" });
+    if (type === "signUp") {
+
+      let userExists = await User.findOne({ email });
+      if (userExists) {
+        userExists.otp = otp;
+        userExists.otpExpiresAt = expiry;
+        userExists.save();
+        res.redirect('http://localhost:5173/user/otpVerification')
+      } else {
+        console.log("user not exist");
+        res.redirect('http://localhost:5173/user/signup')
+      }
+    } else if (type === "forgotPass") {
+
+      let userExists = await User.findOne({ email });
+      if (userExists) {
+        userExists.otp = otp;
+        userExists.otpExpiresAt = expiry;
+        userExists.save();
+        res.redirect('http://localhost:5173/user/otpVerification')
+      } else {
+        console.log("user not exist");
+        res.redirect('http://localhost:5173/user/signup')
+      }
+    }
+
 
     // In production: save `otp` in DB/Redis with expiry and don't return it directly
   } catch (error) {
