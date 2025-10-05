@@ -11,7 +11,7 @@ const userLogin = async (req, res) => {
     let token = generateToken(email);
     const user = await User.findOne({ email });
 
-    if (user && (await user.matchPassword(password))) {
+    if (user && user.verified && (await user.matchPassword(password))) {
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,     // true in production
@@ -20,7 +20,7 @@ const userLogin = async (req, res) => {
         res.redirect('http://localhost:5173/dashboard');
     } else {
         res.status(401);
-        throw new Error('Invalid email or password');
+        throw new Error('Credentials Not meet');
     }
 };
 

@@ -9,7 +9,7 @@ import User from '../../models/users.js'
 
 const otpVer = async (req, res) => {
   try {
-    const { otp, email } = req.body;
+    const { otp, email,type } = req.body;
 
     if (!otp || !email) {
       return res.status(400).json({ success: false, message: "OTP and email are required" });
@@ -25,11 +25,15 @@ const otpVer = async (req, res) => {
     const isOtpActive = Date.now() <= user.otpExpiresAt;
 
     if (isOtpValid && isOtpActive) {
-      user.verified = true;
-      await user.save();
-
-      // Redirect user to frontend login page
-      return res.redirect("http://localhost:5173/user/login");
+        if(type==='signUp'){
+          user.verified = true;
+          await user.save();
+          // Redirect user to frontend login page
+          return res.redirect("http://localhost:5173/user/login");
+        }else if(type==='forgotPass'){
+          // redirect to the page where he can change pass;
+          res.status(201).message('Password changed');
+        }
 
     } else if (!isOtpValid && isOtpActive) {
       return res.status(400).json({ success: false, message: "Wrong OTP" });
