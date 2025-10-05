@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true, 
     },
     password: {
         type: String,
@@ -21,7 +22,6 @@ const userSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
-        // here default cloudinary url will be provided
         default: null,
     },
     bio: {
