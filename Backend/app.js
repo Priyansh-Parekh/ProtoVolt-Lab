@@ -2,6 +2,8 @@
 import 'dotenv/config';
 
 import express, { json, urlencoded } from 'express';
+import cors from "cors";
+
 const app = express();
 app.use(express.json());
 import cookieParser from 'cookie-parser';
@@ -14,6 +16,10 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json()); // This allows the app to accept JSON
+app.use(cors({                                    // Allow frontend origin and credentials
+  origin: "http://localhost:5173", // frontend URL
+  credentials: true,               // allow cookies / Authorization headers
+}));
 
 // import route files
 import mainRouter from './server/routes/main.js';

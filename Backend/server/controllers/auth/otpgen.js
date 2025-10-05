@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import express from "express";
 const app = express();
-app.use(express.json()); // Parse JSON bodies
+app.use(express.json()); // Parse status(200).JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (optional, for forms)
 
 
@@ -27,7 +27,7 @@ const otpGen = async (req, res) => {
 
     const mailOptions = {
       from: "caggarwal025@gmail.com",
-      to: "pppsvm0224@gmail.com",
+      to: `${email}`,
       subject: "OTP Verification",
       text: `Your OTP is ${otp}. It will expire in 5 minutes.`
     };
@@ -35,33 +35,18 @@ const otpGen = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
     console.log("OTP sent:", otp);
-    if (type === "signUp") {
 
       let userExists = await User.findOne({ email });
       if (userExists) {
         userExists.otp = otp;
         userExists.otpExpiresAt = expiry;
         userExists.save();
-        res.redirect('http://localhost:5173/user/otpVerification')
+        res.status(200).json({ redirectUrl: `http://localhost:5173/user/otpVerification?type=${type}&email=${email}` });
       } else {
         console.log("user not exist");
-        res.redirect('http://localhost:5173/user/signup')
+        res.status(200).json({ redirectUrl: 'http://localhost:5173/user/signup' })
       }
-    } else if (type === "forgotPass") {
-
-      let userExists = await User.findOne({ email });
-      if (userExists) {
-        userExists.otp = otp;
-        userExists.otpExpiresAt = expiry;
-        userExists.save();
-        res.redirect('http://localhost:5173/user/otpVerification')
-      } else {
-        console.log("user not exist");
-        res.redirect('http://localhost:5173/user/signup')
-      }
-    }
-
-
+    
     // In production: save `otp` in DB/Redis with expiry and don't return it directly
   } catch (error) {
     console.error("Error sending OTP:", error.message);

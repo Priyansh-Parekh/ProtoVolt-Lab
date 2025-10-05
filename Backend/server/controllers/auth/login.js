@@ -10,17 +10,19 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
     let token = generateToken(email);
     const user = await User.findOne({ email });
-
-    if (user && user.verified && (await user.matchPassword(password))) {
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,     // true in production
-            sameSite: "strict"
-          });
-        res.redirect('http://localhost:5173/dashboard');
-    } else {
-        res.status(401);
-        throw new Error('Credentials Not meet');
+    try {
+        if (user && user.verified && (await user.matchPassword(password))) {
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: false,     // true in production
+                // sameSite: "strict"
+            });
+            res.status(200).json({ redirectUrl: 'http://localhost:5173/dashboard' });
+        }else{
+            res.json({status:401,message:"Invalid Credentials"});
+        }
+    } catch (err) {
+        res.status(401).message(err.message);
     }
 };
 

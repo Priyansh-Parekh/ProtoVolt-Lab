@@ -10,7 +10,7 @@ import userForgotPass from "../controllers/auth/forgotPass.js";
 route.get('/otpGen',otpGen);
 
 //otp Verification
-route.get('/otpVer',otpVer)
+route.post('/otpVer',otpVer)
 
 //signUp route
 route.post('/signup', userSignUp);

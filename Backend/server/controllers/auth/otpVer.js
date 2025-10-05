@@ -1,52 +1,65 @@
 import express from "express";
+import User from '../../models/users.js';
+
 const app = express();
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (optional, for forms)
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // Optional, for forms
 
-import User from '../../models/users.js'
-
-
+// OTP Verification Controller
 const otpVer = async (req, res) => {
   try {
-    const { otp, email,type } = req.body;
+    // Use req.body instead of req.query
+    const { otp, email, type } = req.body;
 
+    // Validate input
     if (!otp || !email) {
-      return res.status(400).json({ success: false, message: "OTP and email are required" });
+      return res.json({ success: false, message: "OTP and email are required" });
     }
 
+    // Find user
     const user = await User.findOne({ email });
-
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.json({ success: false, message: "User not found" });
     }
 
     const isOtpValid = otp === user.otp;
     const isOtpActive = Date.now() <= user.otpExpiresAt;
 
     if (isOtpValid && isOtpActive) {
-        if(type==='signUp'){
-          user.verified = true;
-          await user.save();
-          // Redirect user to frontend login page
-          return res.redirect("http://localhost:5173/user/login");
-        }else if(type==='forgotPass'){
-          // redirect to the page where he can change pass;
-          res.status(201).message('Password changed');
-        }
-
+      if (type === 'signUp') {
+        user.verified = true;
+        await user.save();
+        return res.status(200).json({
+          success: true,
+          redirectUrl: "http://localhost:5173/user/login",
+          message: "OTP verified. Account activated."
+        });
+      } else if (type === 'forgotPass') {
+        // OTP valid for password reset
+        return res.status(200).json({
+          success: true,
+          redirectUrl: "http://localhost:5173/user/edit",
+          message: "OTP verified. Proceed to change password."
+        });
+      } else {
+        return res.json({ success: false, message: "Invalid verification type" });
+      }
     } else if (!isOtpValid && isOtpActive) {
-      return res.status(400).json({ success: false, message: "Wrong OTP" });
-
+      return res.json({ success: false, message: "Wrong OTP" });
     } else if (!isOtpActive) {
       await User.findByIdAndDelete(user._id);
-      return res.status(400).json({ success: false, message: "OTP expired. User deleted." });
+      return res.json({ success: false, message: "OTP expired. User deleted." });
     }
 
   } catch (error) {
-    console.error(error);
+    console.error("OTP Verification Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// Setup the POST route
+app.post('/user/auth/otpVer', otpVer);
 
 export default otpVer;

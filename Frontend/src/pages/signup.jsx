@@ -5,6 +5,7 @@ import LeftHalf from '../components/Login/LeftHalf';
 
 // Reusing the same SVG icons and visual components for a consistent theme.
 import CircuitIcons from '../assets/circuitIcons';
+import api from '../utils/axios';
 
 
 
@@ -16,7 +17,7 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('student');
 
-  const handleSignup = (e) => {
+  const handleSignup = async(e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
         setPassword("");
@@ -24,7 +25,18 @@ const Signup = () => {
       alert("Passwords do not match!");
       return;
     }else{
-        res.redirect('/user/auth/otpGen',{type:"signUp"})
+        const res=await api.post(`/user/auth/signup`,{name,email,password,role});
+        if(res.status===400){
+            alert("something went Wrong");
+            setEmail("");
+            setPassword("");
+            setConfirmPassword("");
+        }
+        else if(res.status===200){
+            const redirectUrl = res.data.redirectUrl;
+             // Manually redirect browser
+            window.location.href = redirectUrl;
+        }
     }
     console.log('Signing up with:', { name, email, password, role });
   };
@@ -92,7 +104,7 @@ const Signup = () => {
                             </div>
                         </div>
 
-                        <button type="submit" className="w-full py-3 rounded-md text-sm font-bold text-white transition-all hover:shadow-lg" style={{backgroundImage: 'linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-teal), var(--color-accent-green))', boxShadow: 'var(--shadow-neon)'}}>
+                        <button type="submit" className="w-full hover:cursor-pointer py-3 rounded-md text-sm font-bold text-white transition-all hover:shadow-lg" style={{backgroundImage: 'linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-teal), var(--color-accent-green))', boxShadow: 'var(--shadow-neon)'}}>
                             Create Account
                         </button>
                     </form>
