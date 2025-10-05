@@ -1,5 +1,6 @@
 import React from 'react'
 import { FiPlus, FiLogIn } from 'react-icons/fi'; // Import icons
+import { Link } from 'react-router-dom';
 
 const Classroom_header = ({ setJoinPopup, setCreatePopup }) => {
     return (
@@ -79,7 +80,7 @@ const Classroom_header = ({ setJoinPopup, setCreatePopup }) => {
             "
                 >
                     <FiPlus className="h-5 w-5" />   {/* NEW: Icon */}
-                    <span>Create Class</span>
+                    <Link to="/classroom/create" >Create Class</Link>
                 </button>
             </div>
         </header>
