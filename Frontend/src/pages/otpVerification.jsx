@@ -18,19 +18,24 @@ const OtpVerification = () => {
 
     const handleVerify = async (e) => {
         e.preventDefault();
+        e.target.disabled = true;
+        e.target.style.opacity = 0.5;
         try {
             const res = await api.post('/user/auth/otpVer', { otp, email, type });
-            if (res.status === 200) {
+            if (res.data.success === false) {
+                alert(res.data.message);
+                setOtp("");
+            }else if (res.status === 200) {
                 const redirectUrl = res.data.redirectUrl;
                 window.location.href = redirectUrl;
-            } if (res.data.success === false) {
-                console.log(res.data.message);
             }
         } catch (err) {
             alert(err.response?.data?.message || 'Verification failed');
             console.log(err.message);
             setOtp('');
         }
+        e.target.disabled = false;
+        e.target.style.opacity = 1;
     };
 
     const handleResendOTP = async () => {
