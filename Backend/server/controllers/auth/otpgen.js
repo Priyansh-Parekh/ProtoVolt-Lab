@@ -1,9 +1,4 @@
 import nodemailer from "nodemailer";
-import express from "express";
-const app = express();
-app.use(express.json()); // Parse status(200).JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (optional, for forms)
-
 
 import { generateOtp, generateExpiry } from '../../utils/otpGenerator.js'
 import User from '../../models/users.js'

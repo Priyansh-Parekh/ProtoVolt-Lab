@@ -1,11 +1,4 @@
-import express from "express";
 import User from '../../models/users.js';
-
-const app = express();
-
-// Middleware to parse JSON bodies
-app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Optional, for forms
 
 // OTP Verification Controller
 const otpVer = async (req, res) => {

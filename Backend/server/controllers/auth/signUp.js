@@ -1,8 +1,3 @@
-import express from "express";
-const app = express();
-app.use(express.json()); // Parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies (optional, for forms)
-
 import User from '../../models/users.js'
 
 
@@ -15,9 +10,11 @@ const userSignUp = async (req, res) => {
     }
   
     const userExists = await User.findOne({ email });
-    if (userExists.verified || userExists) {
+    if (userExists) {
+      if(userExists.verified){
       res.status(400);
       throw new Error('User with this email already exists');
+      }
     }
 
     if(userExists){
