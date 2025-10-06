@@ -12,7 +12,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e) => {
-    console.log(import.meta.env.VITE_BACKEND_URL);
+    e.target.disabled = true;
+    e.target.style.opacity = 0.5;
     e.preventDefault();
     console.log('Logging in with:', { email, password });
     const res = await api.post(`/user/auth/login`, { email, password });
@@ -31,6 +32,8 @@ const Login = () => {
     } else if (res.status === 302) {
       console.log("status")
     }
+    e.target.disabled = false;
+    e.target.style.opacity = 1;
   };
 
   const handleForgotPass = async () => {

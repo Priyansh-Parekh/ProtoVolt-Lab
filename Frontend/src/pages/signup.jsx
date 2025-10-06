@@ -10,7 +10,7 @@ import api from '../utils/axios';
 
 
 
-const Signup = () => {
+const Signup = (e) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +19,8 @@ const Signup = () => {
 
   const handleSignup = async(e) => {
     e.preventDefault();
+    e.target.disabled = true;
+    e.target.style.opacity = 0.5;
     if (password !== confirmPassword) {
         setPassword("");
         setConfirmPassword("");
@@ -38,6 +40,8 @@ const Signup = () => {
             window.location.href = redirectUrl;
         }
     }
+    e.target.disabled = false;
+    e.target.style.opacity = 1;
     console.log('Signing up with:', { name, email, password, role });
   };
 
@@ -86,7 +90,7 @@ const Signup = () => {
                     <h2 className="text-2xl font-bold text-center text-[var(--color-text-bright)]">Create an Account</h2>
                     <p className="mt-2 text-center text-sm text-[var(--color-text-light)]">Join the simulation revolution.</p>
 
-                    <form className="mt-8 space-y-5" onSubmit={handleSignup}>
+                    <form className="mt-8 space-y-5" onSubmit={(e)=>{handleSignup(e)}}>
                         <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" className="custom-input w-full p-3 rounded-md text-sm"/>
                         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email Address" className="custom-input w-full p-3 rounded-md text-sm"/>
                         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="custom-input w-full p-3 rounded-md text-sm"/>

@@ -49,8 +49,12 @@ const otpVer = async (req, res) => {
     } else if (!isOtpValid && isOtpActive) {
       return res.json({ success: false, message: "Wrong OTP" });
     } else if (!isOtpActive) {
-      await User.findByIdAndDelete(user._id);
-      return res.json({ success: false, message: "OTP expired. User deleted." });
+      if (type === "signUp") {
+        await User.findByIdAndDelete(user._id);
+        return res.json({ success: false, message: "OTP expired. try SignUp" });
+      }else{
+        return res.json({ success: false, message: "OTP expired. try Again " });
+      }
     }
 
   } catch (error) {
@@ -59,7 +63,5 @@ const otpVer = async (req, res) => {
   }
 };
 
-// Setup the POST route
-app.post('/user/auth/otpVer', otpVer);
 
 export default otpVer;
