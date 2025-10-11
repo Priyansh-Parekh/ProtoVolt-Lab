@@ -26,7 +26,7 @@ const PasswordChange = () => {
             setConfirmPassword("");
         }else{
             //call api
-            const res = await api.post(`/user/auth/userPassChange?email=${email}`,{newPassword});
+            const res = await api.post(`/user/auth/changePass?email=${email}`,{newPassword});
             alert(res.data.message);
             if(res.data.success === true){
                 let redirectUrl = res.data.redirectUrl;

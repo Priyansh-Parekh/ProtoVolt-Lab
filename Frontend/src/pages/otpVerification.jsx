@@ -22,6 +22,7 @@ const OtpVerification = () => {
         e.target.style.opacity = 0.5;
         try {
             const res = await api.post('/user/auth/otpVer', { otp, email, type });
+            alert(res.data.message);
             if (res.data.success === false) {
                 alert(res.data.message);
                 setOtp("");
