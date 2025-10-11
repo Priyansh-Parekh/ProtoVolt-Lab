@@ -2,7 +2,7 @@ import React from 'react'
 import { FiPlus, FiLogIn } from 'react-icons/fi'; // Import icons
 import { Link } from 'react-router-dom';
 
-const Classroom_header = ({ setJoinPopup, setCreatePopup }) => {
+const Classroom_header = ({ setJoinPopup }) => {
     return (
 
         <header
@@ -65,7 +65,6 @@ const Classroom_header = ({ setJoinPopup, setCreatePopup }) => {
 
                 {/* Primary Action Button */}
                 <button
-                    onClick={() => setCreatePopup(prev => !prev)}
                     className="
                     mr-3
             font-ChakraPetch font-bold text-[var(--color-tertiary)]

@@ -95,28 +95,7 @@ const CreateClassroom = () => {
 
   return (
     <div className="createclassroom-body text-[var(--color-text-light)]">
-      <style>
-        {`
-          .custom-input {
-            background-color: var(--color-primary);
-            border: 1px solid var(--color-accent-cyan);
-            color: var(--color-text-bright);
-            transition: border-color 0.3s, box-shadow 0.3s;
-          }
-          .custom-input:focus {
-            outline: none;
-            box-shadow: var(--shadow-neon);
-          }
-          .custom-input::placeholder {
-            color: var(--color-placeholder);
-          }
-          @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(-10px); }
-            100% { opacity: 1; transform: translateY(0); }
-          }
-          .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
-        `}
-      </style>
+
       <div className='flex'>
         {<LeftVisualPanel />}
         <div className="w-1/2 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-[var(--color-primary)] min-h-screen">

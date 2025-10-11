@@ -15,6 +15,7 @@ import ClassMembers from './pages/classMembers';
 import Login from './pages/login.jsx';
 import Signup from './pages/signup.jsx';
 import OtpVerification from './pages/otpVerification.jsx';
+import PasswordChange from './pages/PasswordChange.jsx';
 import CreateClassroom from './pages/createClassroom.jsx';
 import CreateAssignment from './pages/createAssignment.jsx';
 
@@ -42,6 +43,7 @@ const MainContent = () => {
           <Route path="/workspace/:projectId" element={<Workspace />} />
           <Route path="/user/login" element={<Login />} />
           <Route path="/user/signup" element={<Signup />} />
+          <Route path="/user/passwordChange" element={<PasswordChange />} />
           <Route path="/user/otpVerification" element={<OtpVerification />} />
 
         </Routes>
