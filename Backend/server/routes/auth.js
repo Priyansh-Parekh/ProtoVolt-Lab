@@ -7,7 +7,7 @@ import userSignUp from "../controllers/auth/signUp.js";
 import userLogin from "../controllers/auth/login.js";
 import otpVer from "../controllers/auth/otpVer.js";
 import userForgotPass from "../controllers/auth/forgotPass.js";
-
+import userPassChange from "../controllers/auth/userPassChange.js";
 
 //importing middelwaresssss
 import loginMiddelware from "../middleware/login.js";
@@ -26,5 +26,8 @@ route.post('/login', userLogin);
 
 //forgot password
 route.post('/forgotPass',userForgotPass);
+
+//password change
+route.post('/changePass',userPassChange)
 
 export default route;
