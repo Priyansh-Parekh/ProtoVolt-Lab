@@ -47,32 +47,6 @@ const Signup = (e) => {
 
   return (
     <div>
-        <style>
-            {`
-            @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap');
-            body { font-family: 'Chakra Petch', sans-serif; }
-            @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-            @keyframes float1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-            @keyframes fadeIn { 0% { opacity: 0; transform: translateY(-10px); } 100% { opacity: 1; transform: translateY(0); } }
-            .animate-float { animation: float 4s ease-in-out infinite; }
-            .animate-float1 { animation: float1 3s ease-in-out infinite; }
-            .animate-fadeIn { animation: fadeIn 0.8s ease-out; }
-            .custom-input {
-                background-color: var(--color-primary);
-                border: 1px solid var(--color-border);
-                color: var(--color-text-bright);
-                transition: border-color 0.3s, box-shadow 0.3s;
-            }
-            .custom-input:focus {
-                outline: none;
-                border-color: var(--color-accent-cyan);
-                box-shadow: var(--shadow-neon);
-            }
-            .custom-input::placeholder {
-                color: var(--color-placeholder);
-            }
-            `}
-        </style>
         <div className="min-h-screen flex bg-[var(--color-primary)]">
             {/* Left Panel: Visuals & Branding */}
             <LeftHalf />
