@@ -7,7 +7,7 @@ const getUserDetails = async (req, res) => {
       return res.status(404).json({success: false, message: "User not found" });
     }
     else{
-        return res.status(200).json({ success: true, user });
+        return res.status(200).json({ success: true,message:"User Found", user });
     }
 
   } catch (err) {
