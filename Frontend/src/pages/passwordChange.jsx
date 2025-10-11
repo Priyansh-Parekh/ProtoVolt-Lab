@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 // --- Importing icons ---
 import { BsCpu } from 'react-icons/bs';
 
 //importing compornents
 import LeftHalfPass from '../components/Auth/leftHalfPass';
 
-
-
-
+//importing utils
+import api from '../utils/axios';
 
 const PasswordChange = () => {
     const [newPassword,setNewPassword]= useState("");
     const [confirmPassword,setConfirmPassword]=useState("");
-    const handleSubmit = (e)=>{
-        e.preventDefault();;
+    const [searchParams] = useSearchParams();
+    const email = searchParams.get('email');
+
+
+    const handleSubmit = async(e)=>{
+        e.preventDefault();
         e.target.diabled = true;
         e.target.style.opacity = 0.5;
         if(newPassword!=confirmPassword){
@@ -22,12 +26,22 @@ const PasswordChange = () => {
             setConfirmPassword("");
         }else{
             //call api
+            const res = await api.post(`/user/auth/userPassChange?email=${email}`,{newPassword});
+            alert(res.data.message);
+            if(res.data.success === true){
+                let redirectUrl = res.data.redirectUrl;
+                if(redirectUrl){
+                    console.log("Redirect to:", redirectUrl);
+                    // Manually redirect browser
+                    window.location.href = redirectUrl;
+                }
+            }else{
+                setNewPassword("");
+                setConfirmPassword("");
+            }
         }
-
-        
         e.target.diabled = false;
         e.target.style.opacity = 1;
-
     }
 
   return (

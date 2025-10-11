@@ -6,9 +6,14 @@ const userPassChange = async (req,res)=>{
         const{email}=req.query;
         const user = await User.findOne({email});
         if(user){
-            user.password = newPassword;
-            user.save();
-            res.status(200).json({success: true,message:"Password changed",redirectUrl:"http://localhost:5173/user/login"});
+            const isOtpActive = Date.now() <= user.otpExpiresAt;
+            if(isOtpActive){
+                user.password = newPassword;
+                user.save();
+                res.status(200).json({success: true,message:"Password changed",redirectUrl:"http://localhost:5173/user/login"});
+            }else{
+                res.status(400).json({success:false,message:"Your Time is Expierd"});
+            }
         }else{
             res.status(400).json({success:false,message:"Client Error"});
         }

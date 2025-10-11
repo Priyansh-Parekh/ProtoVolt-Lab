@@ -1,5 +1,8 @@
 import User from '../../models/users.js';
 
+//importing utils
+import { generateExpiry } from '../../utils/otpGenerator.js';
+
 // OTP Verification Controller
 const otpVer = async (req, res) => {
   try {
@@ -31,10 +34,13 @@ const otpVer = async (req, res) => {
         });
       } else if (type === 'forgotPass') {
         // OTP valid for password reset
+        let exp = generateExpiry();
+        user.otpExpiresAt = exp;
+        user.save();
         return res.status(200).json({
           success: true,
-          redirectUrl: "http://localhost:5173/user/edit",
-          message: "OTP verified. Proceed to change password."
+          redirectUrl: `http://localhost:5173/user/passwordChange?email=${email}`,
+          message: "OTP verified. Proceed to change password within 5 Mins."
         });
       } else {
         return res.json({ success: false, message: "Invalid verification type" });
