@@ -17,20 +17,16 @@ const Login = () => {
     e.preventDefault();
     console.log('Logging in with:', { email, password });
     const res = await api.post(`/user/auth/login`, { email, password });
-    if (res.status === 401) {
-      alert("Credentials Not Meet");
-      setEmail("");
-      setPassword("");
-    }
-    else if (res.status === 200) {
+    alert(res.data.message);
+    if (res.data.success) {
       const redirectUrl = res.data.redirectUrl;
       if (redirectUrl) {
         console.log("Redirect to:", redirectUrl);
         // Manually redirect browser
         window.location.href = redirectUrl;
       }
-    } else if (res.status === 302) {
-      console.log("status")
+    } else {
+      // alert(res.data.message);
     }
     e.target.disabled = false;
     e.target.style.opacity = 1;
@@ -42,18 +38,18 @@ const Login = () => {
       const res = await api.get(`/user/auth/otpGen?type=${type}&email=${email}`);
       console.log(res);
       if (res.status === 200) {
-          const redirectUrl = res.data.redirectUrl;
-      if (redirectUrl) {
-        console.log("Redirect to:", redirectUrl);
-        // Manually redirect browser
-        window.location.href = redirectUrl;
-      }
+        const redirectUrl = res.data.redirectUrl;
+        if (redirectUrl) {
+          console.log("Redirect to:", redirectUrl);
+          // Manually redirect browser
+          window.location.href = redirectUrl;
+        }
       }
 
-  } catch (error) {
+    } catch (error) {
       console.error("Send OTP Error:", error);
       alert(error.response?.data?.message || "Failed to send OTP. Please try again.");
-  }
+    }
   }
 
   return (
