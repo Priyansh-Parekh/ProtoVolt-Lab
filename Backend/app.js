@@ -24,9 +24,11 @@ app.use(cors({                                    // Allow frontend origin and c
 // import route files
 import mainRouter from './server/routes/main.js';
 import auth from './server/routes/auth.js';
+import userRouter from './server/routes/userData.js';
 //Routes
 app.use('/', mainRouter);
 app.use('/user/auth/',auth);
+app.use('/user/data', userRouter); 
 
 // --- SERVER LISTENER ---
 app.listen(port, () => {
