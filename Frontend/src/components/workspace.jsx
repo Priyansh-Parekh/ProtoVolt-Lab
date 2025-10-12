@@ -601,290 +601,237 @@ const Workspace = () => {
     }, [draw]);
 
     return (
-        <div className="flex h-screen">
-            {/* Component Library Sidebar */}
-            <div className="w-48 bg-white border-r border-gray-200 p-4 flex flex-col space-y-4">
-                <h2 className="text-xl font-bold text-gray-800">Components</h2>
-
-                {/* Component Buttons */}
-                <div className="grid grid-cols-2 gap-2">
-                    {/* Resistor */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'resistor')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M0 10H5L7.5 15L12.5 5L17.5 15L22.5 5L27.5 15L30 10H40"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">Resistor</span>
-                    </div>
-
-                    {/* DC Source */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'dc-source')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M0 10H15M25 10H40M15 5V15M25 2V18"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">DC Source</span>
-                    </div>
-
-                    {/* Ground */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'ground')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M20 0V10M10 10H30M14 14H26M18 18H22"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">Ground</span>
-                    </div>
-
-                    {/* Capacitor */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'capacitor')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M0 10H15M25 10H40M15 0V20M25 0V20"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">Capacitor</span>
-                    </div>
-
-                    {/* Inductor */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'inductor')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M0 10H5M5 10C7.5 0,12.5 20,15 10C17.5 0,22.5 20,25 10C27.5 0,32.5 20,35 10H40"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">Inductor</span>
-                    </div>
-
-                    {/* AC Source */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'ac-source')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M0 10H40"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                            <circle cx="20" cy="10" r="8" stroke="black" strokeWidth="2" />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">AC Source</span>
-                    </div>
-
-                    {/* Transistor NPN */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'transistor-npn')}
-                    >
-                        <svg
-                            width="40"
-                            height="40"
-                            viewBox="0 0 40 40"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path d="M0 20H20M20 20V0M20 20L40 40" stroke="black" strokeWidth="2" />
-                            <path d="M37 37L43 43M43 37L37 43" stroke="black" strokeWidth="2" />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">Transistor NPN</span>
-                    </div>
+        <div className="flex h-screen bg-[#111827] text-[#F3F4F6]">
+        {/* Component Library Sidebar */}
+        <div className="w-56 bg-[#1F2937] border-r border-[#4B5563] p-4 flex flex-col space-y-5 shadow-soft">
+            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FBBF24] to-[#F97316]">
+                Components
+            </h2>
+    
+            {/* Component Buttons */}
+            <div className="grid grid-cols-2 gap-4">
+                {/* Resistor */}
+                <div
+                    className="component-btn group"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'resistor')}
+                >
+                    <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <path d="M0 10H5L7.5 15L12.5 5L17.5 15L22.5 5L27.5 15L30 10H40" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">Resistor</span>
+                </div>
+    
+                {/* DC Source */}
+                <div
+                    className="component-btn group"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'dc-source')}
+                >
+                    <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <path d="M0 10H15M25 10H40M15 5V15M25 2V18" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">DC Source</span>
+                </div>
+    
+                {/* Ground */}
+                <div
+                    className="component-btn group"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'ground')}
+                >
+                    <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <path d="M20 0V10M10 10H30M14 14H26M18 18H22" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">Ground</span>
+                </div>
+    
+                {/* Capacitor */}
+                <div
+                    className="component-btn group"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'capacitor')}
+                >
+                    <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <path d="M0 10H15M25 10H40M15 0V20M25 0V20" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">Capacitor</span>
+                </div>
+    
+                {/* Inductor */}
+                <div
+                    className="component-btn group"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'inductor')}
+                >
+                    <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <path d="M0 10H5M5 10C7.5 0,12.5 20,15 10C17.5 0,22.5 20,25 10C27.5 0,32.5 20,35 10H40" stroke="currentColor" strokeWidth="2" fill="none" />
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">Inductor</span>
+                </div>
+    
+                {/* AC Source */}
+                <div
+                    className="component-btn group"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'ac-source')}
+                >
+                     <svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <path d="M0 10H12M28 10H40" stroke="currentColor" strokeWidth="2" />
+                        <circle cx="20" cy="10" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
+                        <path d="M17 13C18.6667 8.33333 21.3333 8.33333 23 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">AC Source</span>
+                </div>
+    
+                {/* Transistor NPN */}
+                <div
+                    className="component-btn group col-span-2"
+                    draggable="true"
+                    onDragStart={(e) => handleDragStart(e, 'transistor-npn')}
+                >
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300">
+                        <circle cx="20" cy="20" r="12" stroke="currentColor" strokeWidth="2" fill="none"/>
+                        <path d="M12 20H20M20 12V28M25 12L20 20L25 28" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M25 28L30 33M30 28L25 33" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                        <line x1="12" y1="20" x2="0" y2="20" stroke="currentColor" strokeWidth="2" />
+                        <line x1="25" y1="8" x2="25" y2="0" stroke="currentColor" strokeWidth="2" />
+                        <line x1="30" y1="33" x2="40" y2="33" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    <span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">Transistor NPN</span>
                 </div>
             </div>
-
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-                {/* Top Toolbar */}
-                <div className="flex space-x-2">
-                    <button
-                        onClick={() => setState(prev => ({ ...prev, wireMode: false }))}
-                        className={`text-white font-medium rounded-lg text-sm px-4 py-2 ${!state.wireMode ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400 hover:bg-gray-500'}`}
-                    >
-                        Drag
-                    </button>
-                    <button
-                        onClick={() => setState(prev => ({ ...prev, wireMode: true }))}
-                        className={`text-white font-medium rounded-lg text-sm px-4 py-2 ${state.wireMode ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 hover:bg-gray-500'}`}
-                    >
-                        Wire
-                    </button>
-                    <button
-                        onClick={deleteSelected}
-                        className="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-4 py-2"
-                    >
-                        Delete Selected
-                    </button>
-                    <button
-                        onClick={exportJson}
-                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-4 py-2"
-                    >
-                        Export JSON
-                    </button>
+        </div>
+    
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col p-4 gap-4">
+            {/* Top Toolbar */}
+            <div className="flex items-center space-x-3 bg-[#1F2937] p-2 rounded-lg border border-[#4B5563] shadow-soft">
+                <button
+                    onClick={() => setState(prev => ({ ...prev, wireMode: false }))}
+                    className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 ${!state.wireMode ? 'bg-gradient-to-r from-[#FBBF24] to-[#F97316] text-[#111827] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}
+                >
+                    Drag
+                </button>
+                <button
+                    onClick={() => setState(prev => ({ ...prev, wireMode: true }))}
+                    className={`px-4 py-2 rounded-md font-semibold transition-all duration-300 ${state.wireMode ? 'bg-[#F97316] text-[#F3F4F6] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}
+                >
+                    Wire
+                </button>
+                <div className="flex-grow"></div> {/* Spacer */}
+                <button
+                    onClick={deleteSelected}
+                    className="px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/70"
+                >
+                    Delete
+                </button>
+                <button
+                    onClick={exportJson}
+                    className="px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/70"
+                >
+                    Export JSON
+                </button>
+            </div>
+    
+    
+            {/* Canvas and Properties Panel */}
+            <div className="flex-1 flex gap-4 overflow-hidden">
+                {/* Canvas */}
+                <div className="flex-1 bg-[#1F2937] rounded-lg border border-[#4B5563] shadow-inner overflow-hidden">
+                    <canvas
+                        ref={canvasRef}
+                        className="w-full h-full"
+                        onDrop={handleDrop}
+                        onDragOver={(e) => e.preventDefault()}
+                        onMouseDown={handleMouseDown}
+                        onMouseMove={handleMouseMove}
+                        onMouseUp={handleMouseUp}
+                    />
                 </div>
-
-
-                {/* Canvas and Properties Panel */}
-                <div className="flex-1 flex">
-                    {/* Canvas */}
-                    <div className="flex-1 p-4">
-                        <canvas
-                            ref={canvasRef}
-                            className="w-full h-full rounded-lg border border-gray-300"
-                            onDrop={handleDrop}
-                            onDragOver={(e) => e.preventDefault()}
-                            onMouseDown={handleMouseDown}
-                            onMouseMove={handleMouseMove}
-                            onMouseUp={handleMouseUp}
-                        />
-                    </div>
-
-                    {/* Properties Panel */}
-                    <div className="w-64 bg-white border-l border-gray-200 p-4">
-                        <h3 className="text-lg font-bold text-gray-800 mb-4">Properties</h3>
-                        <div className="text-gray-600">
-                            {state.selectedComponentId ? (
-                                (() => {
-                                    const component = state.components.find(
-                                        (c) => c.id === state.selectedComponentId
-                                    );
-                                    if (!component) return 'Component not found.';
-
-                                    return (
-                                        <div className="space-y-2">
-                                            <p>
-                                                <strong>ID:</strong> {component.id}
-                                            </p>
-                                            <p>
-                                                <strong>Label:</strong> {component.label}
-                                            </p>
-                                            <p>
-                                                <strong>Type:</strong> {component.type}
-                                            </p>
-                                            {Object.entries(component.properties).map(([key, prop]) => (
-                                                <div key={key} className="flex space-x-2 items-center">
-                                                    <strong>{key}:</strong>
+    
+                {/* Properties Panel */}
+                <div className="w-72 bg-[#1F2937] border border-[#4B5563] rounded-lg p-4 flex flex-col animate-fadeIn">
+                    <h3 className="text-xl font-bold mb-4 pb-2 border-b border-[#4B5563] bg-clip-text text-transparent bg-gradient-to-r from-[#FBBF24] to-[#F97316]">
+                        Properties
+                    </h3>
+                    <div className="text-[#9CA3AF] flex-1 overflow-y-auto">
+                        {state.selectedComponentId ? (
+                            (() => {
+                                const component = state.components.find(c => c.id === state.selectedComponentId);
+                                if (!component) return <p className="text-center mt-8">Component not found.</p>;
+    
+                                return (
+                                    <div className="space-y-4 text-sm">
+                                        <div className="flex justify-between items-center">
+                                            <strong className="text-[#F3F4F6]">ID:</strong>
+                                            <span className="font-mono bg-[#374151] px-2 py-1 rounded border border-[#4B5563]">{component.id}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <strong className="text-[#F3F4F6]">Label:</strong>
+                                            <span className="text-right">{component.label}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <strong className="text-[#F3F4F6]">Type:</strong>
+                                            <span className="text-right">{component.type}</span>
+                                        </div>
+                                        
+                                        <hr className="border-t border-[#4B5563] my-4" />
+    
+                                        {Object.entries(component.properties).map(([key, prop]) => (
+                                            <div key={key} className="space-y-2 animate-fadeIn">
+                                                <strong className="capitalize text-[#F3F4F6]">{key}</strong>
+                                                <div className="flex space-x-2 items-center">
                                                     <input
                                                         type="text"
                                                         placeholder="Value"
                                                         value={prop.value}
-                                                        onChange={(e) =>
-                                                            handlePropertyChange(component.id, key, 'value', e.target.value)
-                                                        }
-                                                        className="border rounded px-1 w-16"
+                                                        onChange={(e) => handlePropertyChange(component.id, key, 'value', e.target.value)}
+                                                        className="w-full rounded-md px-3 py-1.5 bg-[#111827] border border-[#4B5563] text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition"
                                                     />
                                                     <input
                                                         type="text"
                                                         placeholder="Unit"
                                                         value={prop.unit}
-                                                        onChange={(e) =>
-                                                            handlePropertyChange(component.id, key, 'unit', e.target.value)
-                                                        }
-                                                        className="border rounded px-1 w-16"
+                                                        onChange={(e) => handlePropertyChange(component.id, key, 'unit', e.target.value)}
+                                                        className="w-24 rounded-md px-3 py-1.5 bg-[#111827] border border-[#4B5563] text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition"
                                                     />
                                                 </div>
-                                            ))}
-
-                                        </div>
-                                    );
-                                })()
-                            ) : (
-                                'Select a component to see its properties.'
-                            )}
-                        </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                );
+                            })()
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-center text-[#9CA3AF]">
+                                <p>Select a component to<br />view its properties.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-
-            {/* JSON Output Modal */}
-            {showJsonModal && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-xl p-6 w-1/2">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="text-xl font-bold">Circuit Data (JSON)</h3>
-                            <button
-                                onClick={() => setShowJsonModal(false)}
-                                className="text-gray-500 hover:text-gray-800 text-2xl"
-                            >
-                                &times;
-                            </button>
-                        </div>
-                        <pre className="bg-gray-100 p-4 rounded-md text-sm overflow-auto h-96">
-                            {jsonOutput}
-                        </pre>
-                    </div>
-                </div>
-            )}
         </div>
+    
+        {/* JSON Output Modal */}
+        {showJsonModal && (
+            <div className="fixed inset-0 bg-[#111827]/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+                <div className="bg-[#1F2937] rounded-lg shadow-[0_0_15px_rgba(249,115,22,0.5)] border border-[#4B5563] p-6 w-1/2 max-w-2xl flex flex-col">
+                    <div className="flex justify-between items-center mb-4 pb-3 border-b border-[#4B5563]">
+                        <h3 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FBBF24] to-[#F97316]">Circuit Data (JSON)</h3>
+                        <button
+                            onClick={() => setShowJsonModal(false)}
+                            className="text-[#9CA3AF] hover:text-[#F97316] text-3xl font-light leading-none transition-colors"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                    <pre className="bg-[#111827] p-4 rounded-md text-sm overflow-auto h-96 text-[#FBBF24] border border-[#4B5563]">
+                        <code>{jsonOutput}</code>
+                    </pre>
+                </div>
+            </div>
+        )}
+    </div>
 
     );
 };
