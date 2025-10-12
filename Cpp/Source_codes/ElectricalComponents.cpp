@@ -5,7 +5,7 @@ using namespace std;
 class pos {
 public:
     int x, y;
-    pos(int x, int y): x(x), y(y) {}
+    pos(int x = 0, int y = 0): x(x), y(y) {}
 };
 
 class nodes {
@@ -13,7 +13,7 @@ private:
     string id;
     pos position;
 public:
-    nodes(string id, pos position): id(id), position(position) {}
+    nodes(string id = "", pos position = {}): id(id), position(position) {}
 };
 
 class terminal {
@@ -21,7 +21,7 @@ private:
     string id;
     nodes node;
 public:
-    terminal(string id, nodes node): id(id), node(node) {}
+    terminal(string id = "", nodes node = {}): id(id), node(node) {}
 };
 
 //----------------- ELECTRICAL QUANTITIES -----------------
@@ -53,11 +53,10 @@ public:
     void setFrequency(double f, string u){ value = f; unit = u; }
 };
 
-class beta{
+class beta {
 public:
     double value;
     string unit;
-
     void setBeta(double b, string u) { this->value = b; this->unit = u; }
 };
 
@@ -98,7 +97,8 @@ public:
         cout << "ID: " << id << " | Type: " << type << " | Label: " << label
              << " | pos: (" << position.x << "," << position.y << ")" << endl;
     }
-    virtual ~component() = default;  // important for polymorphism
+
+    virtual ~component() = default; // important for polymorphism
 };
 
 //----------------- RESISTOR -----------------
@@ -270,12 +270,26 @@ public:
     }
 };
 
+//----------------- UNION FOR COMPONENTS -----------------
+union ComponentsStack {
+    resistor* res;
+    capacitor* cap;
+    inductor* ind;
+    dc_source* dc;
+    ac_source* ac;
+    ground* grd;
+    transistor_npn* tnpn;
+    component* base;
+
+    ComponentsStack() { base = nullptr; }
+};
+
 //----------------- CIRCUIT -----------------
 class Circuit {
 private:
     string name;
     bool analyzed;
-    vector<shared_ptr<component>> comps;  // store mixed component
+    vector<shared_ptr<component>> comps;
 public:
     Circuit(string name): name(name), analyzed(false) {}
 
@@ -285,8 +299,11 @@ public:
 
     void showCircuit() {
         cout << "Circuit: " << name << endl;
-        for(auto &c : comps) {
-            c->display(); // virtual dispatch
+        for (auto &c : comps) {
+            c->display();
+            cout << "-------------------------" << endl;
         }
     }
 };
+
+
