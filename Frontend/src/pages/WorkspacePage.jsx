@@ -1,16 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import useProjects from '../hooks/useProjects';
-import Loading from '../helper/Loading';
 import { FiPlus } from 'react-icons/fi';
 
 const WorkspacePage = () => {
-  const { projects, isLoading } = useProjects();
-
-  if (isLoading) {
-    // Return the Loading component directly (no pt-16 here, as Loading fills the screen)
-    return <Loading />; 
-  }
+  const { projects } = useProjects();
 
   return (
     // CRITICAL FIX: Navbar component is NOT rendered here. pt-16 clears the fixed Navbar.
