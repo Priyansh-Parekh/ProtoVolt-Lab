@@ -18,6 +18,7 @@ import OtpVerification from './pages/otpVerification.jsx';
 import PasswordChange from './pages/PasswordChange.jsx';
 import CreateClassroom from './pages/createClassroom.jsx';
 import CreateAssignment from './pages/createAssignment.jsx';
+import Footer from './components/Footer.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
@@ -48,6 +49,7 @@ const MainContent = () => {
 
         </Routes>
       </Loading>
+      <Footer/>
     </>
   );
 };
