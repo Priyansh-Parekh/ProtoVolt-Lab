@@ -27,10 +27,54 @@ const Workspace = () => {
     // Helper functions
     const getTerminalDef = (component, terminalId) => {
         let defs;
-        if (component.type === 'resistor') defs = [{ id: 't1', x: -30, y: 0 }, { id: 't2', x: 30, y: 0 }];
-        if (component.type === 'dc-source') defs = [{ id: 'positive', x: 20, y: 0 }, { id: 'negative', x: -20, y: 0 }];
-        if (component.type === 'led') defs = [{ id: 'anode', x: 20, y: 0 }, { id: 'cathode', x: -20, y: 0 }];
-        if (component.type === 'ground') defs = [{ id: 'gnd', x: 0, y: -15 }];
+        if (component.type === 'resistor') {
+            defs = [
+                { id: 't1', x: -30, y: 0 },
+                { id: 't2', x: 30, y: 0 }
+            ];
+        }
+
+        if (component.type === 'dc-source') {
+            defs = [
+                { id: 'positive', x: 20, y: 0 },
+                { id: 'negative', x: -20, y: 0 }
+            ];
+        }
+
+        if (component.type === 'ground') {
+            defs = [
+                { id: 'gnd', x: 0, y: -15 }
+            ];
+        }
+
+        if (component.type === 'capacitor') {
+            defs = [
+                { id: 't1', x: -20, y: 0 },
+                { id: 't2', x: 20, y: 0 }
+            ];
+        }
+
+        if (component.type === 'inductor') {
+            defs = [
+                { id: 't1', x: -20, y: 0 },
+                { id: 't2', x: 20, y: 0 }
+            ];
+        }
+
+        if (component.type === 'ac-source') {
+            defs = [
+                { id: 'positive', x: 20, y: 0 },
+                { id: 'negative', x: -20, y: 0 }
+            ];
+        }
+
+        if (component.type === 'transistor-npn') {
+            defs = [
+                { id: 'collector', x: 0, y: 20 },
+                { id: 'base', x: -20, y: 0 },
+                { id: 'emitter', x: 20, y: 0 }
+            ];
+        }
         return defs.find(d => d.id === terminalId);
     };
 
@@ -130,17 +174,6 @@ const Workspace = () => {
             ctx.moveTo(11, 0);
             ctx.lineTo(15, 0);
             ctx.stroke();
-        } else if (component.type === 'led') {
-            ctx.beginPath();
-            ctx.moveTo(-20, 0);
-            ctx.lineTo(-10, 0);
-            ctx.moveTo(10, 0);
-            ctx.lineTo(20, 0);
-            ctx.moveTo(-10, 10);
-            ctx.lineTo(-10, -10);
-            ctx.lineTo(10, 0);
-            ctx.closePath();
-            ctx.stroke();
         } else if (component.type === 'ground') {
             ctx.beginPath();
             ctx.moveTo(0, -15);
@@ -152,7 +185,51 @@ const Workspace = () => {
             ctx.moveTo(-5, 10);
             ctx.lineTo(5, 10);
             ctx.stroke();
+        } else if (component.type === 'capacitor') {
+            ctx.beginPath();
+            ctx.moveTo(-20, 0);
+            ctx.lineTo(-10, 0);
+            ctx.moveTo(10, 0);
+            ctx.lineTo(20, 0);
+            ctx.moveTo(-10, -15);
+            ctx.lineTo(-10, 15);
+            ctx.moveTo(10, -15);
+            ctx.lineTo(10, 15);
+            ctx.stroke();
+        } else if (component.type === 'inductor') {
+            ctx.beginPath();
+            ctx.moveTo(-20, 0);
+            ctx.lineTo(-15, 0);
+            for (let i = -15; i <= 15; i += 5) {
+                ctx.arc(i + 2.5, 0, 2.5, 0, Math.PI, false);
+            }
+            ctx.lineTo(20, 0);
+            ctx.stroke();
+        } else if (component.type === 'ac-source') {
+            ctx.beginPath();
+            ctx.moveTo(-20, 0);
+            ctx.lineTo(20, 0);
+            ctx.arc(0, 0, 10, 0, 2 * Math.PI);
+            ctx.stroke();
+        } else if (component.type === 'transistor-npn') {
+            ctx.beginPath();
+            // Base line
+            ctx.moveTo(-20, 0);
+            ctx.lineTo(0, 0);
+            // Collector line
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -20);
+            // Emitter line
+            ctx.moveTo(0, 0);
+            ctx.lineTo(20, 20);
+            // Arrow on emitter
+            ctx.moveTo(17, 17);
+            ctx.lineTo(23, 23);
+            ctx.moveTo(23, 17);
+            ctx.lineTo(17, 23);
+            ctx.stroke();
         }
+
 
         ctx.restore();
 
@@ -239,23 +316,73 @@ const Workspace = () => {
             label: `${type.charAt(0).toUpperCase()}${state.components.filter(c => c.type === type).length + 1}`,
             position: { x, y },
             rotation: 0,
-            properties: {},
+            properties: {}, // will set below
             terminals: []
         };
 
         let terminalDefs;
         if (type === 'resistor') {
-            terminalDefs = [{ id: 't1', x: -30, y: 0 }, { id: 't2', x: 30, y: 0 }];
-            component.properties = { resistance: 1000, unit: 'Ω' };
+            terminalDefs = [
+                { id: 't1', x: -30, y: 0 },
+                { id: 't2', x: 30, y: 0 }
+            ];
+            component.properties = {
+                resistance: { value: "", unit: "" },
+                voltage: { value: "", unit: "" },
+                current: { value: "", unit: "" }
+            };
         } else if (type === 'dc-source') {
-            terminalDefs = [{ id: 'positive', x: 20, y: 0 }, { id: 'negative', x: -20, y: 0 }];
-            component.properties = { voltage: 9, unit: 'V' };
-        } else if (type === 'led') {
-            terminalDefs = [{ id: 'anode', x: 20, y: 0 }, { id: 'cathode', x: -20, y: 0 }];
-            component.properties = { color: 'red' };
+            terminalDefs = [
+                { id: 'positive', x: 20, y: 0 },
+                { id: 'negative', x: -20, y: 0 }
+            ];
+            component.properties = {
+                voltage: { value: 9, unit: "V" },
+                internalResistance: { value: 0, unit: "Ω" }
+            };
         } else if (type === 'ground') {
-            terminalDefs = [{ id: 'gnd', x: 0, y: -15 }];
+            terminalDefs = [
+                { id: 'gnd', x: 0, y: -15 }
+            ];
             component.properties = {};
+        } else if (type === 'capacitor') {
+            terminalDefs = [
+                { id: 't1', x: -20, y: 0 },
+                { id: 't2', x: 20, y: 0 }
+            ];
+            component.properties = {
+                capacitance: { value: "", unit: "" },
+                voltage: { value: "", unit: "" },
+                charge: { value: "", unit: "" }
+            };
+        } else if (type === 'inductor') {
+            terminalDefs = [
+                { id: 't1', x: -20, y: 0 },
+                { id: 't2', x: 20, y: 0 }
+            ];
+            component.properties = {
+                inductance: { value: "", unit: "" },
+                voltage: { value: "", unit: "" },
+                current: { value: "", unit: "" }
+            };
+        } else if (type === 'ac-source') {
+            terminalDefs = [
+                { id: 'positive', x: 20, y: 0 },
+                { id: 'negative', x: -20, y: 0 }
+            ];
+            component.properties = {
+                voltage: { value: "", unit: "" },
+                frequency: { value: "", unit: "" }
+            };
+        } else if (type === 'transistor-npn') {
+            terminalDefs = [
+                { id: 'collector', x: 0, y: 20 },
+                { id: 'base', x: -20, y: 0 },
+                { id: 'emitter', x: 20, y: 0 }
+            ];
+            component.properties = {
+                beta: { value: "", unit: "" }
+            };
         }
 
         const newNodes = [];
@@ -443,6 +570,25 @@ const Workspace = () => {
         }
     }, []);
 
+    const handlePropertyChange = (componentId, prop, key, value) => {
+        setState(prev => {
+            const newComponents = prev.components.map(c => {
+                if (c.id === componentId) {
+                    return {
+                        ...c,
+                        properties: {
+                            ...c.properties,
+                            [prop]: { ...c.properties[prop], [key]: value }
+                        }
+                    };
+                }
+                return c;
+            });
+            return { ...prev, components: newComponents };
+        });
+    };
+
+
     // Effects
     useEffect(() => {
         resizeCanvas();
@@ -506,29 +652,6 @@ const Workspace = () => {
                         <span className="text-xs mt-1 text-gray-600">DC Source</span>
                     </div>
 
-                    {/* LED */}
-                    <div
-                        className="component-btn"
-                        draggable="true"
-                        onDragStart={(e) => handleDragStart(e, 'led')}
-                    >
-                        <svg
-                            width="40"
-                            height="20"
-                            viewBox="0 0 40 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M0 10H10L20 5V15L10 10ZM20 5H25M20 15H25M25 10H40"
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                            <path d="M10 10L20 5V15L10 10Z" fill="#333" />
-                        </svg>
-                        <span className="text-xs mt-1 text-gray-600">LED</span>
-                    </div>
-
                     {/* Ground */}
                     <div
                         className="component-btn"
@@ -550,41 +673,125 @@ const Workspace = () => {
                         </svg>
                         <span className="text-xs mt-1 text-gray-600">Ground</span>
                     </div>
-                </div>
 
-                {/* Sidebar Buttons */}
-                <div className="pt-4 border-t">
-                    <button
-                        onClick={toggleWireMode}
-                        className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center ${state.wireMode
-                                ? 'bg-red-600 hover:bg-red-700'
-                                : 'bg-indigo-600 hover:bg-indigo-700'
-                            }`}
+                    {/* Capacitor */}
+                    <div
+                        className="component-btn"
+                        draggable="true"
+                        onDragStart={(e) => handleDragStart(e, 'capacitor')}
                     >
-                        Wire Mode: {state.wireMode ? 'ON' : 'OFF'}
-                    </button>
+                        <svg
+                            width="40"
+                            height="20"
+                            viewBox="0 0 40 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M0 10H15M25 10H40M15 0V20M25 0V20"
+                                stroke="black"
+                                strokeWidth="2"
+                            />
+                        </svg>
+                        <span className="text-xs mt-1 text-gray-600">Capacitor</span>
+                    </div>
 
-                    <button
-                        onClick={deleteSelected}
-                        className="w-full mt-2 text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                    {/* Inductor */}
+                    <div
+                        className="component-btn"
+                        draggable="true"
+                        onDragStart={(e) => handleDragStart(e, 'inductor')}
                     >
-                        Delete Selected
-                    </button>
+                        <svg
+                            width="40"
+                            height="20"
+                            viewBox="0 0 40 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M0 10H5M5 10C7.5 0,12.5 20,15 10C17.5 0,22.5 20,25 10C27.5 0,32.5 20,35 10H40"
+                                stroke="black"
+                                strokeWidth="2"
+                            />
+                        </svg>
+                        <span className="text-xs mt-1 text-gray-600">Inductor</span>
+                    </div>
+
+                    {/* AC Source */}
+                    <div
+                        className="component-btn"
+                        draggable="true"
+                        onDragStart={(e) => handleDragStart(e, 'ac-source')}
+                    >
+                        <svg
+                            width="40"
+                            height="20"
+                            viewBox="0 0 40 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M0 10H40"
+                                stroke="black"
+                                strokeWidth="2"
+                            />
+                            <circle cx="20" cy="10" r="8" stroke="black" strokeWidth="2" />
+                        </svg>
+                        <span className="text-xs mt-1 text-gray-600">AC Source</span>
+                    </div>
+
+                    {/* Transistor NPN */}
+                    <div
+                        className="component-btn"
+                        draggable="true"
+                        onDragStart={(e) => handleDragStart(e, 'transistor-npn')}
+                    >
+                        <svg
+                            width="40"
+                            height="40"
+                            viewBox="0 0 40 40"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M0 20H20M20 20V0M20 20L40 40" stroke="black" strokeWidth="2" />
+                            <path d="M37 37L43 43M43 37L37 43" stroke="black" strokeWidth="2" />
+                        </svg>
+                        <span className="text-xs mt-1 text-gray-600">Transistor NPN</span>
+                    </div>
                 </div>
             </div>
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
                 {/* Top Toolbar */}
-                <div className="bg-white border-b border-gray-200 p-2 flex justify-between items-center">
-                    <h1 className="text-lg font-bold text-gray-800">Personal Workspace</h1>
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => setState(prev => ({ ...prev, wireMode: false }))}
+                        className={`text-white font-medium rounded-lg text-sm px-4 py-2 ${!state.wireMode ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-400 hover:bg-gray-500'}`}
+                    >
+                        Drag
+                    </button>
+                    <button
+                        onClick={() => setState(prev => ({ ...prev, wireMode: true }))}
+                        className={`text-white font-medium rounded-lg text-sm px-4 py-2 ${state.wireMode ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 hover:bg-gray-500'}`}
+                    >
+                        Wire
+                    </button>
+                    <button
+                        onClick={deleteSelected}
+                        className="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-4 py-2"
+                    >
+                        Delete Selected
+                    </button>
                     <button
                         onClick={exportJson}
-                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5"
+                        className="text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-4 py-2"
                     >
                         Export JSON
                     </button>
                 </div>
+
 
                 {/* Canvas and Properties Panel */}
                 <div className="flex-1 flex">
@@ -623,13 +830,30 @@ const Workspace = () => {
                                             <p>
                                                 <strong>Type:</strong> {component.type}
                                             </p>
-                                            {Object.entries(component.properties).map(
-                                                ([key, value]) => (
-                                                    <p key={key}>
-                                                        <strong>{key}:</strong> {value}
-                                                    </p>
-                                                )
-                                            )}
+                                            {Object.entries(component.properties).map(([key, prop]) => (
+                                                <div key={key} className="flex space-x-2 items-center">
+                                                    <strong>{key}:</strong>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Value"
+                                                        value={prop.value}
+                                                        onChange={(e) =>
+                                                            handlePropertyChange(component.id, key, 'value', e.target.value)
+                                                        }
+                                                        className="border rounded px-1 w-16"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Unit"
+                                                        value={prop.unit}
+                                                        onChange={(e) =>
+                                                            handlePropertyChange(component.id, key, 'unit', e.target.value)
+                                                        }
+                                                        className="border rounded px-1 w-16"
+                                                    />
+                                                </div>
+                                            ))}
+
                                         </div>
                                     );
                                 })()
