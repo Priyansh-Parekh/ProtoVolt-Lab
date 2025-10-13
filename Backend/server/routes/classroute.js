@@ -1,6 +1,6 @@
 import {Router} from "express";
 import asyncHandler from "express-async-handler";
-import { getAllClassrooms, accessClassroom, createClassroom, getAssignment, getAnnouncement } from "../controllers/classroomController";
+import { createClassroom, getAssignment, getAnnouncement } from "../controllers/classroomController.js";
 import loginMiddelware from "../middleware/login";
 
 const route = Router();
