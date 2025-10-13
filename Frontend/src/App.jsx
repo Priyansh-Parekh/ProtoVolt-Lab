@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // components
 import Navbar from './components/navbar';
 import Loading from './helper/Loading'; // Correct path to your helper file
 import Workspace from './components/workspace';
+
+//importing utils
+import api from './utils/axios.js';
 
 // pages
 import Home from './pages/home';
@@ -25,10 +28,34 @@ const MainContent = () => {
   // useLocation is required here to pass to the Routes component and trigger the animation wrapper
   const location = useLocation(); 
 
+  const [user, setUser] = useState();
+
+
+  // fetching data of user
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await api.get('/user/data/getUser');
+        if (res.data.success) {
+          setUser(res.data.user); 
+        } else {
+          setUser(undefined); 
+        }
+        
+    {console.log(user)}
+      } catch (error) {
+        console.error("API error:", error);
+        setUser(undefined);
+      }
+    }
+
+    fetchData();
+  }, []); // runs once when component mounts
+
   return (
     <>
       {/* Navbar stays fixed outside the animation logic */}
-      <Navbar /> 
+      <Navbar user ={user} /> 
       
       {/* The PageTransitionWrapper handles the smooth exit and entry animation for all content */}
       <Loading> 
