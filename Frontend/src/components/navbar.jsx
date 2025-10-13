@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FiHome, FiTrello, FiBookOpen, FiLayout, FiUser } from 'react-icons/fi';
 import { FaUsers } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
-//importing utils
-import api from '../utils/axios.js'
+
 
 const AnimatedLogo = () => {
   const logoVariants = {
@@ -31,30 +29,8 @@ const AnimatedLogo = () => {
   );
 };
 
-const Navbar = () => {
+const Navbar = ({user}) => {
   // Custom NavLink classes for active state and transition
-
-  const [user, setUser] = useState();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await api.get('/user/data/getUser');
-        if (res.data.success) {
-          setUser(res.data.user); 
-        } else {
-          setUser(undefined); 
-        }
-      } catch (error) {
-        console.error("API error:", error);
-        setUser(undefined);
-      }
-    }
-
-    fetchData();
-  }, []); // runs once when component mounts
-
-
 
   const linkClasses = ({ isActive }) =>
     `relative flex items-center space-x-2 px-3 py-2 rounded-md font-medium text-sm overflow-hidden z-10 
