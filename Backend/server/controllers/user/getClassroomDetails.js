@@ -20,7 +20,7 @@ const getClassrooms = async (req, res) => {
 
         // Fetch classrooms using the Classroom model
         const classrooms = await Classroom.find({ _id: { $in: user.classrooms } })
-          .select("name course description image students professors");
+          .select("name course description imageUrl students professors");
 
         res.status(200).json({
           success: true,

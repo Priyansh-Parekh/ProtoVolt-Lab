@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { FiUploadCloud, FiXCircle } from 'react-icons/fi';
-import { FaCheckCircle } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { FiXCircle } from 'react-icons/fi';
+
+//importing utils
+import api from '../utils/axios';
 
 // components
 import LeftVisualPanel from '../components/createClassroom/leftVisualPanel';
@@ -16,11 +17,38 @@ const CreateClassroom = () => {
   const [image, setImage] = useState("");
   const [prevImage, setPrevImage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    e.target.disable = true;
+    e.target.style.opacity = 0.5;
     //call Api over here;
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("course", course);
+      formData.append("description", description);
+      formData.append("image", image); // 'image' must match multer field name
 
-    setIsSubmitted(prev => !prev);
+      const res = await api.post("/classroom/data/createClassroom", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      if (res.data.success) {
+        setIsSubmitted(prev => !prev);
+        setJoinCode(res.data.joinCode);
+      } else {
+        alert(res.data.message);
+      }
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert(err.message);
+    }
+
+    
+    e.target.disabled = false;
+    e.target.style.opacity = 1;
   }
 
   const removeImage = () => {
@@ -28,7 +56,7 @@ const CreateClassroom = () => {
     setPrevImage("");
   }
 
-  const newClassroom = ()=>{
+  const newClassroom = () => {
     setIsSubmitted(false);
     setJoinCode("");
     setName("");
