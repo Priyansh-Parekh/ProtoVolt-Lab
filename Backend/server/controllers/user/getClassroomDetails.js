@@ -4,6 +4,8 @@ const getClassrooms = async (req, res) => {
     try {
         const user = req.user;
 
+        // console.log(user);
+
         if (!user) {
             return res.status(401).json({ success: false, message: "Unauthorized. Please log in." });
         }
@@ -18,7 +20,7 @@ const getClassrooms = async (req, res) => {
 
         // Fetch classrooms using the Classroom model
         const classrooms = await Classroom.find({ _id: { $in: user.classrooms } })
-          .select("name course description image");
+          .select("name course description image students professors");
 
         res.status(200).json({
           success: true,

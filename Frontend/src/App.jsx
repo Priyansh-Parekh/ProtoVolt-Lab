@@ -41,8 +41,6 @@ const MainContent = () => {
         } else {
           setUser(undefined); 
         }
-        
-    {console.log(user)}
       } catch (error) {
         console.error("API error:", error);
         setUser(undefined);
@@ -51,7 +49,6 @@ const MainContent = () => {
 
     fetchData();
   }, []); // runs once when component mounts
-
   return (
     <>
       {/* Navbar stays fixed outside the animation logic */}
