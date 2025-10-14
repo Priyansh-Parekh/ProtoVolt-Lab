@@ -62,10 +62,10 @@ const MainContent = () => {
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
-          <Route path="/classroom" element={<Classroom />} />
+          <Route path="/classroom" element={<Classroom user={user} />} />
           <Route path="/classroom/create" element={<CreateClassroom />} />
           <Route path="/classroom/createAssignment" element={<CreateAssignment />} />
-          <Route path="/classroom/class/:id" element={<SpecificClass />} />
+          <Route path="/classroom/class/:id" element={<SpecificClass user={user} />} />
           <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
           <Route path="/workspace/new" element={<Workspace />} />
           <Route path="/workspace/:projectId" element={<Workspace />} />

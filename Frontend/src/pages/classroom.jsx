@@ -12,7 +12,7 @@ import {classroomSeed} from '../seeds/data'
 //usefull fun
 import { useState } from 'react'
 
-const Classroom = () => {
+const Classroom = (user) => {
 
     
     // it will work after DB is connected
@@ -27,7 +27,7 @@ const Classroom = () => {
     return (
         <>
             <div className='h-max min-h-screen bg-[var(--color-primary)] z-[-1] '>
-                 <Classroom_header setJoinPopup = {setJoinPopup} />
+                 <Classroom_header setJoinPopup = {setJoinPopup} user={user} />
                  {joinPopup && <ClassroomJoinPopup setJoinPopup={setJoinPopup} />}
                 <div className="w-full p-4 md:p-6 lg:p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {classroomSeed.map((course, index) => (
