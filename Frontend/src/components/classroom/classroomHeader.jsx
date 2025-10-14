@@ -68,7 +68,7 @@ const Classroom_header = ({ setJoinPopup, user }) => {
             "
                 >
                     <FiPlus className="h-5 w-5" />   {/* NEW: Icon */}
-                    <Link to="/classroom/create" >Create Class</Link>
+                    <Link to="/classroom/createClassroom" >Create Class</Link>
                 </button>}
             </div>
         </header>
