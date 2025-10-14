@@ -17,7 +17,7 @@ import Classroom_card from '../components/classroom/classroomCard'
 //usefull fun
 import { useState } from 'react'
 
-const Classroom = (user) => {
+const Classroom = ({user}) => {
 
     const [classrooms, setClassrooms] = useState([]);
     const [joinPopup, setJoinPopup] = useState(false);

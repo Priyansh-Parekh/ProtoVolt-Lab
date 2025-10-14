@@ -48,7 +48,7 @@ const ClassHeader = ({user,setAnnounced}) => {
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
 
                 {/* New Assignment Button */}
-                {user.type==="professor" &&  <Link
+                {user.role==="professor" &&  <Link
                     to={'/classroom/createAssignment'}
                     className=" 
           flex items-center gap-2
@@ -67,7 +67,7 @@ const ClassHeader = ({user,setAnnounced}) => {
                 </Link>}
 
                 {/* New Announcement Button */}
-               {user.type==="professor" && <button
+               {user.role==="professor" && <button
                 onClick={()=> setAnnounced(prev => !prev)}
                     className="
      flex items-center gap-2

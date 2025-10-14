@@ -52,8 +52,7 @@ const Classroom_header = ({ setJoinPopup, user }) => {
                     <span>Join a Class</span>
                 </button>
 
-                {/* Primary Action Button */}
-                {user.type === "professor" && <button
+                {user.role === "professor" && <button
                     className="
                     mr-3
             font-ChakraPetch font-bold text-[var(--color-tertiary)]
