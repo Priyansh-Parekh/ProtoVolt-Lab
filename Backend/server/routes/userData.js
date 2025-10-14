@@ -6,6 +6,6 @@ import loginMiddelware from "../middleware/login.js";
 const route = Router();
 
 route.get("/getUser", loginMiddelware, getUserDetails);
-route.get("/my-classrooms", loginMiddelware, getClassrooms);
+route.get("/getClassrooms", loginMiddelware, getClassrooms);
 
 export default route;

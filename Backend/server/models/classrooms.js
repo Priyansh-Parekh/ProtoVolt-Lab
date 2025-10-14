@@ -37,7 +37,11 @@ const classroomSchema = new mongoose.Schema({
     professors:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-    }]
+    }],
+    image: {
+        type: String, // store the image URL here
+        default: null 
+    }
 },{timestamps: true});
 
 const Classroom = mongoose.model('Classroom', classroomSchema,'Classrooms');
