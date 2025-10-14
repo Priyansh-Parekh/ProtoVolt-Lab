@@ -12,14 +12,15 @@ const loginMiddelware = async (req , res , next)=>{
         }
         if(token){
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
+             // Try to find the user in each collection
+             let user = await User.findOne({ email: decoded.email});
+             if (user) {
+                 req.user = user;
+                 return next();
+             }
         }
 
-        // Try to find the user in each collection
-        let user = await User.findOne({ email: decoded.email});
-        if (user) {
-            req.user = user;
-            return next();
-        }
+       
         // console.log(decoded);
         // If not found in any collection
         req.user = undefined;

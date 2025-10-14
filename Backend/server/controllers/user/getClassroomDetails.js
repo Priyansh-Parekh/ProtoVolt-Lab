@@ -1,5 +1,4 @@
 import Classroom from "../../models/classrooms.js"; // ✅ import Classroom model
-import User from "../../models/users.js";
 
 const getClassrooms = async (req, res) => {
     try {
@@ -26,6 +25,7 @@ const getClassrooms = async (req, res) => {
           message: "User's classrooms have been fetched successfully.",
           classrooms
         });
+        
     } catch (err) {
         console.error("Error fetching classrooms:", err);
         res.status(500).json({ success: false, message: "Server Error" });
