@@ -7,7 +7,7 @@ import ClassHeader from '../components/specificClass/classHeader'
 import ClassAnnouncementPopup from '../components/specificClass/classAnnouncementPopup';
 import ClassroomHubPage from '../components/specificClass/classroomHubPage';
 
-const SpecificClass = (user) => {
+const SpecificClass = ({user}) => {
   // const [assigned,setAssigned] = useState(false);
   const [announced,setAnnounced] = useState(false);
 

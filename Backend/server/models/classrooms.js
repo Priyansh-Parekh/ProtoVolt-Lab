@@ -38,7 +38,7 @@ const classroomSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     }],
-    image: {
+    imageUrl: {
         type: String, // store the image URL here
         default: null 
     }

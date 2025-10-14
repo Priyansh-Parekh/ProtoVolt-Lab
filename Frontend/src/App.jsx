@@ -70,7 +70,7 @@ const MainContent = () => {
           {user &&
 
             <>
-              {user.type === "professor" &&
+              {user.role === "professor" &&
                 <>
                   <Route path="/classroom/createClassroom" element={<CreateClassroom />} />
                   <Route path="/classroom/createAssignment" element={<CreateAssignment />} />
