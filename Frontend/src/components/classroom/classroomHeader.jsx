@@ -2,7 +2,7 @@ import React from 'react'
 import { FiPlus, FiLogIn } from 'react-icons/fi'; // Import icons
 import { Link } from 'react-router-dom';
 
-const Classroom_header = ({ setJoinPopup }) => {
+const Classroom_header = ({ setJoinPopup, user }) => {
     return (
 
         <header
@@ -27,19 +27,8 @@ const Classroom_header = ({ setJoinPopup }) => {
             bg-clip-text text-transparent                     /* NEW: Makes gradient show through text */
             transition-all duration-300 ease-in-out
             ">
-             My Classroom
-            </h1>
-                <p className="
-    pl-10
-    font-serif italic                        /* NEW Font Style */
-    text-lg text-stone-200                  /* NEW Color */
-    mt-4
-    animate-float
-    opacity-90
-    transition-all duration-700 ease-in-out
-  ">
-                    Your <span className="text-amber-500 font-semibold not-italic">learning journey</span> continues here.
-                </p>
+                    My Classroom
+                </h1>
 
             </div>
 
@@ -52,7 +41,7 @@ const Classroom_header = ({ setJoinPopup }) => {
                     className="
             font-ChakraPetch font-semibold text-[#00d4ff]
             border border-[#00d4ff] rounded-lg
-            px-4 sm:px-5 py-2.5
+            px-4 sm:px-5 py-2.5 mr-6
             transition-all duration-300
             hover:bg-[#00d4ff] hover:text-[var(--color-tertiary)]
             focus:outline-none focus:ring-2 focus:ring-[#00d4ff]/50
@@ -64,7 +53,7 @@ const Classroom_header = ({ setJoinPopup }) => {
                 </button>
 
                 {/* Primary Action Button */}
-                <button
+                {user.type === "professor" && <button
                     className="
                     mr-3
             font-ChakraPetch font-bold text-[var(--color-tertiary)]
@@ -80,7 +69,7 @@ const Classroom_header = ({ setJoinPopup }) => {
                 >
                     <FiPlus className="h-5 w-5" />   {/* NEW: Icon */}
                     <Link to="/classroom/create" >Create Class</Link>
-                </button>
+                </button>}
             </div>
         </header>
     )

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/users.js";
 
-const loginMiddelware = async (req , res , next)=>{
+const loginMiddelware = async (req, res, next) => {
 
     try {
         const token = req.cookies.token;
@@ -10,7 +10,7 @@ const loginMiddelware = async (req , res , next)=>{
             req.user = undefined;
             return next();
         }
-        if(token){
+        if (token) {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
              // Try to find the user in each collection
              let user = await User.findOne({ email: decoded.email});
