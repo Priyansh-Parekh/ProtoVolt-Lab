@@ -26,7 +26,7 @@ import Footer from './components/Footer.jsx';
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
   // useLocation is required here to pass to the Routes component and trigger the animation wrapper
-  const location = useLocation(); 
+  const location = useLocation();
 
   const [user, setUser] = useState();
 
@@ -37,12 +37,10 @@ const MainContent = () => {
       try {
         const res = await api.get('/user/data/getUser');
         if (res.data.success) {
-          setUser(res.data.user); 
+          setUser(res.data.user);
         } else {
-          setUser(undefined); 
+          setUser(undefined);
         }
-        
-    {console.log(user)}
       } catch (error) {
         console.error("API error:", error);
         setUser(undefined);
@@ -51,22 +49,17 @@ const MainContent = () => {
 
     fetchData();
   }, []); // runs once when component mounts
-
   return (
     <>
       {/* Navbar stays fixed outside the animation logic */}
-      <Navbar user ={user} /> 
-      
+      <Navbar user={user} />
+
       {/* The PageTransitionWrapper handles the smooth exit and entry animation for all content */}
-      <Loading> 
+      <Loading>
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
-          <Route path="/classroom" element={<Classroom />} />
-          <Route path="/classroom/create" element={<CreateClassroom />} />
-          <Route path="/classroom/createAssignment" element={<CreateAssignment />} />
-          <Route path="/classroom/class/:id" element={<SpecificClass />} />
-          <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
+
           <Route path="/workspace/new" element={<Workspace />} />
           <Route path="/workspace/:projectId" element={<Workspace />} />
           <Route path="/user/login" element={<Login />} />
@@ -74,9 +67,25 @@ const MainContent = () => {
           <Route path="/user/passwordChange" element={<PasswordChange />} />
           <Route path="/user/otpVerification" element={<OtpVerification />} />
 
+          {user &&
+
+            <>
+              {user.type === "professor" &&
+                <>
+                  <Route path="/classroom/createClassroom" element={<CreateClassroom />} />
+                  <Route path="/classroom/createAssignment" element={<CreateAssignment />} />
+                </>
+              }
+
+              <Route path="/classroom" element={<Classroom user={user} />} />
+              <Route path="/classroom/class/:id" element={<SpecificClass user={user} />} />
+              <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
+            </>
+
+          }
         </Routes>
       </Loading>
-      <Footer/>
+      <Footer />
     </>
   );
 };

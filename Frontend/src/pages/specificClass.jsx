@@ -7,7 +7,7 @@ import ClassHeader from '../components/specificClass/classHeader'
 import ClassAnnouncementPopup from '../components/specificClass/classAnnouncementPopup';
 import ClassroomHubPage from '../components/specificClass/classroomHubPage';
 
-const SpecificClass = () => {
+const SpecificClass = (user) => {
   // const [assigned,setAssigned] = useState(false);
   const [announced,setAnnounced] = useState(false);
 
@@ -17,8 +17,7 @@ const SpecificClass = () => {
 
   return (
     <div  className='h-max min-h-screen bg-[var(--color-primary)] z-[-1]'>
-        <ClassHeader /*setAssigned={setAssigned}*/  setAnnounced={setAnnounced}/>
-        {/* {assigned&& <ClassAssignmentPopup setAssigned={setAssigned}  />} */}
+        <ClassHeader user={user}  setAnnounced={setAnnounced}/>
         {announced&& <ClassAnnouncementPopup setAnnounced={setAnnounced} /> }
         <div className="flex">
   {/* Main Content */}

@@ -1,61 +1,70 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { BsPeopleFill } from "react-icons/bs";
 
-// Renamed to ClassroomCard for standard React naming conventions
 const ClassroomCard = ({ classroom }) => {
-  // Placeholder for progress, as this would typically be calculated
-  const progress = 45; 
 
   return (
-    // The entire card links to the specific classroom page using `classroom._id`
-    <Link to={`/classroom/class/${classroom._id}`}>
-      <div 
+    <Link to={`/classroom/class/${classroom._id}`} className="group">
+      <div
         className="
-          bg-[var(--color-secondary)] rounded-xl overflow-hidden shadow-lg h-full
+          bg-[var(--color-secondary)] rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.4)] 
+          hover:shadow-[0_8px_25px_rgba(0,212,255,0.25)]
           border border-gray-800 hover:border-[#00d4ff]
-          group transition-all duration-300 ease-in-out
-          transform hover:-translate-y-2 flex flex-col
+          transition-all duration-300 ease-in-out transform hover:-translate-y-2
+          flex flex-col cursor-pointer
         "
       >
-        {/* Classroom Image - Using a placeholder since imageUrl is not in the seed */}
-        <img 
-          className="w-full h-48 object-cover" 
-          // Provides a default image if `classroom.imageUrl` is not present
-          src={classroom.imageUrl || 'https://source.unsplash.com/random/600x400?technology,circuit'} 
-          alt={`${classroom.name} banner`} 
-        />
+        {/* ─── Image Banner ───────────────────────────── */}
+        <div className="relative">
+          <img
+            className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
+            src={
+              classroom.imageUrl ||
+              "def"
+            }
+            alt={`${classroom.name} banner`}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+          <span
+            className="
+              absolute bottom-3 left-3 bg-gray-800/80 text-[#00d4ff] 
+              text-xs font-bold font-ChakraPetch px-3 py-1 rounded-full backdrop-blur-sm
+            "
+          >
+            {classroom.course}
+          </span>
+        </div>
 
-        {/* Classroom Content - flex-grow makes this section fill available space */}
-        <div className="p-6 flex flex-col flex-grow">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="font-ChakraPetch text-2xl font-bold text-white group-hover:text-[#00d4ff] transition-colors duration-300">
-              {/* Using `classroom.name` for the title */}
-              {classroom.name}
-            </h3>
-            <span className="bg-gray-700 text-[#00d4ff] min-w-fit text-xs font-bold font-ChakraPetch px-2.5 py-1 rounded-full">
-              {/* Added the course code from `classroom.course` */}
-              {classroom.course}
-            </span>
-          </div>
-          
-          <p className="text-gray-400 text-base mb-6 flex-grow">
-            {/* Using `classroom.description` */}
-            {classroom.description}
+        {/* ─── Content ───────────────────────────── */}
+        <div className="p-5 flex flex-col flex-grow">
+          <h3
+            className="
+              font-ChakraPetch text-xl font-bold text-white mb-2 
+              group-hover:text-[#00d4ff] transition-colors duration-300
+            "
+          >
+            {classroom.name}
+          </h3>
+
+          <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+            {classroom.description || "No description available."}
           </p>
 
-          {/* Progress Bar - Pushed to the bottom */}
-          <div>
-            <div className="flex justify-between mb-1">
-              <span className="text-base font-medium font-ChakraPetch text-gray-300">Progress</span>
-              {/* Using the placeholder progress value */}
-              <span className="text-sm font-medium font-ChakraPetch text-gray-300">{progress}%</span>
+          {/* ─── Footer (Teacher + Members + Progress) ───────────────────────────── */}
+          <div className="mt-auto">
+            <div className="flex justify-between text-sm text-gray-400 mb-3">
+              <div className="flex items-center gap-2">
+                <FaChalkboardTeacher className="text-[#00d4ff]" />
+                <span>{classroom.professors?.length +" professor" || "Unknown Instructor"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <BsPeopleFill className="text-[#00d4ff]" />
+                <span>{classroom.students?.length || 0} students</span>
+              </div>
             </div>
-            <div className="w-full bg-gray-700 rounded-full h-2.5">
-              <div 
-                className="bg-[#00d4ff] h-2.5 rounded-full" 
-                style={{ width: `${progress}%` }}
-              ></div>
-            </div>
+
           </div>
         </div>
       </div>
