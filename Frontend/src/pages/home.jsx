@@ -184,92 +184,116 @@ const Home = () => {
         </ScaleText>
       </section>
 
-      {/* WORKFLOW SECTION WITH ENHANCED PARALLAX */}
-      <section className="py-24 relative z-10 px-4 md:px-12 bg-gradient-to-b from-black/60 to-transparent">
-        <div ref={dotsRef}>
-          <ParallaxSection speed={0.2}>
-            <motion.h2
-              className="text-4xl md:text-6xl font-bold mb-20 text-center text-white"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <RevealText>Your ProtoVolt Journey</RevealText>
-            </motion.h2>
-          </ParallaxSection>
+      <section className="py-24 px-4 md:px-12 relative overflow-hidden">
+ <div className="max-w-7xl mx-auto relative">
+   <motion.h2
+     className="text-4xl md:text-5xl font-bold mb-20 text-center text-white"
+     initial={{ opacity: 0, y: 30 }}
+     whileInView={{ opacity: 1, y: 0 }}
+     viewport={{ once: true }}
+     transition={{ duration: 0.6 }}
+   >
+     The ProtoVolt Journey
+   </motion.h2>
 
-          <div className="relative max-w-6xl mx-auto">
-            {/* Center line */}
-            <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-1 bg-gradient-to-b from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] opacity-40" />
 
-            {dotContent.map((item, index) => (
-              <ParallaxSection
-                key={item.id}
-                speed={index % 2 === 0 ? 0.15 : -0.15}
-              >
-                <motion.div
-                  className={`relative mb-20 ${
-                    index % 2 === 0 ? "md:pr-[50%]" : "md:pl-[50%]"
-                  }`}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  animate={{
-                    opacity: isDotsInView ? 1 : 0,
-                    x: isDotsInView ? 0 : index % 2 === 0 ? -50 : 50,
-                  }}
-                  transition={{ duration: 0.6, delay: index * 0.2 }}
-                >
-                  <div
-                    className={`p-8 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 backdrop-blur-md shadow-2xl hover:shadow-[0_0_40px_rgba(0,212,255,0.4)] transition-all duration-500 hover:scale-105 ${
-                      index % 2 === 0 ? "md:mr-8" : "md:ml-8"
-                    }`}
-                  >
-                    {/* Glowing dot on timeline */}
-                    <motion.div
-                      className={`absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-[#00D4FF] rounded-full shadow-[0_0_20px_rgba(0,212,255,0.8)] ${
-                        index % 2 === 0
-                          ? "right-0 translate-x-[calc(50%+1.5rem)]"
-                          : "left-0 -translate-x-[calc(50%+1.5rem)]"
-                      }`}
-                      animate={{
-                        scale: [1, 1.3, 1],
-                        boxShadow: [
-                          "0 0 20px rgba(0,212,255,0.8)",
-                          "0 0 40px rgba(0,212,255,1)",
-                          "0 0 20px rgba(0,212,255,0.8)",
-                        ],
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
+   {/* Timeline Container */}
+   <div className="relative mx-auto w-full max-w-4xl">
+     {/* Center Vertical Line */}
+     <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-[#00D4FF]/20 rounded-full overflow-hidden z-0">
+       <motion.div
+         className="w-full h-full bg-gradient-to-b from-transparent via-[#00D4FF] to-transparent animate-[flow_2s_linear_infinite]"
+         initial={{ y: "-100%" }}
+         animate={{ y: ["-100%", "100%"] }}
+         transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+       />
+     </div>
 
-                    <div
-                      className={`flex items-center gap-4 mb-4 ${
-                        index % 2 === 0 ? "md:flex-row-reverse" : ""
-                      }`}
-                    >
-                      <motion.div
-                        whileHover={{ rotate: 360, scale: 1.2 }}
-                        transition={{ duration: 0.6 }}
-                      >
-                        <item.icon className="w-8 h-8 text-[#00D4FF] drop-shadow-[0_0_10px_rgba(0,212,255,0.8)]" />
-                      </motion.div>
-                      <h3 className="text-2xl font-bold text-white">
-                        {item.title}
-                      </h3>
-                    </div>
-                    <p className="text-gray-300 mb-4">{item.description}</p>
-                    <a
-                      href={item.link}
-                      className="inline-block text-[#60A5FA] hover:text-[#00D4FF] text-sm font-semibold transition-colors hover:drop-shadow-[0_0_8px_rgba(0,212,255,0.6)]"
-                    >
-                      Explore →
-                    </a>
-                  </div>
-                </motion.div>
-              </ParallaxSection>
-            ))}
-          </div>
-        </div>
-      </section>
+
+     {[
+       {
+         title: "Ideate and Connect",
+         text: "Drag components like resistors, capacitors, and power sources onto the canvas. Our intelligent wiring tool snaps connections into place, minimizing design friction.",
+       },
+       {
+         title: "Simulate Instantly",
+         text: "Hit 'Run' and watch the circuit come alive with real-time waveform outputs powered by our C++ engine.",
+       },
+       {
+         title: "Analyze & Iterate",
+         text: "View heatmaps, oscilloscopes, and voltage metrics. Instantly adjust parameters for rapid prototyping.",
+       },
+       {
+         title: "Export & Collaborate",
+         text: "Share circuits with teams or deploy directly into classrooms with one click.",
+       },
+     ].map((step, index) => (
+       <motion.div
+         key={index}
+         className="relative w-full flex justify-center mb-16"
+         initial={{ opacity: 0, y: 50 }}
+         whileInView={{ opacity: 1, y: 0 }}
+         viewport={{ once: false, amount: 0.2 }}
+         transition={{ duration: 0.8, delay: index * 0.2 }}
+       >
+         {/* Center Dot */}
+         <motion.span
+           className="absolute left-1/2 transform -translate-x-1/2 top-0 w-6 h-6 bg-[#00D4FF] rounded-full shadow-[0_0_25px_#00D4FF] z-20"
+           initial={{ scale: 0 }}
+           whileInView={{ scale: 1 }}
+           viewport={{ once: false, amount: 0.3 }}
+           transition={{ duration: 0.5, delay: index * 0.3 }}
+         />
+
+
+         {/* Horizontal Connector - FIXED DIRECTION */}
+<motion.div
+ className="absolute top-1/2 transform -translate-y-1/2 h-0.5 bg-[#00D4FF]/40 overflow-hidden z-0"
+ style={{
+   // 🔥 FORCE direction based on box side
+   left: index % 2 === 0 ? "50%" : "auto",
+   right: index % 2 !== 0 ? "50%" : "auto",
+   width: "calc(50% - 2rem)"
+ }}
+ initial={{ scaleX: 0 }}
+ whileInView={{ scaleX: 1 }}
+ viewport={{ once: false, amount: 0.3 }}
+ transition={{ duration: 0.5, delay: index * 0.4 }}
+>
+ <motion.div
+   className={`h-full ${
+     index % 2 === 0
+       ? "bg-gradient-to-r from-[#00D4FF] via-[#00D4FF]/70 to-transparent"
+       : "bg-gradient-to-l from-[#00D4FF] via-[#00D4FF]/70 to-transparent"
+   }`}
+   initial={{ x: index % 2 === 0 ? "-100%" : "100%" }}
+   animate={{ x: index % 2 === 0 ? "100%" : "-100%" }}
+   transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+ />
+</motion.div>
+
+
+
+
+
+
+         {/* Box */}
+         <div
+           className={`w-1/2 px-6 relative ${
+             index % 2 === 0 ? "ml-auto text-right" : "mr-auto text-left"
+           }`}
+         >
+           <div className="bg-gray-900/70 backdrop-blur-sm border border-[#00D4FF] rounded-xl p-6 shadow-xl hover:shadow-[#00D4FF]/50 transition-shadow duration-500">
+             <h3 className="text-2xl font-bold text-[#00D4FF] mb-2">{index + 1}. {step.title}</h3>
+             <p className="text-gray-400">{step.text}</p>
+           </div>
+         </div>
+       </motion.div>
+     ))}
+   </div>
+ </div>
+</section>
+
 
       {/* STATS SECTION WITH PARALLAX */}
       <section className="py-24 relative z-10 px-4 md:px-12">

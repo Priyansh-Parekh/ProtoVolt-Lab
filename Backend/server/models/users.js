@@ -36,14 +36,10 @@ const userSchema = new mongoose.Schema({
     },
     otpExpiresAt: {
         type: Date
-    }, // expiration time
-    classrooms: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Classroom',
-    }]
+    } // expiration time
 });
 
-// Hashing password before saving
+// Hashing 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         return next();
