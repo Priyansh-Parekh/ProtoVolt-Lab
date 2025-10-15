@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FiHome, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiHome, FiChevronLeft, FiChevronRight,FiLayers } from "react-icons/fi";
 import { BsBook } from "react-icons/bs";
 import { motion } from "framer-motion";
 import api from "../../utils/axios";
@@ -70,8 +70,8 @@ const Sidebar = () => {
           </Link>
 
           {/* Enrolled Classes Header */}
-          <div className="flex items-center gap-3 py-2 px-3 mt-4 w-full cursor-pointer transition-colors duration-200 text-[var(--color-text-light)] hover:text-[var(--color-accent-cyan)]">
-            <BsBook size={18} className="text-white flex-shrink-0" />
+          <div className="flex items-center gap-3 py-2 px-3 mt-4 w-full  text-[var(--color-text-light)]">
+            <FiLayers size={18} className="text-white flex-shrink-0" />
             {isOpen && (
               <span className="uppercase text-xs tracking-wider font-medium">
                 Enrolled Classes
