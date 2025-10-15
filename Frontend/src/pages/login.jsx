@@ -6,6 +6,7 @@ import LeftHalf from '../components/Login/LeftHalf';
 // SVG Icon
 import CircuitIcons from '../assets/circuitIcons';
 import api from '../utils/axios';
+import { error, success } from '../utils/toastify';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -17,19 +18,20 @@ const Login = () => {
     e.preventDefault();
     console.log('Logging in with:', { email, password });
     const res = await api.post(`/user/auth/login`, { email, password });
-    alert(res.data.message);
     if (res.data.success) {
+      success(res.data.message);
       const redirectUrl = res.data.redirectUrl;
       if (redirectUrl) {
-        console.log("Redirect to:", redirectUrl);
-        // Manually redirect browser
-        window.location.href = redirectUrl;
+        setTimeout(() => {
+          // Manually redirect browser
+          window.location.href = redirectUrl;
+        }, 3000);
       }
     } else {
-      // alert(res.data.message);
+      error(res.data.message);
+      e.target.disabled = false;
+      e.target.style.opacity = 1;
     }
-    e.target.disabled = false;
-    e.target.style.opacity = 1;
   };
 
   const handleForgotPass = async () => {
@@ -113,7 +115,7 @@ const Login = () => {
                 </a>
               </div>
 
-              <button type="submit" className="w-full py-3 rounded-md text-sm font-bold text-white transition-all hover:shadow-lg" style={{ backgroundImage: 'linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-teal), var(--color-accent-green))', boxShadow: 'var(--shadow-neon)' }}>
+              <button type="submit" className="w-full py-3 hover cursor-pointer rounded-md text-sm font-bold text-white transition-all hover:shadow-lg" style={{ backgroundImage: 'linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-teal), var(--color-accent-green))', boxShadow: 'var(--shadow-neon)' }}>
                 Log In
               </button>
             </form>

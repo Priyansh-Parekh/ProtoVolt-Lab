@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
+import { Flip, ToastContainer } from 'react-toastify';
 
 // components
 import Navbar from './components/navbar';
@@ -22,6 +23,8 @@ import PasswordChange from './pages/PasswordChange.jsx';
 import CreateClassroom from './pages/createClassroom.jsx';
 import CreateAssignment from './pages/createAssignment.jsx';
 import Footer from './components/Footer.jsx';
+import Unauthorized from './pages/unathorized.jsx';
+import ErrorPage from './pages/errorPage.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
@@ -39,11 +42,11 @@ const MainContent = () => {
         if (res.data.success) {
           setUser(res.data.user);
         } else {
-          setUser(undefined);
+          setUser(null); // Use null to indicate "not logged in" instead of undefined
         }
       } catch (error) {
         console.error("API error:", error);
-        setUser(undefined);
+        setUser(null); // Use null on error as well
       }
     }
 
@@ -53,36 +56,47 @@ const MainContent = () => {
     <>
       {/* Navbar stays fixed outside the animation logic */}
       <Navbar user={user} />
-
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Flip}
+      />
       {/* The PageTransitionWrapper handles the smooth exit and entry animation for all content */}
       <Loading>
         <Routes location={location}>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
 
-          <Route path="/workspace/new" element={<Workspace />} />
-          <Route path="/workspace/:projectId" element={<Workspace />} />
-          <Route path="/user/login" element={<Login />} />
-          <Route path="/user/signup" element={<Signup />} />
-          <Route path="/user/passwordChange" element={<PasswordChange />} />
-          <Route path="/user/otpVerification" element={<OtpVerification />} />
+          {/* Public-Only Routes (Redirect if logged in) */}
+          <Route path="/user/login" element={user ? <Navigate to="/" /> : <Login />} />
+          <Route path="/user/signup" element={user ? <Navigate to="/" /> : <Signup />} />
+          <Route path="/user/passwordChange" element={user ? <Navigate to="/" /> : <PasswordChange />} />
+          <Route path="/user/otpVerification" element={user ? <Navigate to="/" /> : <OtpVerification />} />
 
-          {user &&
+          {/* Protected Routes (Require Login) */}
+          <Route path="/workspace/new" element={user ? <Workspace /> : <Navigate to="/user/login" />} />
+          <Route path="/workspace/:projectId" element={user ? <Workspace /> : <Navigate to="/user/login" />} />
+          
+          <Route path="/classroom" element={user ? <Classroom user={user} /> : <Navigate to="/user/login" />} />
+          <Route path="/classroom/class/:id" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
+          <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
 
-            <>
-              {user.role === "professor" &&
-                <>
-                  <Route path="/classroom/createClassroom" element={<CreateClassroom />} />
-                  <Route path="/classroom/createAssignment" element={<CreateAssignment />} />
-                </>
-              }
-
-              <Route path="/classroom" element={<Classroom user={user} />} />
-              <Route path="/classroom/class/:id" element={<SpecificClass user={user} />} />
-              <Route path="/classroom/class/:id/members" element={<ClassMembers />} />
-            </>
-
-          }
+          {/* Professor-Only Routes */}
+          <Route path="/classroom/createClassroom" element={user?.role === 'professor' ? <CreateClassroom /> : <Unauthorized />} />
+          <Route path="/classroom/createAssignment" element={user?.role === 'professor' ? <CreateAssignment /> : <Unauthorized />} />
+          
+          {/* Error Routes */}
+          <Route path="/error/unathorizedAscess" element={<Unauthorized />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </Loading>
       <Footer />
@@ -102,3 +116,4 @@ function App() {
 }
 
 export default App;
+

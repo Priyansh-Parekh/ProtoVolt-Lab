@@ -8,6 +8,7 @@ import { BsCpu } from 'react-icons/bs';
 import LeftHalfVer from '../components/Auth/LeftHalfVer';
 import LeftHalfAccVer from '../components/Auth/leftHalfAccVer';
 import api from '../utils/axios';
+import { error, success } from '../utils/toastify';
 
 
 const OtpVerification = () => {
@@ -22,21 +23,26 @@ const OtpVerification = () => {
         e.target.style.opacity = 0.5;
         try {
             const res = await api.post('/user/auth/otpVer', { otp, email, type });
-            alert(res.data.message);
             if (res.data.success === false) {
-                alert(res.data.message);
+                error(res.data.message);
                 setOtp("");
-            }else if (res.status === 200) {
+                e.target.disabled = false;
+                e.target.style.opacity = 1;
+            } else if (res.status === 200) {
+                success(res.data.message);
                 const redirectUrl = res.data.redirectUrl;
-                window.location.href = redirectUrl;
+                setTimeout(() => {
+                    // Manually redirect browser
+                    window.location.href = redirectUrl;
+                }, 3000);
             }
         } catch (err) {
-            alert(err.response?.data?.message || 'Verification failed');
+            error(err.response?.data?.message || 'Verification failed');
             console.log(err.message);
             setOtp('');
+            e.target.disabled = false;
+            e.target.style.opacity = 1;
         }
-        e.target.disabled = false;
-        e.target.style.opacity = 1;
     };
 
     const handleResendOTP = async () => {
@@ -45,12 +51,12 @@ const OtpVerification = () => {
         try {
             const res = await api.get(`/user/auth/otpGen?type=${type}&email=${email}`);
             if (res.status === 200) {
-                alert(res.data.message || "OTP has been resent!");
+                success(res.data.message || "OTP has been resent!");
             }
 
         } catch (error) {
             console.error("Resend OTP Error:", error);
-            alert(error.response?.data?.message || "Failed to resend OTP. Please try again.");
+            error(error.response?.data?.message || "Failed to resend OTP. Please try again.");
         }
     }
 

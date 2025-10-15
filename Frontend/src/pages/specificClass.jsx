@@ -1,20 +1,16 @@
 import React, { useState, useRef } from 'react'
-// import { useBgMotion } from '../hooks/useBgMotion';
 
 //components
 import ClassHeader from '../components/specificClass/classHeader'
-// import ClassAssignmentPopup from '../components/specificClass/classAssignmentPopup';
+
 import ClassAnnouncementPopup from '../components/specificClass/classAnnouncementPopup';
 import ClassroomHubPage from '../components/specificClass/classroomHubPage';
 import Sidebar from '../components/classroom/sidebar';
 
 const SpecificClass = ({user}) => {
-  // const [assigned,setAssigned] = useState(false);
+
   const [announced,setAnnounced] = useState(false);
 
-  // const containerRef = useRef(null);
-
-  // useBgMotion(containerRef);
 
   return (
     <div className="flex bg-[var(--color-primary)] min-h-screen">
