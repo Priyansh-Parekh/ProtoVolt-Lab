@@ -36,14 +36,14 @@ const Sidebar = () => {
       initial={{ width: isOpen ? 260 : 80 }}
       animate={{ width: isOpen ? 260 : 80 }}
       transition={{ type: "spring", stiffness: 150, damping: 20 }}
-      className={`h-screen sticky top-0 bg-[var(--color-primary)] shadow-lg border-r border-[var(--color-border)] flex flex-col justify-between z-50`}
+      className={`h-screen sticky top-0 bg-[var(--color-primary)] shadow-lg border-r border-[var(--color-border)] flex flex-col justify-between z-40`}
     >
       {/* Sidebar Content */}
       <div className="flex flex-col flex-grow">
         {/* Header / Toggle Button */}
-        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
+        <div className="flex items-center justify-between p-6 border-b border-[var(--color-border)]">
           {isOpen && (
-            <h2 className="text-lg font-semibold text-[var(--color-text-bright)] tracking-wide">
+            <h2 className="text-3xl font-semibold text-[var(--color-text-bright)] tracking-wide">
               Menu<span className="text-[var(--color-accent-cyan)]">Panel</span>
             </h2>
           )}
@@ -51,7 +51,7 @@ const Sidebar = () => {
             onClick={() => setIsOpen(!isOpen)}
             className="text-[var(--color-accent-cyan)] hover:text-[var(--color-accent-teal)] transition"
           >
-            {isOpen ? <FiChevronLeft size={22} /> : <FiChevronRight size={22} />}
+            {isOpen ? <FiChevronLeft size={23} /> : <FiChevronRight size={36} />}
           </button>
         </div>
 
