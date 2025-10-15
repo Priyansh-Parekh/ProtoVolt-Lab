@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { FiHome, FiChevronLeft, FiChevronRight, FiChevronDown } from "react-icons/fi";
+import { FiHome, FiChevronLeft, FiChevronRight,FiLayers } from "react-icons/fi";
 import { BsBook } from "react-icons/bs";
 import { motion } from "framer-motion";
 import api from "../../utils/axios";
@@ -8,7 +8,6 @@ import api from "../../utils/axios";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [classrooms, setClassrooms] = useState([]);
-  const [enrolledOpen, setEnrolledOpen] = useState(true); // dropdown toggle
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,7 +36,7 @@ const Sidebar = () => {
       initial={{ width: isOpen ? 260 : 80 }}
       animate={{ width: isOpen ? 260 : 80 }}
       transition={{ type: "spring", stiffness: 150, damping: 20 }}
-      className={`h-screen sticky top-0 bg-[var(--color-secondary)] shadow-lg border-r border-[var(--color-border)] flex flex-col justify-between z-50`}
+      className={`h-screen sticky top-0 bg-[var(--color-primary)] shadow-lg border-r border-[var(--color-border)] flex flex-col justify-between z-50`}
     >
       {/* Sidebar Content */}
       <div className="flex flex-col flex-grow">
@@ -45,7 +44,7 @@ const Sidebar = () => {
         <div className="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
           {isOpen && (
             <h2 className="text-lg font-semibold text-[var(--color-text-bright)] tracking-wide">
-              Proto<span className="text-[var(--color-accent-cyan)]">Volt</span>
+              Menu<span className="text-[var(--color-accent-cyan)]">Panel</span>
             </h2>
           )}
           <button
@@ -63,73 +62,49 @@ const Sidebar = () => {
             className={`flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
               location.pathname === "/classroom"
                 ? "bg-[var(--color-accent-cyan)]/20 text-[var(--color-accent-cyan)]"
-                : "hover:bg-[var(--color-primary)] text-[var(--color-text-light)]"
+                : "hover:bg-[var(--color-primary)] hover:text-[var(--color-accent-cyan)] text-[var(--color-text-light)]"
             }`}
           >
             <FiHome size={20} />
             {isOpen && <span className="font-medium">My Classroom</span>}
           </Link>
 
-          {/* Enrolled Classes Header with Dropdown */}
-          <button
-            onClick={() => setEnrolledOpen(!enrolledOpen)}
-            className="flex items-center justify-between py-2 px-3 mt-4 w-full hover:bg-[var(--color-primary)] rounded-md transition-all duration-200 text-[var(--color-text-light)]"
-          >
-            <div className="flex items-center gap-3">
-              <BsBook
-                size={18}
-                className="text-[var(--color-accent-cyan)] flex-shrink-0"
-              />
-              {isOpen && (
-                <span className="uppercase text-xs tracking-wider font-medium">
-                  Enrolled Classes
-                </span>
-              )}
-            </div>
-            {isOpen &&
-              (enrolledOpen ? (
-                <FiChevronDown
-                  size={16}
-                  className="text-[var(--color-accent-cyan)]"
-                />
-              ) : (
-                <FiChevronRight
-                  size={16}
-                  className="text-[var(--color-accent-cyan)]"
-                />
-              ))}
-          </button>
+          {/* Enrolled Classes Header */}
+          <div className="flex items-center gap-3 py-2 px-3 mt-4 w-full  text-[var(--color-text-light)]">
+            <FiLayers size={18} className="text-white flex-shrink-0" />
+            {isOpen && (
+              <span className="uppercase text-xs tracking-wider font-medium">
+                Enrolled Classes
+              </span>
+            )}
+          </div>
 
-          {/* Dropdown List */}
-          {enrolledOpen && (
-            <div className="mt-2 space-y-1">
-              {classrooms.length > 0 ? (
-                classrooms.map((cls) => (
-                  <motion.div
-                    key={cls._id}
-                    onClick={() => handleClassClick(cls._id)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                      location.pathname.includes(cls._id)
-                        ? "bg-[var(--color-accent-cyan)]/20 text-[var(--color-accent-cyan)]"
-                        : "hover:bg-[var(--color-primary)] text-[var(--color-text-light)]"
-                    }`}
-                  >
-                    <BsBook size={18} />
-                    {isOpen && (
-                      <span className="truncate font-medium">{cls.name}</span>
-                    )}
-                  </motion.div>
-                ))
-              ) : (
-                isOpen && (
-                  <p className="text-[var(--color-placeholder)] text-sm px-3">
-                    No enrolled classes yet
-                  </p>
-                )
-              )}
-            </div>
+          {/* List of Enrolled Classes */}
+          {classrooms.length > 0 ? (
+            classrooms.map((cls) => (
+              <motion.div
+                key={cls._id}
+                onClick={() => handleClassClick(cls._id)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className={`flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                  location.pathname.includes(cls._id)
+                    ? "bg-[var(--color-accent-cyan)]/20 text-[var(--color-accent-cyan)]"
+                    : "hover:bg-[var(--color-primary)] hover:text-[var(--color-accent-cyan)] text-[var(--color-text-light)]"
+                }`}
+              >
+                <BsBook size={18} className="text-white" />
+                {isOpen && (
+                  <span className="truncate font-medium">{cls.name}</span>
+                )}
+              </motion.div>
+            ))
+          ) : (
+            isOpen && (
+              <p className="text-[var(--color-placeholder)] text-sm px-3">
+                No enrolled classes yet
+              </p>
+            )
           )}
         </div>
       </div>
