@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import TransitionLogo from './TransitionLogo'; // CORRECTED PATH: Imports from the same helper folder
+import TransitionLogo from './TransitionLogo';
 
 const TRANSITION_DURATION_MS = 800;
 
@@ -45,22 +45,25 @@ const Loading = ({ children }) => {
   };
 
   return (
-    <>
+    <div className="relative min-h-screen bg-[#0A0E17]"> {/* MAIN CONTAINER WITH BACKGROUND */}
       {/* 1. Logo Overlay (Visible during transition, covers everything) */}
-      {showLogo && (
-        <motion.div 
+      <AnimatePresence>
+        {showLogo && (
+          <motion.div 
             key="transition-logo"
-            className="fixed inset-0 z-[999] bg-[#0A0E17]" // Solid dark background stops the white flash
+            className="fixed inset-0 z-[9999] bg-[#0A0E17]" // Solid dark background
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-        >
-          {/* TransitionLogo takes the entire screen */}
-          <TransitionLogo />
-        </motion.div>
-      )}
+            transition={{ duration: 0.3 }}
+          >
+            {/* TransitionLogo takes the entire screen */}
+            <TransitionLogo />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
-      {/* 2. Page Content (Only animates when the logo is not showing) */}
+      {/* 2. Page Content - ALWAYS VISIBLE but animated */}
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
@@ -68,14 +71,17 @@ const Loading = ({ children }) => {
           initial="initial"
           animate="in"
           exit="out"
-          className="min-h-screen pt-16 w-full" 
-          // CRITICAL FIX: Hide the old page instantly when the logo is active
-          style={{ visibility: showLogo ? 'hidden' : 'visible' }} 
+          className="min-h-screen pt-16 w-full bg-[#0A0E17]" // SAME BACKGROUND COLOR
+          style={{ 
+            // Only hide visually but keep in DOM to maintain background
+            opacity: showLogo ? 0 : 1,
+            pointerEvents: showLogo ? 'none' : 'auto'
+          }} 
         >
           {children}
         </motion.div>
       </AnimatePresence>
-    </>
+    </div>
   );
 };
 

@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
-
 import { FaRegSadTear } from "react-icons/fa";
-import { FiPlusCircle } from "react-icons/fi";
 
 //importing utils
 import api from '../utils/axios';
@@ -16,6 +14,7 @@ import Classroom_card from '../components/classroom/classroomCard'
 
 //usefull fun
 import { useState } from 'react'
+import { error } from '../utils/toastify';
 
 const Classroom = ({user}) => {
 
@@ -29,7 +28,7 @@ const Classroom = ({user}) => {
                 if (res.data.success) {
                     setClassrooms(res.data.classrooms);
                 } else {
-                    alert(res.data.message);
+                    error(res.data.message);
                 }
             } catch (err) {
                 console.error("API error:", err);

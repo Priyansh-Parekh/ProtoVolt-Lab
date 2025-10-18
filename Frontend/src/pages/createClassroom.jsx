@@ -6,6 +6,7 @@ import api from '../utils/axios';
 
 // components
 import LeftVisualPanel from '../components/createClassroom/leftVisualPanel';
+import { error,warning } from '../utils/toastify';
 
 const CreateClassroom = () => {
 
@@ -29,6 +30,10 @@ const CreateClassroom = () => {
       formData.append("description", description);
       formData.append("image", image); // 'image' must match multer field name
 
+      if(image){
+        warning("You haven't set the Banner for Classroom");
+      }
+
       const res = await api.post("/classroom/data/createClassroom", formData, {
         headers: {
           "Content-Type": "multipart/form-data"
@@ -39,11 +44,11 @@ const CreateClassroom = () => {
         setIsSubmitted(prev => !prev);
         setJoinCode(res.data.joinCode);
       } else {
-        alert(res.data.message);
+        error(res.data.message);
       }
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.message);
+      error(err.message);
     }
 
     
