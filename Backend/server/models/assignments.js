@@ -14,7 +14,6 @@ const assignmentSchema = new mongoose.Schema({
     },
     apparatus:{
         type: String,
-        required: true,
     },
     solutionCircuit:{
         type: mongoose.Schema.Types.ObjectId,
