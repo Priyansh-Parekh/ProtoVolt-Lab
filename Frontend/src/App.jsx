@@ -87,7 +87,7 @@ const MainContent = () => {
           <Route path="/workspace/:projectId" element={user ? <Workspace /> : <Navigate to="/user/login" />} />
           
           <Route path="/classroom" element={user ? <Classroom user={user} /> : <Navigate to="/user/login" />} />
-          <Route path="/classroom/class/:id" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
+          <Route path="/classroom/class" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
 
           {/* Professor-Only Routes */}

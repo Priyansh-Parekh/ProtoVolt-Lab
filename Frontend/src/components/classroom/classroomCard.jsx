@@ -6,7 +6,7 @@ import { BsPeopleFill } from "react-icons/bs";
 const ClassroomCard = ({ classroom }) => {
 
   return (
-    <Link to={`/classroom/class/${classroom._id}`} className="group">
+    <Link to={`/classroom/class?id=${classroom._id}`} className="group">
       <div
         className="
           bg-[var(--color-secondary)] rounded-2xl overflow-hidden shadow-[0_4px_15px_rgba(0,0,0,0.4)] 

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 //components
 
 
-const ClassHeader = ({user,setAnnounced}) => {
+const ClassHeader = ({user,setAnnounced,className}) => {
 
     let id =1;//temp
 
@@ -39,7 +39,7 @@ const ClassHeader = ({user,setAnnounced}) => {
           transition-all duration-300 ease-in-out
         "
                 >
-                    My Classroom
+                   {className}
                 </h1>
                 
             </div>

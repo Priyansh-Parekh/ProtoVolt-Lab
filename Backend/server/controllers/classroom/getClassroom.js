@@ -12,13 +12,12 @@ import Announcement from "../../models/announcements.js";
 const GetClassroom = async (req, res) => {
     try {
 
-        const { _id } = req.body;
+        const { _id } = req.query;
         const user = req.user;
         if (!user) return res.status(401).json({ message: "Unauthorized" });
         if (!_id) {
             return res.status(400).json({ success: false, message: "Please provide all required fields" });
         }
-
         const classroomId = new mongoose.Types.ObjectId(_id);
         const exists = user.classrooms.includes(classroomId);
 
@@ -27,15 +26,23 @@ const GetClassroom = async (req, res) => {
 
         const classroom = await Classroom.findById(classroomId)
             .select("name assignments announcements course")
-            .populate("assignments", "title description dueDate uploadedFiles createdAt")
+            .populate({
+                path: "assignments",
+                select: "title professor description dueDate uploadedFiles createdAt",
+                populate: {
+                    path: "professor",
+                    select: "name"
+                }
+            })
             .populate({
                 path: "announcements",
                 select: "title professor content createdAt",
                 populate: {
-                    path: "professor",        
-                    select: "name "      
+                    path: "professor",
+                    select: "name"
                 }
             });
+
 
 
 
