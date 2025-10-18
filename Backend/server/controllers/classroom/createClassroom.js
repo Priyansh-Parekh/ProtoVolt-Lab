@@ -15,7 +15,7 @@ const createClassroom = async (req, res) => {
         if (!name || !course ) {
             return res.status(400).json({ success: false, message: "Please provide all required fields" });
         }
-        if (user.role !== "professor") {
+        if (user?.role !== "professor") {
             return res.status(400).json({ success: false, message: "Unathorized access" });
         }
 
