@@ -41,7 +41,7 @@ const getAssignment = async (req, res) => {
         (p) => p.toString() === user._id.toString()
       );
     }
-    console.log( exists)
+    
     if (!auth)
       return res.status(401).json({ success: false, message: "Unauthorized access." });
 
