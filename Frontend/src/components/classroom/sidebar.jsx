@@ -11,6 +11,9 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const params = new URLSearchParams(location.search);
+  const activeId = params.get("id");
+
   // Fetch enrolled classrooms
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +31,7 @@ const Sidebar = () => {
 
   // Handle navigation when clicking a classroom
   const handleClassClick = (classId) => {
-    navigate(`/classroom/class/${classId}`);
+    navigate(`/classroom/class?id=${classId}`);
   };
 
   return (
@@ -88,7 +91,7 @@ const Sidebar = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className={`flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                  location.pathname.includes(cls._id)
+                  activeId === cls._id
                     ? "bg-[var(--color-accent-cyan)]/20 text-[var(--color-accent-cyan)]"
                     : "hover:bg-[var(--color-primary)] hover:text-[var(--color-accent-cyan)] text-[var(--color-text-light)]"
                 }`}
