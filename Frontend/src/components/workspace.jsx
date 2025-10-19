@@ -21,7 +21,7 @@ const Workspace = () => {
     const [state, setState] = useState(initialState);
     const [showJsonModal, setShowJsonModal] = useState(false);
     const [jsonOutput, setJsonOutput] = useState('');
-    
+
     // NEW: State for analysis results
     const [analysisResults, setAnalysisResults] = useState([]);
 
@@ -56,7 +56,7 @@ const Workspace = () => {
     const analyzeCircuit = async () => {
         // Simulate an API call or heavy computation
         console.log("Analyzing circuit...");
-        
+
         // Create dummy results based on the current components
         const results = state.components
             .filter(c => c.type !== 'ground') // Grounds don't have voltage/current properties in this context
@@ -65,7 +65,7 @@ const Workspace = () => {
                 label: component.label,
                 voltage: (Math.random() * 12).toFixed(3), // Random voltage up to 12V
                 current: (Math.random() * 0.1).toFixed(4), // Random current up to 100mA
-        }));
+            }));
 
         // Simulate a delay
         setTimeout(() => {
@@ -265,7 +265,7 @@ const Workspace = () => {
                 const nodePos = node.position;
                 const isHorizontal = component.rotation % 180 === 0;
                 const corner = isHorizontal ? { x: nodePos.x, y: termY } : { x: termX, y: nodePos.y };
-                
+
                 allSegments.push({ p1: { x: termX, y: termY }, p2: corner });
                 allSegments.push({ p1: corner, p2: nodePos });
             });
@@ -283,7 +283,7 @@ const Workspace = () => {
                 }
             }
         }
-        
+
         allSegments.forEach(seg => {
             const p1 = seg.p1, p2 = seg.p2;
             const isVertical = Math.abs(p1.x - p2.x) < 1;
@@ -324,19 +324,19 @@ const Workspace = () => {
         const component = { id: generateId('comp'), type: type, label: `${type.charAt(0).toUpperCase()}${state.components.filter(c => c.type === type).length + 1}`, position: { x, y }, rotation: 0, properties: {}, terminals: [] };
         let terminalDefs = [];
         if (type === 'resistor') {
-            terminalDefs = [ { id: 't1', x: -30, y: 0 }, { id: 't2', x: 30, y: 0 } ]; component.properties = { resistance: { value: "", unit: "" }, voltage: { value: "", unit: "" }, current: { value: "", unit: "" } };
+            terminalDefs = [{ id: 't1', x: -30, y: 0 }, { id: 't2', x: 30, y: 0 }]; component.properties = { resistance: { value: "", unit: "" }, voltage: { value: "", unit: "" }, current: { value: "", unit: "" } };
         } else if (type === 'dc-source') {
-            terminalDefs = [ { id: 'positive', x: 20, y: 0 }, { id: 'negative', x: -20, y: 0 } ]; component.properties = { voltage: { value: 9, unit: "V" }, internalResistance: { value: 0, unit: "Ω" } };
+            terminalDefs = [{ id: 'positive', x: 20, y: 0 }, { id: 'negative', x: -20, y: 0 }]; component.properties = { voltage: { value: 9, unit: "V" }, internalResistance: { value: 0, unit: "Ω" } };
         } else if (type === 'ground') {
-            terminalDefs = [ { id: 'gnd', x: 0, y: -15 } ]; component.properties = {};
+            terminalDefs = [{ id: 'gnd', x: 0, y: -15 }]; component.properties = {};
         } else if (type === 'capacitor') {
-            terminalDefs = [ { id: 't1', x: -20, y: 0 }, { id: 't2', x: 20, y: 0 } ]; component.properties = { capacitance: { value: "", unit: "" }, voltage: { value: "", unit: "" }, charge: { value: "", unit: "" } };
+            terminalDefs = [{ id: 't1', x: -20, y: 0 }, { id: 't2', x: 20, y: 0 }]; component.properties = { capacitance: { value: "", unit: "" }, voltage: { value: "", unit: "" }, charge: { value: "", unit: "" } };
         } else if (type === 'inductor') {
-            terminalDefs = [ { id: 't1', x: -20, y: 0 }, { id: 't2', x: 20, y: 0 } ]; component.properties = { inductance: { value: "", unit: "" }, voltage: { value: "", unit: "" }, current: { value: "", unit: "" } };
+            terminalDefs = [{ id: 't1', x: -20, y: 0 }, { id: 't2', x: 20, y: 0 }]; component.properties = { inductance: { value: "", unit: "" }, voltage: { value: "", unit: "" }, current: { value: "", unit: "" } };
         } else if (type === 'ac-source') {
-            terminalDefs = [ { id: 'positive', x: 20, y: 0 }, { id: 'negative', x: -20, y: 0 } ]; component.properties = { voltage: { value: "", unit: "" }, frequency: { value: "", unit: "" } };
+            terminalDefs = [{ id: 'positive', x: 20, y: 0 }, { id: 'negative', x: -20, y: 0 }]; component.properties = { voltage: { value: "", unit: "" }, frequency: { value: "", unit: "" } };
         } else if (type === 'transistor-npn') {
-            terminalDefs = [ { id: 'collector', x: 0, y: 20 }, { id: 'base', x: -20, y: 0 }, { id: 'emitter', x: 20, y: 0 } ]; component.properties = { beta: { value: "", unit: "" } };
+            terminalDefs = [{ id: 'collector', x: 0, y: 20 }, { id: 'base', x: -20, y: 0 }, { id: 'emitter', x: 20, y: 0 }]; component.properties = { beta: { value: "", unit: "" } };
         }
         const newNodes = []; const newTerminals = [];
         terminalDefs.forEach(def => {
@@ -420,7 +420,37 @@ const Workspace = () => {
     };
     const handleMouseMove = (e) => { if (!state.wireMode && state.draggedComponent) updateComponentPosition(state.draggedComponent, getMousePos(e).x - state.offset.x, getMousePos(e).y - state.offset.y); };
     const handleMouseUp = () => { if (state.draggedComponent) setStateWithHistory(prev => ({ ...prev, draggedComponent: null })); };
-    const exportJson = () => { setJsonOutput(JSON.stringify({ nodes: state.nodes, components: state.components.map(c => ({ ...c, terminals: c.terminals.map(t => ({ id: t.id, nodeId: t.nodeId })) })) }, null, 2)); setShowJsonModal(true); };
+    const exportJson = () => {
+        // Create the circuit object
+        const circuit = {
+            nodes: state.nodes,
+            components: state.components.map(c => ({
+                ...c,
+                terminals: c.terminals.map(t => ({ id: t.id, nodeId: t.nodeId }))
+            }))
+        };
+    
+        // Store the JSON string
+        setJsonOutput(JSON.stringify(circuit, null, 2));
+    
+        // Show the JSON modal
+        setShowJsonModal(true);
+    };
+    
+    const saveCircuit = ()=>{
+        const circuit = {
+            nodes: state.nodes,
+            components: state.components.map(c => ({
+                ...c,
+                terminals: c.terminals.map(t => ({ id: t.id, nodeId: t.nodeId }))
+            }))
+        };
+
+        // api call
+        
+    }
+
+
     const resizeCanvas = useCallback(() => { const c = canvasRef.current; if (c) { c.width = c.clientWidth; c.height = c.clientHeight; } }, []);
     const handlePropertyChange = (componentId, prop, key, value) => {
         setStateWithHistory(prev => ({ ...prev, components: prev.components.map(c => (c.id === componentId) ? { ...c, properties: { ...c.properties, [prop]: { ...c.properties[prop], [key]: value } } } : c) }));
@@ -465,6 +495,7 @@ const Workspace = () => {
                     <button onClick={deleteSelected} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/70"><FiTrash2 className="text-lg" /> Delete</button>
                     <button onClick={exportJson} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/70"><FiDownload className="text-lg" /> Export JSON</button>
                     <button onClick={analyzeCircuit} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/70"><FiActivity className="text-lg" /> Analyze</button>
+                    <button onClick={saveCircuit} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"><FiDownload className="text-lg" /> Save</button>
                 </div>
                 {/* REVISED LAYOUT: Main area is now a column for canvas/properties AND the new table */}
                 <div className="flex-1 flex flex-col gap-4 overflow-hidden">
