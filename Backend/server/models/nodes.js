@@ -9,7 +9,7 @@ const nodeSchema = new mongoose.Schema({
         x: { type: Number, required: true },
         y: { type: Number, required: true },
     }
-},{_id:false});
+});
 
 const Node = mongoose.model('Node', nodeSchema, 'Nodes');
 
