@@ -58,7 +58,7 @@ const otpVer = async (req, res) => {
 
   } catch (error) {
     console.error("OTP Verification Error:", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 

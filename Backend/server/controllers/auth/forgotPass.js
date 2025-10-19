@@ -9,7 +9,7 @@ const userForgotPass = async(req,res)=>{
         
     } catch (error) {
         console.log(error.message);
-        res.status(400);
+        res.status(500).json({ success: false, message: "Server Error" });
     }
 };
 
