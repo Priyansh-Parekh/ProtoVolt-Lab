@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const nodeSchema = new mongoose.Schema({
     id:{
         type:String,
-        unique:true,
+        required:true,
     },
     position: {
         x: { type: Number, required: true },

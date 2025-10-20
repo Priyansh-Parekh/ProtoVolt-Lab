@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 
 const ComponentSchema = new mongoose.Schema({
-    id:{
-        type:String,
-        unique:true,
+    id: {
+        type: String,
+        required: true,
     },
     type: {
         type: String,
-        enum:  ['resistor', 'capacitor', 'inductor','dc-source', 'ac-source', 'ground', 'transistor-npn','and-gate', 'or-gate', 'not-gate', 'xor-gate', 'nand-gate', 'nor-gate'],
+        enum: ['resistor', 'capacitor', 'inductor', 'dc-source', 'ac-source', 'ground', 'transistor-npn', 'and-gate', 'or-gate', 'not-gate', 'xor-gate', 'nand-gate', 'nor-gate'],
         required: true,
     },
     label: {
@@ -28,9 +28,9 @@ const ComponentSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
-        nodeId: {
-            type: mongoose.Schema.Types.ObjectId, 
-            default: null,
+        node: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Node'
         }
     }]
 });
