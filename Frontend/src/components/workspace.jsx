@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { FiMove, FiZap, FiRotateCcw, FiRotateCw, FiTrash2, FiDownload, FiActivity } from "react-icons/fi";
 
+//importing utils
+import { error, success } from '../utils/toastify';
+import api from '../utils/axios';
+import { useParams } from 'react-router-dom';
+
 const Workspace = () => {
     const canvasRef = useRef(null);
+    const { projectId } = useParams(); 
 
     // This is the new, fixed distance for nodes from their component terminals.
     const NODE_OFFSET = 20;
@@ -429,26 +435,44 @@ const Workspace = () => {
                 terminals: c.terminals.map(t => ({ id: t.id, nodeId: t.nodeId }))
             }))
         };
-    
+
         // Store the JSON string
         setJsonOutput(JSON.stringify(circuit, null, 2));
-    
+
         // Show the JSON modal
         setShowJsonModal(true);
     };
-    
-    const saveCircuit = ()=>{
+
+    const createCircuit = async (e) => {
+        e.target.disabled = true;
+        e.target.style.opacity = 0.5;
         const circuit = {
+            name: "hello",
             nodes: state.nodes,
             components: state.components.map(c => ({
                 ...c,
                 terminals: c.terminals.map(t => ({ id: t.id, nodeId: t.nodeId }))
             }))
         };
+        console.log(circuit)
 
-        // api call
-        
-    }
+        try {
+            const res = await api.post('/circuit/data/createCircuit', { circuit });
+
+            if (res.data.success) {
+                success(res.data.message);
+                window.location.href = `http://localhost:5173/workspace/${res.data.circuit._id}`;
+            } else {
+                error(res.data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            error("Failed to save circuit. Please try again.");
+        }
+        e.target.disabled = true;
+        e.target.style.opacity = 0.5;
+    };
+
 
 
     const resizeCanvas = useCallback(() => { const c = canvasRef.current; if (c) { c.width = c.clientWidth; c.height = c.clientHeight; } }, []);
@@ -495,7 +519,7 @@ const Workspace = () => {
                     <button onClick={deleteSelected} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/70"><FiTrash2 className="text-lg" /> Delete</button>
                     <button onClick={exportJson} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/70"><FiDownload className="text-lg" /> Export JSON</button>
                     <button onClick={analyzeCircuit} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/70"><FiActivity className="text-lg" /> Analyze</button>
-                    <button onClick={saveCircuit} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"><FiDownload className="text-lg" /> Save</button>
+                    <button onClick={(e) => { if(projectId==="New")createCircuit(e); else{saveCircuit(e)} }} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"><FiDownload className="text-lg" /> Save</button>
                 </div>
                 {/* REVISED LAYOUT: Main area is now a column for canvas/properties AND the new table */}
                 <div className="flex-1 flex flex-col gap-4 overflow-hidden">

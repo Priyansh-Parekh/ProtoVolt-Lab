@@ -33,8 +33,9 @@ const MainContent = () => {
 
   const [user, setUser] = useState();
 
+  const [loading, setLoading] = useState(true); // loading state while fetching user
 
-  // fetching data of user
+  // fetch user data on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,16 +43,22 @@ const MainContent = () => {
         if (res.data.success) {
           setUser(res.data.user);
         } else {
-          setUser(null); // Use null to indicate "not logged in" instead of undefined
+          setUser(null);
         }
       } catch (error) {
         console.error("API error:", error);
-        setUser(null); // Use null on error as well
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
     fetchData();
-  }, []); // runs once when component mounts
+  }, []);
+
+  // show loading spinner/page while fetching user
+  if (loading) return <Loading />;
+
   return (
     <>
       {/* Navbar stays fixed outside the animation logic */}
@@ -83,9 +90,8 @@ const MainContent = () => {
           <Route path="/user/otpVerification" element={user ? <Navigate to="/" /> : <OtpVerification />} />
 
           {/* Protected Routes (Require Login) */}
-          <Route path="/workspace/new" element={user ? <Workspace /> : <Navigate to="/user/login" />} />
           <Route path="/workspace/:projectId" element={user ? <Workspace /> : <Navigate to="/user/login" />} />
-          
+
           <Route path="/classroom" element={user ? <Classroom user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
@@ -93,7 +99,7 @@ const MainContent = () => {
           {/* Professor-Only Routes */}
           <Route path="/classroom/createClassroom" element={user?.role === 'professor' ? <CreateClassroom /> : <Unauthorized />} />
           <Route path="/classroom/createAssignment" element={user?.role === 'professor' ? <CreateAssignment /> : <Unauthorized />} />
-          
+
           {/* Error Routes */}
           <Route path="/error/unathorizedAscess" element={<Unauthorized />} />
           <Route path="*" element={<ErrorPage />} />
