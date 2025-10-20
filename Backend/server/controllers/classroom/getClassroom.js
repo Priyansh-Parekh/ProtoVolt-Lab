@@ -14,14 +14,23 @@ const GetClassroom = async (req, res) => {
 
         const { _id } = req.query;
         const user = req.user;
-        if (!user) return res.status(401).json({ message: "Unauthorized" });
+        if (!user) return res.status(401).json({
+            success: false,
+            message: "Unauthorized"
+        });
         if (!_id) {
-            return res.status(400).json({ success: false, message: "Please provide all required fields" });
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all required fields"
+            });
         }
         const classroomId = new mongoose.Types.ObjectId(_id);
         const exists = user.classrooms.includes(classroomId);
 
-        if (!exists) return res.status(400).json({ success: false, message: "UnAuthorized Access" });
+        if (!exists) return res.status(400).json({
+            success: false,
+            message: "UnAuthorized Access"
+        });
 
 
         const classroom = await Classroom.findById(classroomId)
@@ -46,13 +55,22 @@ const GetClassroom = async (req, res) => {
 
 
 
-        if (!classroom) return res.status(400).json({ success: false, message: "No such Classroom Available" });
+        if (!classroom) return res.status(400).json({
+            success: false,
+            message: "No such Classroom Available"
+        });
 
-        return res.status(201).json({ success: true, message: "Classroom fetched successfully!", classroom });
+        return res.status(201).json({
+            success: true,
+            message: "Classroom fetched successfully!", classroom
+        });
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 };
 

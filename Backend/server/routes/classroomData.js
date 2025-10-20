@@ -1,8 +1,6 @@
 import { Router } from "express";
-import asyncHandler from "express-async-handler";
 import createClassroom from "../controllers/classroom/createClassroom.js";
-import getAssignment from "../controllers/classroom/createClassroom.js";
-// import getAnnouncement from "../controllers/classroom/createClassroom.js";
+import getAssignment  from "../controllers/classroom/getAssignment.js";
 import getClassroomPeople from "../controllers/classroom/profNstud.js";
 import GetClassroom from "../controllers/classroom/getClassroom.js";
 
@@ -20,8 +18,7 @@ route.post("/createClassroom", uploadClassroomImage.single('image'), createClass
 
 //data api's
 route.get("/getClassroom",GetClassroom);
-route.get("/:assignmentId", asyncHandler(getAssignment));
-// route.get("/:announcementId", asyncHandler(getAnnouncement));
+route.get("/getAssignment", getAssignment);
 route.get("/:classroomId/people", getClassroomPeople);
 
 

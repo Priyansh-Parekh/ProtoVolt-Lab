@@ -30,6 +30,14 @@ const assignmentSchema = new mongoose.Schema({
     },
     uploadedFiles: {
         type: String,
+    },
+    studentFiles:[{
+        type:String
+    }],
+    classroom:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Classroom',
+        required: true,
     }
 }, { timestamps: true });
 const Assignment = mongoose.model('Assignment', assignmentSchema, 'Assignments');

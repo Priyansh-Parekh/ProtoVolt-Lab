@@ -7,7 +7,10 @@ const getClassrooms = async (req, res) => {
         // console.log(user);
 
         if (!user) {
-            return res.status(401).json({ success: false, message: "Unauthorized. Please log in." });
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized. Please log in."
+            });
         }
 
         if (!user.classrooms || user.classrooms.length === 0) {
@@ -20,17 +23,20 @@ const getClassrooms = async (req, res) => {
 
         // Fetch classrooms using the Classroom model
         const classrooms = await Classroom.find({ _id: { $in: user.classrooms } })
-          .select("name course description imageUrl students professors");
+            .select("name course description imageUrl students professors");
 
         res.status(200).json({
-          success: true,
-          message: "User's classrooms have been fetched successfully.",
-          classrooms
+            success: true,
+            message: "User's classrooms have been fetched successfully.",
+            classrooms
         });
-        
+
     } catch (err) {
         console.error("Error fetching classrooms:", err);
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 };
 

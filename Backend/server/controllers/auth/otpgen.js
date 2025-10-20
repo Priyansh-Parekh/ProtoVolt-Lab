@@ -75,7 +75,7 @@ const otpGen = async (req, res) => {
     // In production: save `otp` in DB/Redis with expiry and don't return it directly
   } catch (error) {
     console.error("Error sending OTP:", error.message);
-    res.status(500).json({ success: false, error: "Failed to send OTP" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 };
 

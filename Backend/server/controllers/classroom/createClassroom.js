@@ -12,11 +12,17 @@ const createClassroom = async (req, res) => {
 
         const { name, course, description } = req.body;
         const user = req.user;
-        if (!name || !course ) {
-            return res.status(400).json({ success: false, message: "Please provide all required fields" });
+        if (!name || !course) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all required fields"
+            });
         }
         if (user?.role !== "professor") {
-            return res.status(400).json({ success: false, message: "Unathorized access" });
+            return res.status(400).json({
+                success: false,
+                message: "Unathorized access"
+            });
         }
 
         let professors = [user._id];
@@ -46,11 +52,17 @@ const createClassroom = async (req, res) => {
         user.classrooms.push(classroom._id);
         await user.save();
 
-        return res.status(201).json({ success: true, message: "Classroom created successfully!", joinCode: classroom.joinCode });
+        return res.status(201).json({
+            success: true,
+            message: "Classroom created successfully!", joinCode: classroom.joinCode
+        });
 
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 };
 
