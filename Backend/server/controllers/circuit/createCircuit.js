@@ -7,8 +7,15 @@ const createCircuit = async (req, res) => {
     const { circuit } = req.body;
     const user = req.user;
 
-    if (!user) return res.status(401).json({ success: false, message: "Unauthorized Access" });
-    if (!circuit) return res.status(400).json({ success: false, message: "Circuit not provided" });
+    if (!user) return res.status(401).json({
+      success: false,
+      message: "Unauthorized Access"
+    });
+
+    if (!circuit) return res.status(400).json({
+      success: false,
+      message: "Circuit not provided"
+    });
 
     // 🧩 Step 1: Create all nodes
     const createdNodes = await Promise.all(
@@ -55,6 +62,9 @@ const createCircuit = async (req, res) => {
       },
     });
 
+    await user.circuits.push(newCircuit._id);
+    await user.save();
+
     return res.status(201).json({
       success: true,
       message: "Circuit created successfully",
@@ -62,7 +72,10 @@ const createCircuit = async (req, res) => {
     });
   } catch (err) {
     console.error("Error creating circuit:", err);
-    return res.status(500).json({ success: false, message: "Internal Server Error", error: err.message });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 

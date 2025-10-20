@@ -11,13 +11,19 @@ const otpVer = async (req, res) => {
 
     // Validate input
     if (!otp || !email) {
-      return res.json({ success: false, message: "OTP and email are required" });
+      return res.json({
+        success: false,
+        message: "OTP and email are required"
+      });
     }
 
     // Find user
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({ success: false, message: "User not found" });
+      return res.json({
+        success: false,
+        message: "User not found"
+      });
     }
 
     const isOtpValid = otp === user.otp;
@@ -43,22 +49,37 @@ const otpVer = async (req, res) => {
           message: "OTP verified. Proceed to change password within 5 Mins."
         });
       } else {
-        return res.json({ success: false, message: "Invalid verification type" });
+        return res.json({
+          success: false,
+          message: "Invalid verification type"
+        });
       }
     } else if (!isOtpValid && isOtpActive) {
-      return res.json({ success: false, message: "Wrong OTP" });
+      return res.json({
+        success: false,
+        message: "Wrong OTP"
+      });
     } else if (!isOtpActive) {
       if (type === "signUp") {
         await User.findByIdAndDelete(user._id);
-        return res.json({ success: false, message: "OTP expired. try SignUp" });
-      }else{
-        return res.json({ success: false, message: "OTP expired. try Again " });
+        return res.json({
+          success: false,
+          message: "OTP expired. try SignUp"
+        });
+      } else {
+        return res.json({
+          success: false,
+          message: "OTP expired. try Again "
+        });
       }
     }
 
   } catch (error) {
     console.error("OTP Verification Error:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Server Error"
+    });
   }
 };
 

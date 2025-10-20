@@ -28,7 +28,7 @@ const circuitSchema = new mongoose.Schema({
       },
     ],
   },
-});
+}, { timestamps: true });
 
 const Circuit = mongoose.model("Circuit", circuitSchema, "Circuits");
 export default Circuit;

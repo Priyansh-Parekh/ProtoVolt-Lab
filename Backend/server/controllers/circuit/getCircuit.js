@@ -18,11 +18,17 @@ const getCircuit = async (req, res) => {
       .populate("circuitdata.nodes");
 
     if (!circuit)
-      return res.status(404).json({ success: false, message: "Circuit not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Circuit not found"
+      });
 
     // ✅ Fix: Proper ObjectId comparison
     if (String(circuit.owner) !== String(user._id))
-      return res.status(403).json({ success: false, message: "Unauthorized access" });
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access"
+      });
 
     // 2️⃣ Extract and rebuild frontend data
     const nodes = circuit.circuitdata.nodes.map(node => ({
@@ -58,7 +64,10 @@ const getCircuit = async (req, res) => {
     });
   } catch (err) {
     console.error("Error fetching circuit:", err);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
   }
 };
 

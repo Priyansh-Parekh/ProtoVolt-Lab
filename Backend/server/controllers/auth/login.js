@@ -12,15 +12,28 @@ const userLogin = async (req, res) => {
                 secure: false,     // true in production
                 // sameSite: "strict"
             });
-            res.status(200).json({success:true,message:"succesfully credentials match", redirectUrl: 'http://localhost:5173/dashboard' });
-        }else{
-            if(!user.verified)
-            res.json({success:false,message:"No User Exist"});
+            res.status(200).json({
+                success: true,
+                message: "succesfully credentials match",
+                redirectUrl: 'http://localhost:5173/dashboard'
+            });
+        } else {
+            if (!user.verified)
+                res.json({
+                    success: false,
+                    message: "No User Exist"
+                });
 
-            res.json({success:false,message:"Invalid Credentials"});
+            res.json({
+                success: false,
+                message: "Invalid Credentials"
+            });
         }
     } catch (err) {
-        res.status(500).json({ success: false, message: "Server Error" });
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        });
     }
 };
 
