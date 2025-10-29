@@ -98,6 +98,15 @@ const MainContent = () => {
           <Route path="/classroom/class" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
 
+          <Route
+            path="/classroom/:classroomId/assignment/:assignmentId/:subtabSlug?"
+            element={user ? <SpecificAssignment /> : <Navigate to="/user/login" />}
+          />
+          <Route
+            path="/classroom/:classroomId/assignment/:assignmentId/:subtabSlug/workspace"
+            element={user ? <Workspace /> : <Navigate to="/user/login" />}
+          />
+          
           {/* Professor-Only Routes */}
           <Route path="/classroom/createClassroom" element={user?.role === 'professor' ? <CreateClassroom /> : <Unauthorized />} />
           <Route path="/classroom/createAssignment" element={user?.role === 'professor' ? <CreateAssignment /> : <Unauthorized />} />
