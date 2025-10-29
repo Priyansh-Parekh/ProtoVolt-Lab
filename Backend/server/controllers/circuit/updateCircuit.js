@@ -76,6 +76,7 @@ const updateCircuit = async (req, res) => {
             })
         );
 
+        console.log(circuit.name);
         existingCircuit.name = circuit.name || existingCircuit.name; // Allow name updates
         existingCircuit.circuitdata = {
             components: createdComps.map(c => c._id),

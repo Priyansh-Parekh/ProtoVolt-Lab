@@ -32,6 +32,7 @@ const Workspace = () => {
     const [showJsonModal, setShowJsonModal] = useState(false);
     const [jsonOutput, setJsonOutput] = useState('');
     const [analysisResults, setAnalysisResults] = useState([]);
+    const [circuitName,setCircuitName] = useState("Untitled")
 
 
     // --- State & History Management ---
@@ -69,7 +70,7 @@ const Workspace = () => {
         e.target.disabled = true;
         e.target.style.opacity = 0.5;
         const circuit = {
-            name: "My New Circuit",
+            name: circuitName,
             nodes: state.nodes,
             components: state.components,
         };
@@ -96,6 +97,7 @@ const Workspace = () => {
         e.target.disabled = true;
         e.target.style.opacity = 0.5;
         const circuitData = {
+            name: circuitName,
             nodes: state.nodes,
             components: state.components,
         };
@@ -103,9 +105,7 @@ const Workspace = () => {
         try {
             // Your API call to update would go here
             const res = await api.post(`/circuit/data/updateCircuit`, { circuit:circuitData,_id:projectId });
-            if(res.data.success){
-
-            }else{
+            if(!res.data.success){
                 error(res.data.message);
             }
         } catch(err) {
@@ -530,7 +530,7 @@ const Workspace = () => {
                 const res = await api.get(`/circuit/data/getCircuit?id=${projectId}`);
                 if (res.data.success) {
                     const data_circuit = res.data.circuit;
-                    info(res.data.message);
+                    setCircuitName(data_circuit.name)
                     setStateWithHistory(prev => ({
                         ...prev,
                         components: data_circuit.components || [],
@@ -580,6 +580,7 @@ const Workspace = () => {
     return (
         <div className="flex bg-[#111827] text-[#F3F4F6]">
             <div className="w-56 bg-[#1F2937] border-r border-[#4B5563] p-4 flex flex-col space-y-5 shadow-soft">
+                
                 <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FBBF24] to-[#F97316]">Components</h2>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="component-btn group" draggable="true" onDragStart={(e) => handleDragStart(e, 'resistor')}><svg width="40" height="20" viewBox="0 0 40 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-[#9CA3AF] group-hover:text-[#F97316] transition-colors duration-300"><path d="M0 10H5L7.5 15L12.5 5L17.5 15L22.5 5L27.5 15L30 10H40" stroke="currentColor" strokeWidth="2" /></svg><span className="text-xs mt-2 text-[#9CA3AF] group-hover:text-[#F3F4F6] transition-colors duration-300">Resistor</span></div>
@@ -592,7 +593,18 @@ const Workspace = () => {
                 </div>
             </div>
             <div className="flex-1 h-[130vh]  flex flex-col p-4 gap-4">
+                
                 <div className="flex items-center space-x-3 bg-[#1F2937] p-2 rounded-lg border border-[#4B5563] shadow-soft">
+                     {/* Circuit Name Input */}
+                     <div className="flex-1 flex justify-center">
+                        <input
+                            type="text"
+                            value={circuitName}
+                            onChange={(e)=>{setCircuitName(e.target.value);}}
+                            className="w-1/2 min-w-[200px] text-center rounded-md px-3 py-1.5 bg-[#111827] border border-[#4B5563] text-lg font-semibold text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition"
+                            placeholder="Circuit Name"
+                        />
+                    </div>
                     <button onClick={() => setState(prev => ({ ...prev, wireMode: false }))} className={`flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 ${!state.wireMode ? 'bg-gradient-to-r from-[#FBBF24] to-[#F97316] text-[#111827] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}><FiMove className="text-lg" /> Drag</button>
                     <button onClick={() => setState(prev => ({ ...prev, wireMode: true, wiringStartNodeId: null }))} className={`flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 ${state.wireMode ? 'bg-[#F97316] text-[#F3F4F6] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}><FiZap className="text-lg" /> Wire</button>
                     <div className="flex-grow"></div>
