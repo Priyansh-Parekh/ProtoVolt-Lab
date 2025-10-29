@@ -25,6 +25,7 @@ import CreateAssignment from './pages/createAssignment.jsx';
 import Footer from './components/Footer.jsx';
 import Unauthorized from './pages/unathorized.jsx';
 import ErrorPage from './pages/errorPage.jsx';
+import AboutUs from './pages/aboutUs.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
@@ -82,6 +83,7 @@ const MainContent = () => {
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/about-us" element={<AboutUs />} />
 
           {/* Public-Only Routes (Redirect if logged in) */}
           <Route path="/user/login" element={user ? <Navigate to="/" /> : <Login />} />
@@ -122,4 +124,3 @@ function App() {
 }
 
 export default App;
-
