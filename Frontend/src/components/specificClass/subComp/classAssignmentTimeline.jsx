@@ -20,7 +20,7 @@ const formatDate = (dateInput) => {
   return date.toLocaleDateString(undefined, options); // <- use toLocaleString
 };
 
-const ClassAssignmentTimeline = ({ assignments=[] }) => {
+const ClassAssignmentTimeline = ({ classroomId,assignments=[] }) => {
   // Sort assignments by creation date, newest first
   const sortedAssignments = [...assignments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
