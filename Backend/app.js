@@ -25,6 +25,7 @@ import auth from './server/routes/auth.js';
 import userRouter from './server/routes/userData.js';
 import classRouter from './server/routes/classroomData.js';
 import circuitRoutes from './server/routes/circuitData.js';
+import geminiService from './server/routes/gemini.js';
 
 
 //Routes
@@ -33,6 +34,7 @@ app.use('/user/auth/',auth);
 app.use('/user/data', userRouter); 
 app.use('/classroom/data',classRouter);
 app.use('/circuit/data',circuitRoutes)
+app.use("/gemini/service",geminiService);
 
 // --- SERVER LISTENER ---
 app.listen(port, () => {
