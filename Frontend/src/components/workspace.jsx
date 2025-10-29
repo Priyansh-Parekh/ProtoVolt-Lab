@@ -102,8 +102,12 @@ const Workspace = () => {
 
         try {
             // Your API call to update would go here
-            // const res = await api.put(`/circuit/data/updateCircuit/${projectId}`, { circuitData });
-            success("Save functionality for existing circuits is a work in progress!");
+            const res = await api.post(`/circuit/data/updateCircuit`, { circuit:circuitData,_id:projectId });
+            if(res.data.success){
+
+            }else{
+                error(res.data.message);
+            }
         } catch(err) {
             console.error(err);
             error("Failed to update circuit.");
