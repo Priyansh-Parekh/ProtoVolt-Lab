@@ -1,26 +1,15 @@
-import React, { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
+// 1. Make sure useNavigate is imported
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FiSearch, FiPaperclip, FiX, FiCheckCircle, FiChevronRight, FiCircle, FiEdit3,
-  FiCalendar, FiCpu, FiPlus, FiMinus, FiList, FiTool, FiSend, FiInfo,
+  FiCpu, FiPlus, FiMinus, FiList, FiTool, FiSend, FiInfo,
 } from "react-icons/fi";
 import { FaMicrochip, FaBolt, FaWaveSquare, FaProjectDiagram } from "react-icons/fa";
 
-// --- MOCK DATA ---
-const availableCircuits = [
-  { _id: "c1", name: "Full Wave Rectifier", componentCount: 5, type: "analog" },
-  { _id: "c2", name: "Astable Multivibrator", componentCount: 7, type: "analog" },
-  { _id: "c3", name: "RLC Band-pass Filter", componentCount: 3, type: "analog" },
-  { _id: "c4", name: "Common Emitter Amplifier", componentCount: 6, type: "analog" },
-  { _id: "c5", name: "4-bit Binary Counter", componentCount: 4, type: "digital" },
-  { _id: "c6", name: "Clapping Switch Circuit", componentCount: 8, type: "analog" },
-  { _id: "c7", name: "Full Adder using Logic Gates", componentCount: 5, type: "digital" },
-  { _id: "c8", name: "SR Latch", componentCount: 2, type: "digital" },
-  { _id: "c9", name: "Wein Bridge Oscillator", componentCount: 6, type: "analog" },
-  { _id: "c10", name: "Decimal to BCD Encoder", componentCount: 7, type: "digital" },
-  { _id: "c11", name: "555 Timer Monostable", componentCount: 5, type: "digital" },
-  { _id: "c12", name: "Low-Pass Sallen-Key Filter", componentCount: 4, type: "analog" },
-];
+//importing utils
+import api from "../utils/axios";
+import { error, success, warning } from "../utils/toastify";
 
 const initialApparatusState = [
   { name: "Resistor", type: "analog", required: false, quantity: 1, icon: <FaProjectDiagram /> },
@@ -38,101 +27,169 @@ const initialApparatusState = [
   { name: "NOR Gate", type: "digital", required: false, quantity: 1, icon: <FaMicrochip /> },
 ];
 
-// --- Sub-Components for Cleaner Structure ---
-
+// --- Sub-Components (No changes needed here) ---
 const SolutionCircuitCard = ({ circuit, isSelected, onSelect }) => (
-  <div
-    onClick={onSelect}
-    className={`p-4 rounded-lg border-2 transition-all cursor-pointer flex items-center justify-between ${isSelected
-      ? "bg-[var(--color-primary)] border-[var(--color-accent-cyan)] shadow-lg"
-      : "bg-[var(--color-tertiary)] border-transparent hover:border-[var(--color-border)]"
-      }`}
-  >
-    <div className="flex items-center space-x-4">
-      {isSelected ? <FiCheckCircle className="text-[var(--color-accent-cyan)] w-5 h-5 flex-shrink-0" /> : <FiCircle className="text-[var(--color-placeholder)] w-5 h-5 flex-shrink-0" />}
-      <div>
-        <h3 className="font-bold text-md text-[var(--color-text-bright)]">{circuit.name}</h3>
-        <div className="text-xs text-[var(--color-placeholder)] mt-1"><span>{circuit.componentCount} Components</span></div>
-      </div>
+    <div
+        onClick={onSelect}
+        className={`p-4 rounded-lg border-2 transition-all cursor-pointer flex items-center justify-between ${isSelected
+                ? "bg-[var(--color-primary)] border-[var(--color-accent-cyan)] shadow-lg"
+                : "bg-[var(--color-tertiary)] border-transparent hover:border-[var(--color-border)]"
+            }`}
+    >
+        <div className="flex items-center space-x-4">
+            {isSelected ? <FiCheckCircle className="text-[var(--color-accent-cyan)] w-5 h-5 flex-shrink-0" /> : <FiCircle className="text-[var(--color-placeholder)] w-5 h-5 flex-shrink-0" />}
+            <div>
+                <h3 className="font-bold text-md text-[var(--color-text-bright)]">{circuit.name}</h3>
+                <div className="text-xs text-[var(--color-placeholder)] mt-1"><span> {circuit.circuitdata.components.length} Components</span></div>
+            </div>
+        </div>
+        <Link to={`/workspace/${circuit._id}`} onClick={(e) => e.stopPropagation()} className="text-sm font-medium text-[var(--color-accent-cyan)] hover:underline flex items-center">
+            View <FiChevronRight className="w-4 h-4 ml-1" />
+        </Link>
     </div>
-    <Link to={`/workspace/${circuit._id}`} onClick={(e) => e.stopPropagation()} className="text-sm font-medium text-[var(--color-accent-cyan)] hover:underline flex items-center">
-      View <FiChevronRight className="w-4 h-4 ml-1" />
-    </Link>
-  </div>
 );
 
 const ApparatusCard = ({ item, onToggle, onQuantityChange }) => (
-  <div
-    onClick={onToggle}
-    className={`p-3 rounded-lg border-2 transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-2 ${item.required ? 'bg-[var(--color-primary)] border-[var(--color-accent-cyan)]' : 'bg-[var(--color-tertiary)] border-transparent hover:border-[var(--color-border)]'}`}
-  >
-    <div className={`text-2xl ${item.required ? 'text-[var(--color-accent-cyan)]' : 'text-[var(--color-placeholder)]'}`}>{item.icon}</div>
-    <span className="text-sm font-medium text-[var(--color-text-bright)] leading-tight">{item.name}</span>
-    {item.required && (
-      <div className="flex items-center space-x-2 pt-1" onClick={e => e.stopPropagation()}>
-        <button type="button" onClick={() => onQuantityChange(item.name, item.quantity - 1)} className="p-1 rounded-full bg-[var(--color-secondary)] hover:bg-[var(--color-border)]"><FiMinus size={12} /></button>
-        <input
-          type="number"
-          min="1"
-          value={item.quantity}
-          onChange={(e) => onQuantityChange(item.name, parseInt(e.target.value, 10))}
-          className="custom-input w-12 text-center p-1 rounded-md text-xs bg-[var(--color-secondary)]"
-        />
-        <button type="button" onClick={() => onQuantityChange(item.name, item.quantity + 1)} className="p-1 rounded-full bg-[var(--color-secondary)] hover:bg-[var(--color-border)]"><FiPlus size={12} /></button>
-      </div>
-    )}
-  </div>
+    <div
+        onClick={onToggle}
+        className={`p-3 rounded-lg border-2 transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-2 ${item.required ? 'bg-[var(--color-primary)] border-[var(--color-accent-cyan)]' : 'bg-[var(--color-tertiary)] border-transparent hover:border-[var(--color-border)]'}`}
+    >
+        <div className={`text-2xl ${item.required ? 'text-[var(--color-accent-cyan)]' : 'text-[var(--color-placeholder)]'}`}>{item.icon}</div>
+        <span className="text-sm font-medium text-[var(--color-text-bright)] leading-tight">{item.name}</span>
+        {item.required && (
+            <div className="flex items-center space-x-2 pt-1" onClick={e => e.stopPropagation()}>
+                <button type="button" onClick={() => onQuantityChange(item.name, item.quantity - 1)} className="p-1 rounded-full bg-[var(--color-secondary)] hover:bg-[var(--color-border)]"><FiMinus size={12} /></button>
+                <input
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) => onQuantityChange(item.name, parseInt(e.target.value, 10))}
+                    className="custom-input w-12 text-center p-1 rounded-md text-xs bg-[var(--color-secondary)]"
+                />
+                <button type="button" onClick={() => onQuantityChange(item.name, item.quantity + 1)} className="p-1 rounded-full bg-[var(--color-secondary)] hover:bg-[var(--color-border)]"><FiPlus size={12} /></button>
+            </div>
+        )}
+    </div>
 );
 
-
+// --- Main Component ---
 const CreateAssignment = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [file, setFile] = useState(null);
-  const [apparatus, setApparatus] = useState(initialApparatusState);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedCircuits, setSelectedCircuits] = useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  const handleApparatusToggle = (itemName) => {
-    setApparatus((prev) => prev.map((item) => item.name === itemName ? { ...item, required: !item.required } : item));
-  };
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [dueDate, setDueDate] = useState("");
+    const [file, setFile] = useState(null);
+    const [apparatus, setApparatus] = useState(initialApparatusState);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [selectedCircuits, setSelectedCircuits] = useState([]);
+    const [availableCircuits, setAvailableCircuits] = useState([]);
+    const [isLoading, setIsLoading] = useState(true); // 2. ADD LOADING STATE
 
-  const handleQuantityChange = (itemName, quantity) => {
-    setApparatus((prev) => prev.map((item) => item.name === itemName ? { ...item, quantity: Math.max(1, parseInt(quantity, 10) || 1) } : item));
-  };
+    const { C_id } = location.state || {};
 
-  const handleCircuitSelect = (circuitId) => {
-    setSelectedCircuits((prev) => prev.includes(circuitId) ? prev.filter((id) => id !== circuitId) : [...prev, circuitId]);
-  };
+    // 3. COMBINED AND CORRECTED useEffect
+    useEffect(() => {
+        // Guard Clause: Check for C_id first.
+        if (!C_id) {
+            error("Classroom ID not found. Redirecting...");
+            navigate("/dashboard"); // Or your preferred redirect path
+            return; // Stop the effect here.
+        }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    const assignmentData = {
-      title, description, dueDate, file,
-      requiredApparatus: apparatus.filter((item) => item.required),
-      solutionCircuitIds: selectedCircuits,
+        // Data Fetching: Only runs if C_id exists.
+        const fetchData = async () => {
+            try {
+                const res = await api.get("/user/data/getCircuits");
+                if (res.data.success) {
+                    setAvailableCircuits(res.data.circuits);
+                } else {
+                    error(res.data.message);
+                }
+            } catch (err) {
+                error(err.message);
+            } finally {
+                setIsLoading(false); // Set loading to false after fetch completes
+            }
+        };
+
+        fetchData();
+    }, [C_id, navigate]); // Dependencies for the effect
+
+    const handleApparatusToggle = (itemName) => {
+        setApparatus((prev) => prev.map((item) => item.name === itemName ? { ...item, required: !item.required } : item));
     };
-    console.log("Submitting Data:", assignmentData);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-  };
 
-  const filteredCircuits = useMemo(() =>
-    availableCircuits.filter((circuit) => circuit.name.toLowerCase().includes(searchTerm.toLowerCase())),
-    [searchTerm]
-  );
+    const handleQuantityChange = (itemName, quantity) => {
+        setApparatus((prev) => prev.map((item) => item.name === itemName ? { ...item, quantity: Math.max(1, parseInt(quantity, 10) || 1) } : item));
+    };
 
-  const selectedCircuitObjects = useMemo(() =>
-    availableCircuits.filter(c => selectedCircuits.includes(c._id)),
-    [selectedCircuits]
-  );
+    const handleCircuitSelect = (circuitId) => {
+        setSelectedCircuits((prev) => prev.includes(circuitId) ? prev.filter((id) => id !== circuitId) : [...prev, circuitId]);
+    };
 
-  const requiredApparatus = useMemo(() => apparatus.filter(a => a.required), [apparatus]);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!C_id) {
+            error("Cannot submit: Classroom ID is missing.");
+            return;
+        }
+        setIsSubmitting(true);
+        try {
+            const dataAssign = new FormData();
+            dataAssign.append("title", title);
+            dataAssign.append("description", description);
+            dataAssign.append("dueDate", dueDate);
+            dataAssign.append("classroomId", C_id);
+            if (file) {
+                dataAssign.append("file", file);
+            }
+            const assignedApparatus = apparatus
+                .filter(item => item.required)
+                .map(item => ({ type: item.type, quantity: item.quantity }));
+            dataAssign.append("assignedApparatus", JSON.stringify(assignedApparatus));
+            dataAssign.append("solutionCircuit", JSON.stringify(selectedCircuits));
+            if (!file) {
+                warning("You haven't set the Material for Assignment");
+            }
+            const res = await api.post("/classroom/data/createAssignment", dataAssign, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            if (res.data.success) {
+                success(res.data.message);
+                navigate(`/classroom/class?id=${C_id}`); // Redirect to classroom on success
+            } else {
+                error(res.data.message);
+            }
+        } catch (err) {
+            console.error(`❌ Error uploading assignment`, err);
+            error(err.response?.data?.message || "Something went wrong");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-  const isFormValid = title && description && dueDate;
+    const filteredCircuits = useMemo(() =>
+        availableCircuits.filter((circuit) => circuit.name.toLowerCase().includes(searchTerm.toLowerCase())),
+        [availableCircuits, searchTerm]
+    );
+    const selectedCircuitObjects = useMemo(() =>
+        availableCircuits.filter(c => selectedCircuits.includes(c._id)),
+        [availableCircuits, selectedCircuits]
+    );
+    const requiredApparatus = useMemo(() => apparatus.filter(a => a.required), [apparatus]);
+    const isFormValid = title && description && dueDate;
+
+    // 4. ADD EARLY RETURN FOR REDIRECT
+    if (!C_id) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-[var(--color-primary)] text-[var(--color-text-bright)]">
+                <p className="text-xl">Invalid page access. Redirecting...</p>
+            </div>
+        );
+    }
 
   return (
     <>
@@ -233,22 +290,35 @@ const CreateAssignment = () => {
 
               {/* Section 3: Select Solution Circuits */}
               <section className="bg-[var(--color-secondary)] p-6 sm:p-8 rounded-2xl shadow-lg border border-[var(--color-border)] flex flex-col h-[70vh]">
-                <h2 className="flex items-center text-xl font-bold text-[var(--color-text-bright)] gap-3 mb-1"><FiCpu />Select Solution Circuits</h2>
-                <p className="text-sm mb-4">Choose one or more circuits to serve as official solutions.</p>
-                <div className="relative mb-4">
-                  <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-placeholder)]" />
-                  <input type="text" placeholder="Search circuits by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="custom-input w-full p-3 pl-10 rounded-md text-sm" />
-                </div>
-                <div className="flex-grow overflow-y-auto custom-scrollbar -mr-4 pr-4 space-y-3">
-                  {filteredCircuits.length > 0 ? (
-                    filteredCircuits.map(circuit => (
-                      <SolutionCircuitCard key={circuit._id} circuit={circuit} isSelected={selectedCircuits.includes(circuit._id)} onSelect={() => handleCircuitSelect(circuit._id)} />
-                    ))
-                  ) : (
-                    <p className="text-center text-[var(--color-placeholder)] mt-12">No circuits found.</p>
-                  )}
-                </div>
-              </section>
+                                <h2 className="flex items-center text-xl font-bold text-[var(--color-text-bright)] gap-3 mb-1"><FiCpu />Select Solution Circuits</h2>
+                                <p className="text-sm mb-4">Choose one or more circuits to serve as official solutions.</p>
+                                <div className="relative mb-4">
+                                    <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--color-placeholder)]" />
+                                    <input type="text" placeholder="Search circuits by name..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="custom-input w-full p-3 pl-10 rounded-md text-sm" />
+                                </div>
+                                <div className="flex-grow overflow-y-auto custom-scrollbar -mr-4 pr-4 space-y-3">
+                                    {/* 5. IMPLEMENT CONDITIONAL RENDERING */}
+                                    {isLoading ? (
+                                        <div className="flex justify-center items-center h-full">
+                                            <p className="text-[var(--color-placeholder)]">Loading circuits...</p>
+                                            {/* For a better UX, you could map over a few <SkeletonCard /> components here */}
+                                        </div>
+                                    ) : (
+                                        filteredCircuits.length > 0 ? (
+                                            filteredCircuits.map(circuit => (
+                                                <SolutionCircuitCard
+                                                    key={circuit._id}
+                                                    circuit={circuit}
+                                                    isSelected={selectedCircuits.includes(circuit._id)}
+                                                    onSelect={() => handleCircuitSelect(circuit._id)}
+                                                />
+                                            ))
+                                        ) : (
+                                            <p className="text-center text-[var(--color-placeholder)] mt-12">No circuits found.</p>
+                                        )
+                                    )}
+                                </div>
+                            </section>
             </main>
 
             {/* --- Sticky Sidebar --- */}
@@ -289,7 +359,7 @@ const CreateAssignment = () => {
                 <button
                   type="submit"
                   disabled={!isFormValid || isSubmitting}
-                  className="w-full py-3.5 rounded-md text-md font-bold text-white transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-md hover:cursor-pointer text-md font-bold text-white transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   style={{ background: 'var(--gradient-primary)', boxShadow: 'var(--shadow-neon)' }}
                 >
                   <FiSend />

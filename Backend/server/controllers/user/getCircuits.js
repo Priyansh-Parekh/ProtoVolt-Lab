@@ -13,10 +13,16 @@ const getCircuits = async (req, res) => {
 
         await user.populate({
             path: 'circuits',
-            select: 'name createdAt' // only fetch the name, remove _id if you want
+            select: 'name createdAt ',
+            populate: {
+                path: 'circuitdata.components',
+                model: 'Component', // name of your Component model
+                select: 'type' // optional fields
+            } 
         });
 
         const circuits = user.circuits || [];
+
         return res.status(200).json({
             success: true,
             message: "Successfully fetched all circuits",

@@ -30,7 +30,7 @@ const CreateClassroom = () => {
       formData.append("description", description);
       formData.append("image", image); // 'image' must match multer field name
 
-      if(image){
+      if(!image){
         warning("You haven't set the Banner for Classroom");
       }
 
