@@ -20,7 +20,7 @@ const formatDate = (dateInput) => {
   return date.toLocaleDateString(undefined, options); // <- use toLocaleString
 };
 
-const ClassAssignmentTimeline = ({ assignments=[] }) => {
+const ClassAssignmentTimeline = ({ classroomId,assignments=[] }) => {
   // Sort assignments by creation date, newest first
   const sortedAssignments = [...assignments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -46,7 +46,8 @@ const ClassAssignmentTimeline = ({ assignments=[] }) => {
 
               {/* Title - Link to specific assignment page */}
               <Link
-                to={`/classroom/class/assignment?_id=${assignment._id}`}
+                // to={`/classroom/class/assignment?_id=${assignment._id}`}
+                to={`/classroom/${classroomId}/assignment/${assignment._id}/subtab_1`}
                 className="ClassAssignmentTimeline-title text-[var(--color-accent-cyan)] hover:text-[var(--color-accent-teal)] font-bold text-xl font-ChakraPetch pr-12 transition-colors duration-300"
               >
                 {assignment.title}

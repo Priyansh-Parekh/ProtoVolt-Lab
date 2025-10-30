@@ -7,11 +7,7 @@ import { Link } from 'react-router-dom';
 //components
 
 
-const ClassHeader = ({user,setAnnounced,className}) => {
-
-    let id =1;//temp
-
-
+const ClassHeader = ({user,setAnnounced,className,class_id}) => {
 
     return (
         <header
@@ -61,6 +57,7 @@ const ClassHeader = ({user,setAnnounced,className}) => {
           hover:scale-105 hover:shadow-lg hover:shadow-[#00d4ff]/30
           transform hover:-translate-y-1
         "
+        state={{C_id : class_id}}
                 >
                     <FaPlusCircle className="h-5 w-5" />
                     <span>New Assignment</span>
