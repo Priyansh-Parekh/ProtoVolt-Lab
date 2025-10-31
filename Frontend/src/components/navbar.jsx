@@ -51,7 +51,7 @@ const Navbar = ({ user = null }) => {
     try {
       const res = await api.get('/user/auth/logout');
       if (res.data.success) {
-        success("Logout Success"); 
+        success("Logout Success");
         setTimeout(() => {
           // Manually redirect browser
           window.location.href = "/";
@@ -59,7 +59,7 @@ const Navbar = ({ user = null }) => {
       } else {
         error("Logout Failed");
       }
-    } catch (error) {
+    } catch (err) {
       error("server Error");
     } finally {
       e.target.disabled = false;
@@ -155,9 +155,9 @@ const Navbar = ({ user = null }) => {
               <FiLogOut className="text-xl" />
               <span className="font-medium">Logout</span>
             </button>
-            </>
+          </>
         )}
-          </div>
+      </div>
     </motion.div>
   );
 };
