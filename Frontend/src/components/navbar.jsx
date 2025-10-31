@@ -1,14 +1,19 @@
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiTrello, FiBookOpen, FiLayout, FiUser } from 'react-icons/fi';
+import { FiHome, FiTrello, FiBookOpen, FiLogOut, FiLayout, FiUser } from 'react-icons/fi';
 import { FaUsers } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
+//importing utils  
+import api from '../utils/axios.js'
+import { error, success } from '../utils/toastify.js';
 // Animated ProtoVolt Logo
 const AnimatedLogo = () => {
   const logoVariants = {
     initial: { pathLength: 0, opacity: 0 },
     animate: { pathLength: 1, opacity: 1, transition: { duration: 1, ease: "easeInOut" } }
   };
+
+
 
   return (
     <svg viewBox="0 0 24 24" width="24" height="24" className="text-[#00D4FF]">
@@ -29,6 +34,7 @@ const AnimatedLogo = () => {
 
 const Navbar = ({ user = null }) => {
   // Classes for NavLink active/inactive states
+
   const linkClasses = ({ isActive }) =>
     `relative flex items-center space-x-2 px-3 py-2 rounded-md font-medium text-sm overflow-hidden z-10 
      ${isActive ? 'text-white' : 'text-gray-300 hover:text-sky-400'}
@@ -37,6 +43,29 @@ const Navbar = ({ user = null }) => {
       ? 'before:scale-x-100 before:opacity-100'
       : 'before:opacity-0 hover:before:scale-x-100 hover:before:opacity-30'
     }`;
+
+  const logout = async (e) => {
+
+    e.target.disabled = true;
+    e.target.style.opacity = 0.5;
+    try {
+      const res = await api.get('/user/auth/logout');
+      if (res.data.success) {
+        success("Logout Success"); 
+        setTimeout(() => {
+          // Manually redirect browser
+          window.location.href = "/";
+        }, 1000);
+      } else {
+        error("Logout Failed");
+      }
+    } catch (error) {
+      error("server Error");
+    } finally {
+      e.target.disabled = false;
+      e.target.style.opacity = 1;
+    }
+  }
 
   return (
     <motion.div
@@ -104,11 +133,31 @@ const Navbar = ({ user = null }) => {
           </NavLink>
         ) : (
           // User button if logged in
-          <button className="bg-[#00D4FF] hover:bg-[#00B8E6] text-[#0A0E17] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2 shadow-lg">
-            {user?.name || 'User'}
-          </button>
+          <>
+            <button className="bg-[#00D4FF] hover:bg-[#00B8E6] text-[#0A0E17] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2 shadow-lg">
+              {user?.name || 'User'}
+            </button>
+            <button
+              onClick={(e) => { logout(e) }}
+              className="
+            flex items-center gap-2
+            bg-[var(--color-secondary)]
+            text-[var(--color-text-light)]
+            hover:cursor-pointer
+            px-4 py-2 rounded-xl
+            hover:bg-[var(--color-tertiary)]
+            hover:text-[var(--color-accent-cyan)]
+            transition-all duration-300
+            border border-[var(--color-border)]
+            shadow-[var(--shadow-soft)]
+          "
+            >
+              <FiLogOut className="text-xl" />
+              <span className="font-medium">Logout</span>
+            </button>
+            </>
         )}
-      </div>
+          </div>
     </motion.div>
   );
 };
