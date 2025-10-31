@@ -8,7 +8,7 @@ const ComponentSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['resistor', 'capacitor', 'inductor', 'dc-source', 'ac-source', 'ground', 'transistor-npn', 'and-gate', 'or-gate', 'not-gate', 'xor-gate', 'nand-gate', 'nor-gate'],
+        enum: ['resistor', 'capacitor', 'inductor','ammeter','voltmeter', 'dc-source', 'ac-source', 'ground', 'transistor-npn', 'and-gate', 'or-gate', 'not-gate', 'xor-gate', 'nand-gate', 'nor-gate'],
         required: true,
     },
     label: {
