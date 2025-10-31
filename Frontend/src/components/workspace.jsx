@@ -104,8 +104,10 @@ const Workspace = () => {
 
         try {
             // Your API call to update would go here
-            const res = await api.post(`/circuit/data/updateCircuit`, { circuit: circuitData, _id: projectId });
-            if (!res.data.success) {
+            const res = await api.post(`/circuit/data/updateCircuit`, { circuit:circuitData,_id:projectId });
+            if(res.data.success){
+                success(res.data.message);
+            }else{
                 error(res.data.message);
             }
         } catch (err) {

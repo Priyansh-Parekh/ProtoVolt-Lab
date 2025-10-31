@@ -45,7 +45,7 @@ const SpecificClass = ({user}) => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col z-10">
         {/* Header */}
-        <ClassHeader user={user} className={classroom?.name} setAnnounced={setAnnounced} />
+        <ClassHeader user={user} className={classroom?.name} class_id ={classroom?._id} setAnnounced={setAnnounced} />
 
         {/* Announcement Popup */}
         {announced && <ClassAnnouncementPopup setAnnounced={setAnnounced} />}

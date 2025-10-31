@@ -25,6 +25,7 @@ import CreateAssignment from './pages/createAssignment.jsx';
 import Footer from './components/Footer.jsx';
 import Unauthorized from './pages/unathorized.jsx';
 import ErrorPage from './pages/errorPage.jsx';
+import SpecificAssignment from './pages/specificAssignment.jsx';
 import AboutUs from './pages/aboutUs.jsx';
 
 // We create a wrapper component to ensure Navbar is always present and only content changes
@@ -97,6 +98,15 @@ const MainContent = () => {
           <Route path="/classroom" element={user ? <Classroom user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
+
+          <Route
+            path="/classroom/:classroomId/assignment/:assignmentId/:subtabSlug?"
+            element={user ? <SpecificAssignment /> : <Navigate to="/user/login" />}
+          />
+          <Route
+            path="/classroom/:classroomId/assignment/:assignmentId/:subtabSlug/workspace"
+            element={user ? <Workspace /> : <Navigate to="/user/login" />}
+          />
 
           {/* Professor-Only Routes */}
           <Route path="/classroom/createClassroom" element={user?.role === 'professor' ? <CreateClassroom /> : <Unauthorized />} />

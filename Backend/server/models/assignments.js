@@ -12,23 +12,33 @@ const assignmentSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    apparatus: {
-        type: String,
-    },
+    assignedApparatus: [{
+        type: {
+            type: String,
+            required: true
+        },
+        quantity: {
+            type: Number,
+            required: true,
+            min: 1, // Good practice to ensure quantity is positive
+            default: 1
+        },
+        _id: false
+    }],
     professor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    solutionCircuit: {
+    solutionCircuit:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Circuit',
-    },
+    }],
     subTabs: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SubTab',
     },
-    uploadedFiles: {
+    uploadedFile: {
         type: String,
     },
     studentFiles:[{
