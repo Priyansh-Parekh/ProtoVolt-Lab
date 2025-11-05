@@ -4,6 +4,7 @@ import getAssignment  from "../controllers/classroom/getAssignment.js";
 import getClassroomPeople from "../controllers/classroom/profNstud.js";
 import GetClassroom from "../controllers/classroom/getClassroom.js";
 import createAssignment from "../controllers/classroom/createAssignment.js";
+import createAnnouncement from "../controllers/classroom/createAnnouncement.js";
 
 
 // middelwares
@@ -16,7 +17,8 @@ route.use(loginMiddelware);
 
 //create api's
 route.post("/createClassroom", uploadClassroomImage.single('image'), createClassroom);
-route.post("/createAssignment",uploadAssignmentFiles.single('file'),createAssignment)
+route.post("/createAssignment",uploadAssignmentFiles.single('file'),createAssignment);
+route.post("/:classroomId/announcement",uploadAssignmentFiles.single('file'), createAnnouncement);
 
 //data api's
 route.get("/getClassroom",GetClassroom);
