@@ -5,15 +5,16 @@ import {
   FiActivity,
   FiZap,
   FiDatabase,
-  FiCpu,
+  FiTrash2 ,
   FiChevronRight,
 } from "react-icons/fi";
-import { error } from "../utils/toastify";
+import { error, success } from "../utils/toastify";
 import api from "../utils/axios";
 
 const WorkspacePage = () => {
   const [circuits, setCircuits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteCircuit,setDeleteCircuit] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,7 +29,26 @@ const WorkspacePage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [deleteCircuit]);
+
+  const handleDelete = async(e,id)=>{
+    e.target.disabled = true;
+    e.target.style.opacity = 0.5;
+    try {
+      const res = await api.post('/circuit/data/deleteCircuit',{id})
+      if(res.data.success){
+        success("Deleted that Circuit");
+      }else{
+        error("Failed to delete Circuit");
+      }
+    } catch (err) {
+      error("server Error");
+    }finally{
+      e.target.disabled = false;
+      e.target.style.opacity = 1;
+      setDeleteCircuit(!deleteCircuit);
+    }
+  }
 
   // ---------- LOADING SCREEN ----------
   if (loading) {
@@ -82,12 +102,12 @@ const WorkspacePage = () => {
                   Your Circuits
                 </h1>
                 <p className="text-[16px] sm:text-[18px] md:text-[20px] lg:text-[22px] leading-relaxed">
-  <span className="text-[var(--color-accent-cyan)] font-semibold">Craft</span>,{" "}
-  <span className="text-[var(--color-accent-green)] font-semibold">simulate</span>, and{" "}
-  <span className="text-[var(--color-accent-purple)] font-semibold">optimize</span>{" "}
-  <span className="text-[var(--color-accent-teal)] font-semibold">circuits</span> ⚡. <br />
-  Turn ideas into <span className="text-[var(--color-accent-indigo)] font-semibold">interactive labs</span>!
-</p>
+                  <span className="text-[var(--color-accent-cyan)] font-semibold">Craft</span>,{" "}
+                  <span className="text-[var(--color-accent-green)] font-semibold">simulate</span>, and{" "}
+                  <span className="text-[var(--color-accent-purple)] font-semibold">optimize</span>{" "}
+                  <span className="text-[var(--color-accent-teal)] font-semibold">circuits</span> ⚡. <br />
+                  Turn ideas into <span className="text-[var(--color-accent-indigo)] font-semibold">interactive labs</span>!
+                </p>
 
 
               </div>
@@ -178,39 +198,58 @@ const WorkspacePage = () => {
               )}
 
               {circuits.map((circuit, index) => (
-                <Link
+                <div
                   key={circuit._id}
-                  to={`/workspace/${circuit._id}`}
-                  className="bg-[var(--color-secondary)] border border-[var(--color-border)] rounded-2xl p-6 hover:border-[var(--color-accent-cyan)] hover:shadow-[var(--shadow-neon)] transition-all transform hover:-translate-y-1 animate-fadeIn flex flex-col justify-between"
+                  className="relative bg-[var(--color-secondary)] border border-[var(--color-border)] rounded-2xl p-6 hover:border-[var(--color-accent-cyan)] hover:shadow-[var(--shadow-neon)] transition-all transform hover:-translate-y-1 animate-fadeIn flex flex-col justify-between"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <FiActivity
-                        size={24}
-                        className="text-[var(--color-accent-purple)]"
-                      />
-                      <span className="text-xs text-[var(--color-placeholder)]">
-                        {new Date(circuit.createdAt).toLocaleDateString("en-IN", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </span>
-                    </div>
-                    <h2 className="text-xl font-semibold mb-1">
-                      {circuit.name || "Untitled Circuit"}
-                    </h2>
-                    <p className="text-sm text-[var(--color-text-light)]">
-                      Click to open this circuit
-                    </p>
-                  </div>
+                  {/* Delete Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent Link click
+                      e.preventDefault();
+                      handleDelete(e,circuit._id);
+                    }}
+                    className="absolute top-3 hover:cursor-pointer right-3 text-[var(--color-placeholder)] hover:text-red-500 transition-all"
+                    title="Delete circuit"
+                  >
+                    <FiTrash2 size={18} />
+                  </button>
 
-                  <div className="mt-4 flex justify-end text-[var(--color-accent-cyan)] items-center gap-1 text-sm font-medium">
-                    Open <FiChevronRight size={14} />
-                  </div>
-                </Link>
+                  {/* Clickable Link Area */}
+                  <Link
+                    to={`/workspace/${circuit._id}`}
+                    className="flex flex-col justify-between h-full"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <FiActivity
+                          size={24}
+                          className="text-[var(--color-accent-purple)]"
+                        />
+                        <span className="text-xs m-[10px] text-[var(--color-placeholder)]">
+                          {new Date(circuit.createdAt).toLocaleDateString("en-IN", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                      <h2 className="text-xl font-semibold mb-1">
+                        {circuit.name || "Untitled Circuit"}
+                      </h2>
+                      <p className="text-sm text-[var(--color-text-light)]">
+                        Click to open this circuit
+                      </p>
+                    </div>
+
+                    <div className="mt-4 flex justify-end text-[var(--color-accent-cyan)] items-center gap-1 text-sm font-medium">
+                      Open <FiChevronRight size={14} />
+                    </div>
+                  </Link>
+                </div>
               ))}
+
 
 
             </div>
