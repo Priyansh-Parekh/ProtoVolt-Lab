@@ -25,7 +25,7 @@ const Login = () => {
         setTimeout(() => {
           // Manually redirect browser
           window.location.href = redirectUrl;
-        }, 3000);
+        }, 1000);
       }
     } else {
       error(res.data.message);
