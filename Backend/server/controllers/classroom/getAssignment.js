@@ -28,6 +28,12 @@ const getAssignment = async (req, res) => {
         select: "name"
       })
       .populate("solutionCircuit")
+
+      .populate({
+        path: "subTabs",
+        populate: { path: "circuit" } // get circuit inside each tab
+      })
+      
       .populate({
         path: "classroom",
         select: "students professors"

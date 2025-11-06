@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+// src/pages/SpecificAssignment.jsx
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { FiPlus, FiChevronDown, FiUploadCloud, FiX } from "react-icons/fi";
 import { BsFileEarmarkText } from "react-icons/bs";
-import api from "../utils/axios"; // <-- keep for later; calls are commented out
+import api from "../utils/axios"; // make sure this axios instance supports withCredentials
 
 const FilePreviewModal = ({ file, onClose }) => {
   if (!file) return null;
@@ -20,16 +21,14 @@ const FilePreviewModal = ({ file, onClose }) => {
         </button>
 
         <div className="p-6">
-          <h3 className="text-xl font-semibold text-[var(--color-text-bright)] mb-4">{file.originalname || file.name}</h3>
+          <h3 className="text-xl font-semibold text-[var(--color-text-bright)] mb-4">
+            {file.originalname || file.name || "Preview"}
+          </h3>
 
           <div className="bg-[var(--color-primary)] rounded-md p-4">
             {isImage && <img src={file.url} alt={file.name} className="w-full h-auto rounded" />}
             {isPdf && (
-              <iframe
-                title={file.name}
-                src={file.url}
-                className="w-full h-[70vh] border-none"
-              />
+              <iframe title={file.name} src={file.url} className="w-full h-[70vh] border-none" />
             )}
             {!isImage && !isPdf && (
               <div className="text-[var(--color-text-light)]">
@@ -52,67 +51,119 @@ const SpecificAssignment = () => {
 
   const [loading, setLoading] = useState(true);
   const [assignment, setAssignment] = useState(null);
-  const [subtabs, setSubtabs] = useState([]); // { _id, name, _temp }
+  const [subtabs, setSubtabs] = useState([]); // array of { _id, name, ... }
   const [selectedPreviewFile, setSelectedPreviewFile] = useState(null);
-  const [userFiles, setUserFiles] = useState([]); // files uploaded by user (preview only)
+  const [userFiles, setUserFiles] = useState([]); // local preview for user's uploads
   const [showSolution, setShowSolution] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [creating, setCreating] = useState(false);
 
-  // Local fallback assignment (shown if backend fetch is not enabled)
-  const fallbackAssignment = {
-    title: "Verification of Ohm's Law",
-    description:
-      "Students are required to verify Ohm's Law by connecting resistors in series and parallel using the given apparatus. Follow the steps and upload your report & circuit JSON.",
-    dueDate: "25 Oct 2025, 11:30 pm",
-    professor: { name: "Priyansh Parekh" },
-    attachments: [],
-    apparatus: ["Resistor", "Breadboard", "DC Source", "Connecting Wires"],
-    uploadedFiles: [],
-    //  backend structure for now:
-  solutionCircuit: {
-    _id: "circuit_ohmslaw_1",
-    name: "Ohm's Law Verified Circuit",
-    owner: {
-      _id: "user_prof123",
-      name: "Prof. Priyansh Parekh",
-    },
-    analysed: true,
-    circuitdata: {
-      components: [
-        { _id: "comp1", type: "Resistor", value: "10Ω" },
-        { _id: "comp2", type: "Resistor", value: "20Ω" },
-        { _id: "comp3", type: "Battery", voltage: "5V" },
-      ],
-    },
-  },
+  // Helper to safely extract attachments from different shapes
+  const getProfessorAttachments = (a) => {
+    if (!a) return [];
+    if (Array.isArray(a)) return a;
+    if (typeof a === "string") return [{ url: a, originalname: a }];
+    if (typeof a === "object") return [a];
+    return [];
   };
 
-  // fetch assignment - COMMENTED OUT for frontend testing
-  useEffect(() => {
-    const fetchAssignment = async () => {
-      try {
-        setLoading(true);
-        // ===== BACKEND: Uncomment when ready =====
-        // const res = await api.get(`/classroom/${classroomId}/assignment/${assignmentId}`);
-        // const data = res.data;
-        // setAssignment(data);
-        // setSubtabs((data.subTabs || []).map((s, i) => ({ _id: s._id, name: s.name || `subtab_${i+1}` })));
-        // ========================================
-        setAssignment(fallbackAssignment);
-        setSubtabs([{ _id: `temp-${Date.now()}`, name: "subtab_1", _temp: true }]);
-      } catch (err) {
-        console.warn("Assignment fetch failed :", err);
-        setAssignment(fallbackAssignment);
-        setSubtabs([{ _id: `temp-${Date.now()}`, name: "subtab_1", _temp: true }]);
-      } finally {
-        setLoading(false);
+  // Format date helper
+  const formatDate = (d) => {
+    if (!d) return "—";
+    try {
+      const dt = new Date(d);
+      return dt.toLocaleString();
+    } catch {
+      return d;
+    }
+  };
+
+  // Fetch assignment from backend
+  const fetchAssignment = useCallback(async () => {
+    if (!assignmentId) return;
+    setLoading(true);
+    try {
+      const res = await api.get("/classroom/data/getAssignment", {
+        params: { _id: assignmentId },
+        withCredentials: true,
+      });
+
+      if (res.data?.success) {
+        const a = res.data.assignment;
+
+        // Normalize subTabs — backend should populate them; otherwise map ids to default names
+        const rawSubs = Array.isArray(a.subTabs) ? a.subTabs : [];
+        const normalized = rawSubs.map((s, i) => {
+          // s might be object or string id
+          const name = s?.name || `subtab_${i + 1}`;
+          return { _id: s?._id || s, name, circuit: s?.circuit || null };
+        });
+
+        setAssignment(a);
+        setSubtabs(normalized);
+      } else {
+        // backend returned success:false
+        console.warn("API returned no success:", res.data?.message);
+        alert(res.data?.message || "Failed to fetch assignment");
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch assignment", err);
+      alert("Server error while fetching assignment. See console.");
+    } finally {
+      setLoading(false);
+    }
+  }, [assignmentId]);
 
+  useEffect(() => {
     fetchAssignment();
-  }, [classroomId, assignmentId]);
+  }, [fetchAssignment]);
 
-  // handle file uploads by user (preview-only)
+  // Create a new subtab on server and append to local list
+  const createSubtab = async (name) => {
+    if (!assignmentId) return;
+    setCreating(true);
+    try {
+      const body = { assignmentId, name };
+      const res = await api.post("/classroom/data/createSubtab", body, { withCredentials: true });
+
+      if (res.data?.success) {
+        const subtab = res.data.subtab;
+        // normalize name if backend didn't provide
+        const normalized = { _id: subtab._id, name: subtab.name || name, ...subtab };
+        setSubtabs((prev) => [...prev, normalized]);
+
+        // navigate to workspace for this subtab
+        navigate(`/classroom/${classroomId}/assignment/${assignmentId}/${normalized.name}/workspace`);
+      } else {
+        console.warn("createSubtab failed:", res.data?.message);
+        alert(res.data?.message || "Failed to create subtab");
+      }
+    } catch (err) {
+      console.error("createSubtab error:", err);
+      alert("Server error while creating subtab");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  // When user clicks Open Canvas - navigate to first subtab or create one
+  const openCanvasToFirst = async () => {
+    if (subtabs.length > 0) {
+      navigate(`/classroom/${classroomId}/assignment/${assignmentId}/${subtabs[0].name}/workspace`);
+      return;
+    }
+    // no subtabs -> create subtab_1
+    const name = `subtab_1`;
+    await createSubtab(name);
+  };
+
+  // Add a new subtab (naming: subtab_{n})
+  const addNewSubtab = async () => {
+    const name = `subtab_${subtabs.length + 1}`;
+    await createSubtab(name);
+  };
+
+  // Handle user's uploaded file for preview (frontend only; backend integration later)
   const handleUserFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -120,15 +171,12 @@ const SpecificAssignment = () => {
     try {
       const url = URL.createObjectURL(file);
       setUserFiles((prev) => [...prev, { originalname: file.name, url }]);
-      // ===== BACKEND: Upload when ready =====
-      // const form = new FormData();
-      // form.append("file", file);
-      // await api.post(`/classroom/${classroomId}/assignment/${assignmentId}/upload`, form, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
-      // ========================================
+
+      // If you later want to POST file to backend, do so here with FormData and api.post
+      // await api.post(`/classroom/data/${assignmentId}/upload`, formData, { withCredentials: true });
     } catch (err) {
-      console.error("File preview failed", err);
+      console.error("upload preview failed", err);
+      alert("Failed to create local preview");
     } finally {
       setUploading(false);
     }
@@ -136,35 +184,31 @@ const SpecificAssignment = () => {
 
   const removeUserFile = (idx) => setUserFiles((prev) => prev.filter((_, i) => i !== idx));
 
-  const openProfessorPreview = (file) => setSelectedPreviewFile(file);
+  // Preview professor file
+  const openProfessorPreview = (file) => {
+    // If backend attachment is string path, convert to { url }
+    const f = typeof file === "string" ? { url: file, originalname: file } : file;
+    setSelectedPreviewFile(f);
+  };
   const closePreview = () => setSelectedPreviewFile(null);
 
-  // ✅ Updated navigation to Workspace page
-  const openCanvasToFirst = () => {
-    if (subtabs.length > 0) {
-      const first = subtabs[0];
-      navigate(`/classroom/${classroomId}/assignment/${assignmentId}/${first.name}/workspace`);
-    } else {
-      const name = `subtab_1`;
-      const tmp = { _id: `temp-${Date.now()}`, name, _temp: true };
-      setSubtabs([tmp]);
-      navigate(`/classroom/${classroomId}/assignment/${assignmentId}/${name}/workspace`);
-    }
-  };
-
-  const addNewSubtab = () => {
-    const num = subtabs.length + 1;
-    const name = `subtab_${num}`;
-    const tmp = { _id: `temp-${Date.now()}`, name, _temp: true };
-    setSubtabs((prev) => [...prev, tmp]);
-    navigate(`/classroom/${classroomId}/assignment/${assignmentId}/${name}/workspace`);
-  };
-
-  const toggleSolution = () => setShowSolution((s) => !s);
-
   if (loading) {
-    return <div className="p-6 text-[var(--color-text-light)]">Loading assignment preview...</div>;
+    return <div className="p-6 text-[var(--color-text-light)]">Loading assignment...</div>;
   }
+
+  // If no assignment loaded, fallback message
+  if (!assignment) {
+    return <div className="p-6 text-[var(--color-text-light)]">Assignment not found or you don't have access.</div>;
+  }
+
+  // professor attachments fallbacks
+  const attachments =
+    assignment.attachments ||
+    (assignment.uploadedFile ? [assignment.uploadedFile] : null) ||
+    assignment.uploadedFiles ||
+    [];
+
+  const profFiles = getProfessorAttachments(attachments);
 
   return (
     <div className="min-h-screen bg-[var(--color-primary)] p-6">
@@ -181,7 +225,7 @@ const SpecificAssignment = () => {
                 <strong>Professor:</strong> {assignment.professor?.name || "Professor"}
               </div>
               <div>
-                <strong>Due:</strong> {assignment.dueDate || "—"}
+                <strong>Due:</strong> {assignment.dueDate ? formatDate(assignment.dueDate) : "—"}
               </div>
             </div>
           </div>
@@ -193,6 +237,7 @@ const SpecificAssignment = () => {
             >
               Back
             </button>
+            {/* no Save Progress button on this page (canvas has Save) */}
           </div>
         </div>
 
@@ -203,23 +248,26 @@ const SpecificAssignment = () => {
             <div className="bg-[var(--color-secondary)] rounded-md p-4 border border-[var(--color-border)]">
               <h3 className="text-xl text-[var(--color-text-bright)] font-semibold mb-3">Attached files</h3>
 
-              {(!assignment.attachments || assignment.attachments.length === 0) ? (
+              {(!profFiles || profFiles.length === 0) ? (
                 <div className="text-[var(--color-placeholder)]">No attachments provided.</div>
               ) : (
                 <div className="space-y-2">
-                  {assignment.attachments.map((f, i) => (
-                    <div key={i} className="flex items-center justify-between bg-[var(--color-primary)]/20 p-3 rounded">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-8 flex items-center justify-center rounded bg-[var(--color-border)] text-sm text-[var(--color-text-light)]">
-                          {f.type?.toUpperCase() || "FILE"}
+                  {profFiles.map((f, i) => {
+                    const fileObj = typeof f === "string" ? { url: f, originalname: f } : f;
+                    return (
+                      <div key={i} className="flex items-center justify-between bg-[var(--color-primary)]/20 p-3 rounded">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-8 flex items-center justify-center rounded bg-[var(--color-border)] text-sm text-[var(--color-text-light)]">
+                            {fileObj.type?.toUpperCase?.() || "FILE"}
+                          </div>
+                          <button onClick={() => openProfessorPreview(fileObj)} className="text-[var(--color-accent-cyan)] hover:underline text-left">
+                            {fileObj.originalname || fileObj.name || fileObj.url}
+                          </button>
                         </div>
-                        <button onClick={() => openProfessorPreview(f)} className="text-[var(--color-accent-cyan)] hover:underline text-left">
-                          {f.originalname || f.name}
-                        </button>
+                        <div className="text-[var(--color-placeholder)] text-xs">{fileObj.type || ""}</div>
                       </div>
-                      <div className="text-[var(--color-placeholder)] text-xs">{f.type || ""}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -233,11 +281,15 @@ const SpecificAssignment = () => {
             {/* Apparatus */}
             <div className="bg-[var(--color-secondary)] rounded-md p-4 border border-[var(--color-border)]">
               <h3 className="text-lg font-semibold text-[var(--color-text-bright)] mb-2">Apparatus</h3>
-              {assignment.apparatus && assignment.apparatus.length > 0 ? (
+              {assignment.assignedApparatus && assignment.assignedApparatus.length > 0 ? (
                 <ul className="list-disc list-inside text-[var(--color-text-light)] space-y-1">
-                  {assignment.apparatus.map((a, idx) => (
-                    <li key={idx}>{a}</li>
+                  {assignment.assignedApparatus.map((a, idx) => (
+                    <li key={idx}>{a.type}{a.quantity ? ` — ${a.quantity}` : ""}</li>
                   ))}
+                </ul>
+              ) : assignment.apparatus && assignment.apparatus.length > 0 ? (
+                <ul className="list-disc list-inside text-[var(--color-text-light)] space-y-1">
+                  {assignment.apparatus.map((a, idx) => <li key={idx}>{a}</li>)}
                 </ul>
               ) : (
                 <div className="text-[var(--color-placeholder)]">No apparatus listed</div>
@@ -257,7 +309,9 @@ const SpecificAssignment = () => {
                   </button>
                   <button
                     onClick={addNewSubtab}
+                    disabled={creating}
                     className="p-2 rounded bg-[var(--color-primary)] hover:bg-[var(--color-accent-cyan)] text-[var(--color-accent-cyan)]"
+                    title="Add new circuit tab"
                   >
                     <FiPlus />
                   </button>
@@ -282,7 +336,7 @@ const SpecificAssignment = () => {
               {/* Solution toggle */}
               <div className="mt-4">
                 <button
-                  onClick={toggleSolution}
+                  onClick={() => setShowSolution((s) => !s)}
                   className="flex items-center gap-2 px-3 py-2 rounded-md bg-[var(--color-secondary)] text-[var(--color-text-light)]"
                 >
                   <FiChevronDown className={`${showSolution ? "rotate-180 transform" : ""}`} />
@@ -291,41 +345,50 @@ const SpecificAssignment = () => {
 
                 {showSolution && (
                   <div className="mt-3 bg-[var(--color-secondary)] p-4 rounded-md border border-[var(--color-border)]">
-                    {assignment.solutionCircuit ? (
-                      <div className="text-[var(--color-text-light)] space-y-2">
-                        <h4 className="text-lg font-semibold text-[var(--color-accent-cyan)]">
-                          {assignment.solutionCircuit.name}
-                        </h4>
+                    {assignment.solutionCircuit && assignment.solutionCircuit.length > 0 ? (
+                      <div className="text-[var(--color-text-light)] space-y-3">
+                        {assignment.solutionCircuit.map((c) => (
+                          <div key={c._id || c} className="p-3 bg-[var(--color-primary)]/10 rounded">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <div className="text-lg font-semibold text-[var(--color-accent-cyan)]">{c.name || "Solution Circuit"}</div>
+                                <div className="text-sm text-[var(--color-placeholder)]">
+                                  Uploaded by {c.owner?.name || "Professor"}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {/* open raw workspace view of circuit */}
+                                <Link
+                                  to={`/workspace/${c._id}`}
+                                  className="px-3 py-1 rounded bg-[var(--color-accent-cyan)] text-black font-medium"
+                                >
+                                  Open
+                                </Link>
+                              </div>
+                            </div>
 
-                        <p className="text-sm text-[var(--color-placeholder)] italic">
-                          Uploaded by {assignment.solutionCircuit.owner?.name || "Professor"}
-                        </p>
+                            {/* brief component list if available */}
+                            {c.circuitdata?.components && c.circuitdata.components.length > 0 && (
+                              <ul className="list-disc list-inside text-sm mt-2">
+                                {c.circuitdata.components.map((comp, i) => (
+                                  <li key={comp._id || i}>
+                                    {comp.type} {comp.value ? `— ${comp.value}` : comp.voltage ? `— ${comp.voltage}` : ""}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
 
-                        <ul className="list-disc list-inside text-sm mt-2">
-                          {assignment.solutionCircuit.circuitdata?.components?.map((comp, i) => (
-                            <li key={comp._id || i}>
-                              {comp.type} — {comp.value || comp.voltage || ""}
-                            </li>
-                          ))}
-                        </ul>
-
-                        <p className="text-sm mt-2">
-                          Status:{" "}
-                          <span
-                            className={
-                              assignment.solutionCircuit.analysed
-                                ? "text-green-400 font-semibold"
-                                : "text-yellow-400 font-semibold"
-                            }
-                          >
-                            {assignment.solutionCircuit.analysed ? "Analysed" : "Pending Analysis"}
-                          </span>
-                        </p>
+                            <div className="text-sm mt-2">
+                              Status:{" "}
+                              <span className={c.analysed ? "text-green-400 font-semibold" : "text-yellow-400 font-semibold"}>
+                                {c.analysed ? "Analysed" : "Pending Analysis"}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     ) : (
-                      <div className="text-[var(--color-placeholder)]">
-                        No solution available yet.
-                      </div>
+                      <div className="text-[var(--color-placeholder)]">No solution available yet.</div>
                     )}
                   </div>
                 )}
@@ -352,10 +415,7 @@ const SpecificAssignment = () => {
               {userFiles.length > 0 && (
                 <div className="mt-3 space-y-2">
                   {userFiles.map((f, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between bg-[var(--color-primary)]/20 p-2 rounded"
-                    >
+                    <div key={i} className="flex items-center justify-between bg-[var(--color-primary)]/20 p-2 rounded">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-[var(--color-border)] flex items-center justify-center rounded text-[var(--color-text-light)]">
                           <BsFileEarmarkText />
@@ -363,16 +423,10 @@ const SpecificAssignment = () => {
                         <div className="truncate">{f.originalname}</div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => window.open(f.url, "_blank")}
-                          className="text-[var(--color-accent-cyan)] text-sm"
-                        >
+                        <button onClick={() => window.open(f.url, "_blank")} className="text-[var(--color-accent-cyan)] text-sm">
                           Preview
                         </button>
-                        <button
-                          onClick={() => removeUserFile(i)}
-                          className="text-[var(--color-placeholder)] text-sm"
-                        >
+                        <button onClick={() => removeUserFile(i)} className="text-[var(--color-placeholder)] text-sm">
                           Remove
                         </button>
                       </div>
@@ -400,3 +454,4 @@ const SpecificAssignment = () => {
 };
 
 export default SpecificAssignment;
+
