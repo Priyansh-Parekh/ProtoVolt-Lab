@@ -45,7 +45,7 @@ const GetClassroom = async (req, res) => {
             })
             .populate({
                 path: "announcements",
-                select: "title professor content createdAt",
+                select: "title professor content file createdAt",
                 populate: {
                     path: "professor",
                     select: "name"

@@ -18,7 +18,7 @@ route.use(loginMiddelware);
 //create api's
 route.post("/createClassroom", uploadClassroomImage.single('image'), createClassroom);
 route.post("/createAssignment",uploadAssignmentFiles.single('file'),createAssignment);
-route.post("/:classroomId/announcement",uploadAssignmentFiles.single('file'), createAnnouncement);
+route.post("/createAnnouncement",uploadAssignmentFiles.single('file'), createAnnouncement);
 
 //data api's
 route.get("/getClassroom",GetClassroom);

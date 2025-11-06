@@ -13,6 +13,7 @@ import { error } from '../utils/toastify';
 
 const SpecificClass = ({user}) => {
 
+  const [callAnnounApi,setCallAnnounApi]= useState(false);
   const [announced,setAnnounced] = useState(false);
   const[classroom,setClassroom] = useState(null);
   const [searchParams] = useSearchParams();
@@ -35,7 +36,7 @@ const SpecificClass = ({user}) => {
     };
 
     fetchData();
-  }, []);
+  }, [callAnnounApi]);
 
   return (
     <div className="flex bg-[var(--color-primary)] min-h-screen">
@@ -48,7 +49,7 @@ const SpecificClass = ({user}) => {
         <ClassHeader user={user} className={classroom?.name} class_id ={classroom?._id} setAnnounced={setAnnounced} />
 
         {/* Announcement Popup */}
-        {announced && <ClassAnnouncementPopup setAnnounced={setAnnounced} />}
+        {announced && <ClassAnnouncementPopup setCallAnnounApi={setCallAnnounApi} setAnnounced={setAnnounced} c_id={_id} />}
   {/* Main Content */}
   <div className="flex-1 px-6 ">
     <ClassroomHubPage isclassroom={classroom} />

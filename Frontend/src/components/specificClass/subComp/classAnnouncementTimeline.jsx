@@ -1,5 +1,5 @@
 import React from 'react';
-import { MdAnnouncement, MdSchedule, MdPerson } from "react-icons/md";
+import { MdAnnouncement, MdSchedule, MdPerson, MdAttachFile } from "react-icons/md";
 
 /**
  * Formats a MongoDB createdAt/updatedAt date string or Date object
@@ -70,6 +70,31 @@ const ClassAnnouncementTimeline = ({ announcements = [] }) => {
                 {announcement.content}
               </p>
             </div>
+
+            {/* File Attachment */}
+            {announcement.file && (
+              <div className="mb-4 p-3 bg-[var(--color-primary)]/50 rounded-lg border border-[var(--color-border)]/20">
+                <a
+                  href={announcement.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 group/file hover:bg-[var(--color-primary)]/70 transition-colors duration-200 rounded-md p-2 -m-2"
+                >
+                  <div className="p-2 bg-[var(--color-accent-cyan)]/10 rounded-full group-hover/file:bg-[var(--color-accent-cyan)]/20 transition-colors duration-200">
+                    <MdAttachFile className="text-[var(--color-accent-cyan)] text-lg" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-[var(--color-placeholder)] font-medium">Attached File</p>
+                    <p className="text-sm text-[var(--color-accent-cyan)] font-ChakraPetch truncate group-hover/file:text-[var(--color-accent-teal)] transition-colors duration-200">
+                      View File
+                    </p>
+                  </div>
+                  <span className="text-xs text-[var(--color-placeholder)] opacity-0 group-hover/file:opacity-100 transition-opacity duration-200">
+                    Opens in new tab
+                  </span>
+                </a>
+              </div>
+            )}
 
             {/* Professor Info */}
             <div className="mb-4 p-3 bg-[var(--color-primary)]/50 rounded-lg border border-[var(--color-border)]/20">
