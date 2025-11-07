@@ -5,11 +5,12 @@ import getClassroomPeople from "../controllers/classroom/profNstud.js";
 import GetClassroom from "../controllers/classroom/getClassroom.js";
 import createAssignment from "../controllers/classroom/createAssignment.js";
 import createAnnouncement from "../controllers/classroom/createAnnouncement.js";
-
+import createSubTab from "../controllers/classroom/createSubTab.js";
 
 // middelwares
 import { uploadAssignmentFiles, uploadClassroomImage } from "../middleware/multer.js";
 import loginMiddelware from "../middleware/login.js";
+import getStudAss from "../controllers/classroom/getStudAss.js";
 
 const route = Router();
 
@@ -19,11 +20,12 @@ route.use(loginMiddelware);
 route.post("/createClassroom", uploadClassroomImage.single('image'), createClassroom);
 route.post("/createAssignment",uploadAssignmentFiles.single('file'),createAssignment);
 route.post("/createAnnouncement",uploadAssignmentFiles.single('file'), createAnnouncement);
-
+route.post("/createSubtab", createSubTab);
 //data api's
 route.get("/getClassroom",GetClassroom);
 route.get("/getAssignment", getAssignment);
 route.get("/:classroomId/people", getClassroomPeople);
+route.get("/getStudAss",getStudAss);
 
 
 export default route;
