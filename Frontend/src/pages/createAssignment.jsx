@@ -148,7 +148,7 @@ const CreateAssignment = () => {
             }
             const assignedApparatus = apparatus
                 .filter(item => item.required)
-                .map(item => ({ type: item.type, quantity: item.quantity }));
+                .map(item => ({ type: item.name, quantity: item.quantity }));
             dataAssign.append("assignedApparatus", JSON.stringify(assignedApparatus));
             dataAssign.append("solutionCircuit", JSON.stringify(selectedCircuits));
             if (!file) {

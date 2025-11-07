@@ -10,6 +10,7 @@ import createSubTab from "../controllers/classroom/createSubTab.js";
 // middelwares
 import { uploadAssignmentFiles, uploadClassroomImage } from "../middleware/multer.js";
 import loginMiddelware from "../middleware/login.js";
+import getStudAss from "../controllers/classroom/getStudAss.js";
 
 const route = Router();
 
@@ -24,6 +25,7 @@ route.post("/createSubtab", createSubTab);
 route.get("/getClassroom",GetClassroom);
 route.get("/getAssignment", getAssignment);
 route.get("/:classroomId/people", getClassroomPeople);
+route.get("/getStudAss",getStudAss);
 
 
 export default route;

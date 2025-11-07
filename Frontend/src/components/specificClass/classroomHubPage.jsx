@@ -39,7 +39,7 @@ const ClassroomHubPage = ({ isclassroom }) => {
       </h1>
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="w-full lg:w-2/3">
-          <ClassAssignmentTimeline assignments={classroom.assignments || []} />
+          <ClassAssignmentTimeline classroomId={classroom._id} assignments={classroom.assignments || []} />
         </div>
         <div className="w-full lg:w-1/3">
           <ClassAnnouncementTimeline announcements={classroom.announcements || []} />

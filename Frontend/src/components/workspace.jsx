@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { FiMove, FiZap, FiRotateCcw, FiRotateCw, FiTrash2, FiDownload, FiActivity } from "react-icons/fi";
-import { useParams } from 'react-router-dom';
+import { useParams,useSearchParams  } from 'react-router-dom';
 
 // Importing utils
 import { error, info, success } from '../utils/toastify';
@@ -28,12 +28,15 @@ const Workspace = () => {
     const history = useRef([initialState]);
     const historyIndex = useRef(0);
     const { projectId } = useParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const [state, setState] = useState(initialState);
     const [showJsonModal, setShowJsonModal] = useState(false);
     const [jsonOutput, setJsonOutput] = useState('');
     const [analysisResults, setAnalysisResults] = useState(null);
     const [circuitName, setCircuitName] = useState("Untitled")
 
+
+    const view = searchParams.get("view");  // "admin"
 
     // --- State & History Management ---
 
@@ -769,7 +772,7 @@ const Workspace = () => {
     useEffect(() => {
         const execute = async () => {
             try {
-                const res = await api.get(`/circuit/data/getCircuit?id=${projectId}`);
+                const res = await api.get(`/circuit/data/getCircuit?id=${projectId}&view=${view}`);
                 if (res.data.success) {
                     const data_circuit = res.data.circuit;
                     setCircuitName(data_circuit.name)
@@ -862,7 +865,7 @@ const Workspace = () => {
                         <button onClick={deleteSelected} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/70"><FiTrash2 className="text-lg" /> Delete</button>
                         <button onClick={exportJson} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/70"><FiDownload className="text-lg" /> Export JSON</button>
                         <button onClick={analyzeCircuit} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/70"><FiActivity className="text-lg" /> Analyze</button>
-                        <button onClick={(e) => { if (projectId === "new") createCircuit(e); else { saveCircuit(e) } }} className="flex items-center hover:cursor-pointer gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"><FiDownload className="text-lg" /> Save</button>
+                        <button onClick={(e) => { if(view){error("maybe You Don't Have Access")}else{if (projectId === "new") createCircuit(e); else { saveCircuit(e) } }}} className="flex items-center hover:cursor-pointer gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"><FiDownload className="text-lg" /> Save</button>
                     </div>
     
                     {/* Canvas + Properties Row */}

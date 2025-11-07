@@ -34,16 +34,9 @@ const assignmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Circuit',
     }],
-    subTabs: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'SubTab',
-    }],
     uploadedFile: {
         type: String,
     },
-    studentFiles:[{
-        type:String
-    }],
     classroom:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Classroom',

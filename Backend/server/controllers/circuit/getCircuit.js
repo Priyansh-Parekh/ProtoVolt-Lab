@@ -3,7 +3,7 @@ import User from "../../models/users.js";
 
 const getCircuit = async (req, res) => {
   try {
-    const { id } = req.query;
+    const { id ,view} = req.query;
     const user = req.user;
 
     // 1️⃣ Fetch and populate deeply inside circuitdata
@@ -23,12 +23,15 @@ const getCircuit = async (req, res) => {
         message: "Circuit not found"
       });
 
+
     // ✅ Fix: Proper ObjectId comparison
+   if(view!=="true"){
     if (String(circuit.owner) !== String(user._id))
-      return res.status(403).json({
+      return res.status(400).json({
         success: false,
         message: "Unauthorized access"
       });
+   }
 
     // 2️⃣ Extract and rebuild frontend data
     const nodes = circuit.circuitdata.nodes.map(node => ({

@@ -29,10 +29,6 @@ const getAssignment = async (req, res) => {
       })
       .populate("solutionCircuit")
 
-      .populate({
-        path: "subTabs",
-        populate: { path: "circuit" } // get circuit inside each tab
-      })
       
       .populate({
         path: "classroom",

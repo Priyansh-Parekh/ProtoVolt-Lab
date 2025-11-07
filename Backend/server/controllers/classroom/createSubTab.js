@@ -1,29 +1,36 @@
 import Assignment from "../../models/assignments.js";
 import SubTab from "../../models/subTab.js";
+import Circuit from "../../models/circuits.js";
 import mongoose from "mongoose";
+import StudAss from "../../models/studAss.js";
 
 const createSubTab = async (req, res) => {
   try {
-    const { assignmentId, name } = req.body;
+    const { ass_Id, name } = req.body;
     const user = req.user;
 
     if (!user) return res.status(401).json({ success: false, message: "Unauthorized access." });
 
-    if (!assignmentId || !name) {
+    if (!ass_Id || !name) {
       return res.status(400).json({ success: false, message: "assignmentId and name are required." });
     }
 
-    const assignment = await Assignment.findById(assignmentId);
+    const as_id = new mongoose.Types.ObjectId(ass_Id);
+
+    const assignment = await Assignment.findById(as_id);
     if (!assignment) {
       return res.status(404).json({ success: false, message: "Assignment not found." });
     }
 
-    // ✅ Create SubTab (no circuit yet)
-    const newTab = await SubTab.create({ name });
+    const circuit = await Circuit.create({name,owner:user._id});
+    await circuit.save();
 
-    // ✅ Push subtab into Assignment
-    assignment.subTabs.push(new mongoose.Types.ObjectId(newTab._id));
-    await assignment.save();
+    const newTab = await SubTab.create({ name , circuit:circuit._id});
+    await newTab.save();
+
+    const studentAssignment = await StudAss.find({owner:user._id,assignment:as_id});
+    studentAssignment[0].subTabs.push(newTab._id);
+    await studentAssignment[0].save();
 
     return res.status(201).json({
       success: true,
