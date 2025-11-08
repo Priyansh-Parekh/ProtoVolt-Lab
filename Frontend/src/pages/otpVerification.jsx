@@ -5,8 +5,8 @@ import { BsCpu } from 'react-icons/bs';
 
 
 //components
-import LeftHalfVer from '../components/Auth/LeftHalfVer';
-import LeftHalfAccVer from '../components/Auth/leftHalfAccVer';
+import LeftHalfVer from '../components/Auth/LeftHalfVer.jsx';
+import LeftHalfAccVer from '../components/Auth/leftHalfAccVer.jsx';
 import api from '../utils/axios';
 import { error, success } from '../utils/toastify';
 
