@@ -8,8 +8,8 @@ import {
 import { FaMicrochip, FaBolt, FaWaveSquare, FaProjectDiagram } from "react-icons/fa";
 
 //importing utils
-import api from "../utils/axios";
-import { error, success, warning } from "../utils/toastify";
+import api from "../utils/axios.js";
+import { error, success, warning } from "../utils/toastify.js";
 
 const initialApparatusState = [
   { name: "Resistor", type: "analog", required: false, quantity: 1, icon: <FaProjectDiagram /> },

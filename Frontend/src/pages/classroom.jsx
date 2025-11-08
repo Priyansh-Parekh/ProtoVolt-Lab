@@ -5,16 +5,16 @@ import { FaRegSadTear } from "react-icons/fa";
 import api from '../utils/axios';
 
 //components
-import ClassroomJoinPopup from '../components/classroom/ClassroomJoinPopup'
-import Classroom_header from '../components/classroom/classroomHeader'
-import Classroom_card from '../components/classroom/classroomCard'
+import ClassroomJoinPopup from '../components/classroom/ClassroomJoinPopup.jsx'
+import Classroom_header from '../components/classroom/classroomHeader.jsx'
+import Classroom_card from '../components/classroom/classroomCard.jsx'
 
 //seeds
 // import {classroomSeed} from '../seeds/data'
 
 //usefull fun
 import { useState } from 'react'
-import { error } from '../utils/toastify';
+import { error } from '../utils/toastify.js';
 
 const Classroom = ({user}) => {
 

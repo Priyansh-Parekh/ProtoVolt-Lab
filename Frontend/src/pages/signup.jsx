@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
 //Components
-import LeftHalf from '../components/Login/LeftHalf';
+import LeftHalf from '../components/Login/LeftHalf.jsx';
 
 // Reusing the same SVG icons and visual components for a consistent theme.
-import CircuitIcons from '../assets/circuitIcons';
-import api from '../utils/axios';
-import { error, success } from '../utils/toastify';
+import CircuitIcons from '../assets/circuitIcons.jsx';
+import api from '../utils/axios.js';
+import { error, success } from '../utils/toastify.js';
 
 
 

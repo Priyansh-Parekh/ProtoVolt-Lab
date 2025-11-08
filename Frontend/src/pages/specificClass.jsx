@@ -2,14 +2,14 @@ import React, { useState, useEffect,useRef } from 'react'
 import { useSearchParams } from 'react-router-dom';
 
 //components
-import ClassHeader from '../components/specificClass/classHeader'
-import ClassAnnouncementPopup from '../components/specificClass/classAnnouncementPopup';
-import ClassroomHubPage from '../components/specificClass/classroomHubPage';
-import Sidebar from '../components/classroom/sidebar';
+import ClassHeader from '../components/specificClass/classHeader.jsx'
+import ClassAnnouncementPopup from '../components/specificClass/classAnnouncementPopup.jsx';
+import ClassroomHubPage from '../components/specificClass/classroomHubPage.jsx';
+import Sidebar from '../components/classroom/sidebar.jsx';
 
 //import utils
-import api from '../utils/axios';
-import { error } from '../utils/toastify';
+import api from '../utils/axios.js';
+import { error } from '../utils/toastify.js';
 
 const SpecificClass = ({user}) => {
 

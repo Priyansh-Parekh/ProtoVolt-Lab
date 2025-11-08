@@ -8,8 +8,8 @@ import {
   FiTrash2 ,
   FiChevronRight,
 } from "react-icons/fi";
-import { error, success } from "../utils/toastify";
-import api from "../utils/axios";
+import { error, success } from "../utils/toastify.js";
+import api from "../utils/axios.js";
 
 const WorkspacePage = () => {
   const [circuits, setCircuits] = useState([]);
