@@ -5,7 +5,7 @@ import getClassroomPeople from "../controllers/classroom/profNstud.js";
 import GetClassroom from "../controllers/classroom/getClassroom.js";
 import createAssignment from "../controllers/classroom/createAssignment.js";
 import createAnnouncement from "../controllers/classroom/createAnnouncement.js";
-
+import { joinClassroom } from '../controllers/classroom/classroomController.js';
 
 // middelwares
 import { uploadAssignmentFiles, uploadClassroomImage } from "../middleware/multer.js";
@@ -19,7 +19,7 @@ route.use(loginMiddelware);
 route.post("/createClassroom", uploadClassroomImage.single('image'), createClassroom);
 route.post("/createAssignment",uploadAssignmentFiles.single('file'),createAssignment);
 route.post("/createAnnouncement",uploadAssignmentFiles.single('file'), createAnnouncement);
-
+route.post("/join", joinClassroom);
 //data api's
 route.get("/getClassroom",GetClassroom);
 route.get("/getAssignment", getAssignment);
