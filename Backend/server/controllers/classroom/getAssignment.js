@@ -28,6 +28,8 @@ const getAssignment = async (req, res) => {
         select: "name"
       })
       .populate("solutionCircuit")
+
+      
       .populate({
         path: "classroom",
         select: "students professors"

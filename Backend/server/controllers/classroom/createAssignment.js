@@ -1,6 +1,7 @@
 import Assignment from "../../models/assignments.js";
 import mongoose from "mongoose";
 import Classroom from "../../models/classrooms.js";
+import StudAss from "../../models/studAss.js";
 import { uploadAssignmentFilesCloudinary } from "../../config/cloudinary.js";
 
 const createAssignment = async (req, res) => {
@@ -32,9 +33,6 @@ const createAssignment = async (req, res) => {
       try {
         const circuitIdArray = JSON.parse(solutionCircuit);
         
-        // ====================== 🕵️ DEBUG LOGS START 🕵️ ======================
-        console.log("Parsed circuit ID array BEFORE conversion:", circuitIdArray);
-        // ======================= 🕵️ DEBUG LOGS END 🕵️ =======================
 
         if (Array.isArray(circuitIdArray)) {
           // Map and validate each ID. This will throw an error if any ID is invalid.
@@ -50,6 +48,15 @@ const createAssignment = async (req, res) => {
 
     console.log("Attempting to convert classroomId:", classroomId);
     const class_Id = new mongoose.Types.ObjectId(classroomId);
+  
+    const classroom = await Classroom.findById(class_Id);
+
+    if(!classroom){
+      return res.status(404).json({success: false, message: "Classroom not found"});
+    }
+
+    const students = classroom.students;
+
 
     let url = null;
         if (req.file) {
@@ -67,15 +74,24 @@ const createAssignment = async (req, res) => {
       solutionCircuit: parsedCircuits,
       professor: user._id,
       classroom: class_Id,
-    //   uploadedFile: url;
+      uploadedFile: url
    
     });
 
     await assignment.save();
-
-    const classroom = await Classroom.findById(class_Id);
     classroom.assignments.push(assignment._id);
     await classroom.save();
+
+    for(const student of students){
+      const studAs = new StudAss({
+        owner:student._id,
+        assignment:assignment._id,
+        studentFiles:[],
+        subTabs:[],
+      })
+      await studAs.save();
+
+    }
     
     return res.status(201).json({
       success: true,

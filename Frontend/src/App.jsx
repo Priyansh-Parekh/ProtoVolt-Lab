@@ -100,11 +100,11 @@ const MainContent = () => {
           <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
 
           <Route
-            path="/classroom/:classroomId/assignment/:assignmentId/:subtabSlug?"
-            element={user ? <SpecificAssignment /> : <Navigate to="/user/login" />}
+            path="/classroom/:classroomId/assignment/:assignmentId"
+            element={user ? <SpecificAssignment user={user} /> : <Navigate to="/user/login" />}
           />
           <Route
-            path="/classroom/:classroomId/assignment/:assignmentId/:subtabSlug/workspace"
+            path="/classroom/:classroomId/assignment/:assignmentId/:subtabId/:projectId"
             element={user ? <Workspace /> : <Navigate to="/user/login" />}
           />
 
