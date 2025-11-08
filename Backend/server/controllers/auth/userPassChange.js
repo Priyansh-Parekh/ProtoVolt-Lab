@@ -13,7 +13,7 @@ const userPassChange = async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: "Password changed",
-                    redirectUrl: "http://localhost:5173/user/login"
+                    redirectUrl: `${process.env.Frontend_Link}/user/login`
                 });
             } else {
                 res.status(400).json({

@@ -15,7 +15,7 @@ const userLogin = async (req, res) => {
             res.status(200).json({
                 success: true,
                 message: "succesfully credentials match",
-                redirectUrl: 'http://localhost:5173/dashboard'
+                redirectUrl:`${process.env.Frontend_Link}/dashboard`
             });
         } else {
             if (!user.verified)
