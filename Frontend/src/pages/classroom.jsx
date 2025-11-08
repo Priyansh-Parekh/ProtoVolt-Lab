@@ -5,7 +5,7 @@ import { FaRegSadTear } from "react-icons/fa";
 import api from '../utils/axios';
 
 //components
-import ClassroomJoinPopup from '../components/classroom/ClassroomJoinPopup.jsx'
+import ClassroomJoinPopup from '../components/classroom/classroomJoinPopup.jsx'
 import Classroom_header from '../components/classroom/classroomHeader.jsx'
 import Classroom_card from '../components/classroom/classroomCard.jsx'
 
