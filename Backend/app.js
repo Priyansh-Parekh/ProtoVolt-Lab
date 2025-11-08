@@ -11,13 +11,29 @@ const port = process.env.PORT || 3000;
 
 connectDB();
 // --- MIDDLEWARE ---
+
+const allowedOrigins = [
+  "http://localhost:5173",       // for local dev
+  "https://protovolt-lab.vercel.app" // for deployed frontend
+];
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({                                    // Allow frontend origin and credentials
-  origin: "http://localhost:5173", // frontend URL
-  credentials: true,               // allow cookies / Authorization headers
-}));
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("❌ Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // important for cookies / JWT
+  })
+);
 
 // import route files
 import mainRouter from './server/routes/main.js';
