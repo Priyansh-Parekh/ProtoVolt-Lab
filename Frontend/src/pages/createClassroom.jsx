@@ -6,7 +6,7 @@ import api from '../utils/axios.js';
 
 // components
 import LeftVisualPanel from '../components/createClassroom/leftVisualPanel.jsx';
-import { error,warning } from '../utils/toastify.jsx';
+import { error,warning } from '../utils/toastify.js';
 
 const CreateClassroom = () => {
 
