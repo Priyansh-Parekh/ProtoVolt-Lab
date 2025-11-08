@@ -2,10 +2,10 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { FiTrello, FiBookOpen, FiZap, FiCode } from "react-icons/fi";
 // import Hero3D from "../components/Hero3D";
-import ParticleBackground from "../helper/ParticleBackground";
-import BackgroundGlow from "../helper/BackgroundGlow";
-import ParallaxSection from "../helper/ParallaxSection";
-import { SplitText, RevealText, ParallaxText, GlitchText, ScaleText } from "../helper/AnimatedText";
+import ParticleBackground from "../helper/ParticleBackground.jsx";
+import BackgroundGlow from "../helper/BackgroundGlow.jsx";
+import ParallaxSection from "../helper/ParallaxSection.jsx";
+import { SplitText, RevealText, ParallaxText, GlitchText, ScaleText } from "../helper/AnimatedText.jsx";
 
 const features = [
   { icon: FiTrello, title: "Drag-and-Drop Canvas", description: "Build complex circuits intuitively on a limitless digital canvas. Our workspace supports all standard components and custom modules.", delay: 0.2 },

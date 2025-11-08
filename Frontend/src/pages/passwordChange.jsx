@@ -4,11 +4,11 @@ import { useSearchParams } from 'react-router-dom';
 import { BsCpu } from 'react-icons/bs';
 
 //importing compornents
-import LeftHalfPass from '../components/Auth/leftHalfPass';
+import LeftHalfPass from '../components/Auth/leftHalfPass.jsx';
 
 //importing utils
-import api from '../utils/axios';
-import { error, success } from '../utils/toastify';
+import api from '../utils/axios.js';
+import { error, success } from '../utils/toastify.js';
 
 const PasswordChange = () => {
     const [newPassword, setNewPassword] = useState("");

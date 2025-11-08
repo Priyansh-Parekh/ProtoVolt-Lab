@@ -3,8 +3,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { FiPlus, FiChevronDown, FiUploadCloud, FiX } from "react-icons/fi";
 import { BsFileEarmarkText } from "react-icons/bs";
-import api from "../utils/axios"; // make sure this axios instance supports withCredentials
-import { error, info, success } from "../utils/toastify";
+import api from "../utils/axios.js"; // make sure this axios instance supports withCredentials
+import { error, info, success } from "../utils/toastify.js";
 
 const FilePreviewModal = ({ file, onClose }) => {
   if (!file) return null;

@@ -19,7 +19,7 @@ import ClassMembers from './pages/classMembers';
 import Login from './pages/login.jsx';
 import Signup from './pages/signup.jsx';
 import OtpVerification from './pages/otpVerification.jsx';
-import PasswordChange from './pages/PasswordChange.jsx';
+import PasswordChange from './pages/passwordChange.jsx';
 import CreateClassroom from './pages/createClassroom.jsx';
 import CreateAssignment from './pages/createAssignment.jsx';
 import Footer from './components/Footer.jsx';
