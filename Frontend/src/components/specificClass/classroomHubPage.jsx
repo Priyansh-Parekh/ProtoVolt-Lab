@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 // import components
-import ClassAssignmentTimeline from './subComp/classAssignmentTimeline';
-import ClassAnnouncementTimeline from './subComp/classAnnouncementTimeline';
+import ClassAssignmentTimeline from './subComp/classAssignmentTimeline.jsx';
+import ClassAnnouncementTimeline from './subComp/classAnnouncementTimeline.jsx';
 
 const ClassroomHubPage = ({ isclassroom }) => {
   const [classroom, setClassroom] = useState(null);
