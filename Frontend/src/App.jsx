@@ -1,13 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Flip, ToastContainer } from 'react-toastify';
 
 // components
 import Navbar from './components/navbar';
-import Loading from './helper/Loading'; // Correct path to your helper file
+import Loading from './helper/Loading'; 
 import Workspace from './components/workspace';
 
-//importing utils
+// importing utils
 import api from './utils/axios.js';
 
 // pages
@@ -28,25 +28,18 @@ import ErrorPage from './pages/errorPage.jsx';
 import SpecificAssignment from './pages/specificAssignment.jsx';
 import AboutUs from './pages/aboutUs.jsx';
 
-// We create a wrapper component to ensure Navbar is always present and only content changes
 const MainContent = () => {
-  // useLocation is required here to pass to the Routes component and trigger the animation wrapper
   const location = useLocation();
 
   const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] = useState(true); // loading state while fetching user
-
-  // fetch user data on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await api.get('/user/data/getUser');
-        if (res.data.success) {
-          setUser(res.data.user);
-        } else {
-          setUser(null);
-        }
+        if (res.data.success) setUser(res.data.user);
+        else setUser(null);
       } catch (error) {
         console.error("API error:", error);
         setUser(null);
@@ -54,16 +47,13 @@ const MainContent = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  // show loading spinner/page while fetching user
   if (loading) return <Loading />;
 
   return (
     <>
-      {/* Navbar stays fixed outside the animation logic */}
       <Navbar user={user} />
       <ToastContainer
         position="top-center"
@@ -78,27 +68,23 @@ const MainContent = () => {
         theme="dark"
         transition={Flip}
       />
-      {/* The PageTransitionWrapper handles the smooth exit and entry animation for all content */}
       <Loading>
         <Routes location={location}>
-          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/workspace" element={<WorkspacePage />} />
           <Route path="/about-us" element={<AboutUs />} />
 
-          {/* Public-Only Routes (Redirect if logged in) */}
+          {/* Auth Routes */}
           <Route path="/user/login" element={user ? <Navigate to="/" /> : <Login />} />
           <Route path="/user/signup" element={user ? <Navigate to="/" /> : <Signup />} />
           <Route path="/user/passwordChange" element={user ? <Navigate to="/" /> : <PasswordChange />} />
           <Route path="/user/otpVerification" element={user ? <Navigate to="/" /> : <OtpVerification />} />
 
-          {/* Protected Routes (Require Login) */}
+          {/* Protected Routes */}
           <Route path="/workspace/:projectId" element={user ? <Workspace /> : <Navigate to="/user/login" />} />
-
           <Route path="/classroom" element={user ? <Classroom user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class" element={user ? <SpecificClass user={user} /> : <Navigate to="/user/login" />} />
           <Route path="/classroom/class/:id/members" element={user ? <ClassMembers /> : <Navigate to="/user/login" />} />
-
           <Route
             path="/classroom/:classroomId/assignment/:assignmentId"
             element={user ? <SpecificAssignment user={user} /> : <Navigate to="/user/login" />}
@@ -108,11 +94,11 @@ const MainContent = () => {
             element={user ? <Workspace /> : <Navigate to="/user/login" />}
           />
 
-          {/* Professor-Only Routes */}
+          {/* Professor-only */}
           <Route path="/classroom/createClassroom" element={user?.role === 'professor' ? <CreateClassroom /> : <Unauthorized />} />
           <Route path="/classroom/createAssignment" element={user?.role === 'professor' ? <CreateAssignment /> : <Unauthorized />} />
 
-          {/* Error Routes */}
+          {/* Error routes */}
           <Route path="/error/unathorizedAscess" element={<Unauthorized />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
@@ -122,14 +108,11 @@ const MainContent = () => {
   );
 };
 
-
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <MainContent />
-      </div>
-    </Router>
+    <div className="App">
+      <MainContent />
+    </div>
   );
 }
 
