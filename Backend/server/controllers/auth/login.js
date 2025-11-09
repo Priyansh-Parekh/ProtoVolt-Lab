@@ -1,41 +1,45 @@
 import generateToken from "../../utils/tokenGenerator.js";
-import User from '../../models/users.js'
+import User from "../../models/users.js";
 
 const userLogin = async (req, res) => {
-    const { email, password } = req.body;
-    let token = generateToken(email);
-    const user = await User.findOne({ email });
-    try {
-        if (user && user.verified && (await user.matchPassword(password))) {
-            res.cookie("token", token, {
-                httpOnly: true,
-                secure: false,     // true in production
-                // sameSite: "strict"
-            });
-            res.status(200).json({
-                success: true,
-                message: "succesfully credentials match",
-                redirectUrl:`${process.env.Frontend_Link}/dashboard`
-            });
-        } else {
-            if (!user.verified)
-                res.json({
-                    success: false,
-                    message: "No User Exist"
-                });
+  const { email, password } = req.body;
 
-            res.json({
-                success: false,
-                message: "Invalid Credentials"
-            });
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({
-            success: false,
-            message: "Server Error"
+  try {
+    const user = await User.findOne({ email });
+    if (user && user.verified && (await user.matchPassword(password))) {
+      const token = generateToken(email);
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.Cookie_Set === "production",          // ✅ must be true on HTTPS (Render uses HTTPS)
+        sameSite: process.env.Cookie_Set === "production" ? "none" : "lax",      // ✅ must be 'none' for cross-site cookies
+        path: "/",             // ✅ recommended so cookie applies everywhere
+      });
+
+      res.status(200).json({
+        success: true,
+        message: "Successfully logged in!",
+        redirectUrl: `${process.env.Frontend_Link}/dashboard`,
+      });
+    } else {
+      if (!user?.verified) {
+        return res.json({
+          success: false,
+          message: "User not verified or does not exist",
         });
+      }
+      res.json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
 };
 
-export default userLogin
+export default userLogin;
