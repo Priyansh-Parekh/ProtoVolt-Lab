@@ -5,21 +5,22 @@ import { FaRegSadTear } from "react-icons/fa";
 import api from '../utils/axios';
 
 //components
-import ClassroomJoinPopup from '../components/classroom/ClassroomJoinPopup'
-import Classroom_header from '../components/classroom/classroomHeader'
-import Classroom_card from '../components/classroom/classroomCard'
+import ClassroomJoinPopup from '../components/classroom/classroomJoinPopup.jsx'
+import Classroom_header from '../components/classroom/classroomHeader.jsx'
+import Classroom_card from '../components/classroom/classroomCard.jsx'
 
 //seeds
 // import {classroomSeed} from '../seeds/data'
 
 //usefull fun
 import { useState } from 'react'
-import { error } from '../utils/toastify';
+import { error } from '../utils/toastify.js';
 
 const Classroom = ({user}) => {
 
     const [classrooms, setClassrooms] = useState([]);
     const [joinPopup, setJoinPopup] = useState(false);
+    const [fetchAgain,setFetchAgain] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,7 +37,7 @@ const Classroom = ({user}) => {
         }
 
         fetchData();
-    }, []);
+    }, [fetchAgain]);
 
 
 
@@ -46,7 +47,7 @@ const Classroom = ({user}) => {
         <>
             <div className='h-max min-h-screen bg-[var(--color-primary)] z-[-1] '>
                 <Classroom_header setJoinPopup={setJoinPopup} user={user} />
-                {joinPopup && <ClassroomJoinPopup setJoinPopup={setJoinPopup} />}
+                {joinPopup && <ClassroomJoinPopup setFetchAgain={setFetchAgain} setJoinPopup={setJoinPopup} />}
                 <div className="w-full p-4 md:p-6 lg:p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     {classrooms.length === 0 &&
                         <section className="flex flex-col items-center justify-center min-h-[60vh] bg-[var(--color-primary)] text-[var(--color-text-bright)] animate-fadeIn rounded-2xl shadow-[var(--shadow-soft)] p-8 m-6">

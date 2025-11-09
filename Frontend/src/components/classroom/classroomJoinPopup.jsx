@@ -1,6 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
+import { error } from "../../utils/toastify.js";
+import api from "../../utils/axios.js";
 
-const ClassroomJoinPopup = ({setJoinPopup}) => {
+const ClassroomJoinPopup = ({setFetchAgain,setJoinPopup}) => {
+
+  const [joinCode,setJoinCode] = useState(null);
+
+  const handleJoinClassroom = async (e)=>{
+    e.target.disable = true;
+    e.target.style.opacity = 0.5;
+    try {
+
+      const res = await api.post("/classroom/data/joinClassroom",{joinCode});
+      if(res.data.success){
+        setFetchAgain(prev => !prev);
+        setJoinPopup(prev => !prev);
+      }else{
+        error(res.data.message);
+      }
+      
+    } catch (err) {
+      error("Server Error");
+    }finally{
+      e.target.disable = false;
+      e.target.style.opacity = 1;
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
       {/* Popup Container */}
@@ -21,6 +47,7 @@ const ClassroomJoinPopup = ({setJoinPopup}) => {
         </label>
         <input
           type="text"
+          onChange={(e)=>{setJoinCode(e.target.value)}}
           placeholder="e.g. ABC123"
           className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none transition"
         />
@@ -28,7 +55,7 @@ const ClassroomJoinPopup = ({setJoinPopup}) => {
         {/* Buttons */}
         <div className="flex justify-end gap-3 mt-6">
           <button
-           onClick={()=>setJoinPopup(prev => !prev)}
+           onClick={(e)=>handleJoinClassroom(e)}
           className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition">
             Submit
           </button>

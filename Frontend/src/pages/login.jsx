@@ -6,7 +6,7 @@ import LeftHalf from '../components/Login/LeftHalf';
 // SVG Icon
 import CircuitIcons from '../assets/circuitIcons';
 import api from '../utils/axios';
-import { error, success } from '../utils/toastify';
+import { error, success } from '../utils/toastify.js';
 
 const Login = () => {
   const [email, setEmail] = useState('');

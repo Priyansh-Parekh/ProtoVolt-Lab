@@ -4,7 +4,7 @@ const userForgotPass = async (req, res) => {
         if (email) {
             res.redirect(`/user/auth/otpGen?type=forgotPass&email=${email}`)
         } else {
-            res.redirect('http://localhost:5173/user/login')
+            res.redirect(`${process.env.Frontend_Link}/user/login`)
         }
 
     } catch (error) {

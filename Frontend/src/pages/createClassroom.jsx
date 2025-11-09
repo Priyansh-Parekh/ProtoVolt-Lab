@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { FiXCircle } from 'react-icons/fi';
 
 //importing utils
-import api from '../utils/axios';
+import api from '../utils/axios.js';
 
 // components
-import LeftVisualPanel from '../components/createClassroom/leftVisualPanel';
-import { error,warning } from '../utils/toastify';
+import LeftVisualPanel from '../components/createClassroom/leftVisualPanel.jsx';
+import { error,warning } from '../utils/toastify.js';
 
 const CreateClassroom = () => {
 

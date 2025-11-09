@@ -2,8 +2,8 @@ import React,{useState, useRef} from "react";
 import { IoMegaphoneSharp } from "react-icons/io5";
 import { FaTimes, FaUpload, FaPaperPlane, FaTrash } from "react-icons/fa";
 
-import api from "../../utils/axios";
-import { success, error, info } from "../../utils/toastify";
+import api from "../../utils/axios.js";
+import { success, error, info } from "../../utils/toastify.js";
 
 
 const ClassAnnouncement = ({ setAnnounced, c_id ,setCallAnnounApi}) => {
