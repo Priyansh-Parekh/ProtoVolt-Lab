@@ -11,8 +11,8 @@ const userLogin = async (req, res) => {
 
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.Cookie_Set === "production",          // ✅ must be true on HTTPS (Render uses HTTPS)
-        sameSite: process.env.Cookie_Set === "production" ? "none" : "lax",      // ✅ must be 'none' for cross-site cookies
+        secure: process.env.Cookie_Secure==="true",          // ✅ must be true on HTTPS (Render uses HTTPS)
+        sameSite: process.env.Cookie_Same_site === "true" ? "none" : "lax",      // ✅ must be 'none' for cross-site cookies
         path: "/",             // ✅ recommended so cookie applies everywhere
       });
 
