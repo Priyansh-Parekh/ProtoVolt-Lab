@@ -107,12 +107,14 @@ const Navbar = ({ user = null }) => {
               <span>Classroom</span>
             </span>
           </NavLink>
-          <NavLink to="/dashboard" className={linkClasses}>
-            <span className="relative z-10 flex items-center space-x-2">
-              <FiLayout />
-              <span>Dashboard</span>
-            </span>
-          </NavLink>
+          {user.role === "professor" &&
+            <NavLink to="/dashboard" className={linkClasses}>
+              <span className="relative z-10 flex items-center space-x-2">
+                <FiLayout />
+                <span>Dashboard</span>
+              </span>
+            </NavLink>
+          }
           <NavLink to="/about-us" className={linkClasses}>
             <span className="relative z-10 flex items-center space-x-2">
               <FaUsers />

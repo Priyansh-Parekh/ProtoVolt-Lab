@@ -19,7 +19,7 @@ const userLogin = async (req, res) => {
       res.status(200).json({
         success: true,
         message: "Successfully logged in!",
-        redirectUrl: `${process.env.Frontend_Link}/dashboard`,
+        redirectUrl: `${process.env.Frontend_Link}/`,
       });
     } else {
       if (!user?.verified) {
