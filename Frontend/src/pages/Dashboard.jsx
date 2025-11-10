@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { BookOpen, Clipboard, Trello, Activity, Clock, CheckCircle, AlertCircle, TrendingUp, Users, Zap, ArrowRight, LogIn, Target, X, Award, BarChart2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BookOpen, Clipboard, Trello, Activity, CheckCircle, AlertCircle, TrendingUp, Users, Zap, ArrowRight, LogIn, Target, X, Award } from 'lucide-react';
+import { error, info, success } from "../utils/toastify.js";
+import api from '../utils/axios.js';
 
 const Dashboard = ({ user = { name: 'Student' } }) => {
   const [classrooms, setClassrooms] = useState([]);
   const [circuits, setCircuits] = useState([]);
-  const [assignments, setAssignments] = useState([]);
+  const [assignments, setAssignments] = useState({});
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [joinCode, setJoinCode] = useState('');
   const [isJoining, setIsJoining] = useState(false);
 
   const [stats, setStats] = useState({
-    totalClassrooms: 0,
-    assignmentsDue: 0,
-    totalProjects: 0,
-    completionRate: 0,
+    assignmentsDue: 2,
+    completionRate: 88
   });
 
   const [selectedClass, setSelectedClass] = useState(null);
@@ -21,150 +23,6 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
 
   const rightBoxRef = useRef(null);
   const [rightBoxHeight, setRightBoxHeight] = useState('auto');
-
-  const dummyJoinableClasses = [
-    { name: 'Web Development 101', code: 'WEB123' },
-    { name: 'Data Structures', code: 'DS456' },
-    { name: 'AI & Machine Learning', code: 'AI789' },
-    { name: 'Database Systems', code: 'DB101' },
-    { name: 'Cloud Computing', code: 'CC222' },
-    { name: 'Digital Circuits', code: 'DC333' },
-    { name: 'Embedded Systems', code: 'ES555' },
-    { name: 'Network Security', code: 'NS777' },
-  ];
-
-  const dummyAssignments = {
-    'Web Development 101': [
-      { title: 'HTML Basics', due: 'Nov 15' },
-      { title: 'CSS Flexbox Project', due: 'Nov 20' },
-      { title: 'React Components', due: 'Nov 25' },
-      { title: 'JavaScript ES6 Features', due: 'Nov 28' },
-      { title: 'REST API Integration', due: 'Dec 2' },
-      { title: 'State Management', due: 'Dec 5' },
-    ],
-    'Data Structures': [
-      { title: 'Linked List Implementation', due: 'Nov 18' },
-      { title: 'Sorting Algorithms', due: 'Nov 22' },
-      { title: 'Binary Tree Traversal', due: 'Nov 26' },
-      { title: 'Hash Table Design', due: 'Nov 30' },
-      { title: 'Graph Algorithms', due: 'Dec 4' },
-    ],
-    'AI & Machine Learning': [
-      { title: 'Linear Regression Model', due: 'Nov 16' },
-      { title: 'Neural Network Basics', due: 'Nov 23' },
-      { title: 'Decision Trees', due: 'Nov 27' },
-      { title: 'K-Means Clustering', due: 'Dec 1' },
-      { title: 'CNN Implementation', due: 'Dec 6' },
-      { title: 'NLP Project', due: 'Dec 10' },
-    ],
-    'Database Systems': [
-      { title: 'SQL Queries', due: 'Nov 19' },
-      { title: 'Database Design Project', due: 'Nov 24' },
-      { title: 'Normalization Exercise', due: 'Nov 29' },
-      { title: 'Transaction Management', due: 'Dec 3' },
-      { title: 'Query Optimization', due: 'Dec 7' },
-    ],
-    'Cloud Computing': [
-      { title: 'AWS EC2 Setup', due: 'Nov 17' },
-      { title: 'Docker Containers', due: 'Nov 21' },
-      { title: 'Kubernetes Deployment', due: 'Nov 25' },
-      { title: 'Serverless Functions', due: 'Nov 29' },
-      { title: 'CI/CD Pipeline', due: 'Dec 3' },
-    ],
-    'Digital Circuits': [
-      { title: 'Logic Gates Lab', due: 'Nov 18' },
-      { title: 'Combinational Circuits', due: 'Nov 22' },
-      { title: 'Sequential Circuits', due: 'Nov 26' },
-      { title: 'Flip-Flop Design', due: 'Nov 30' },
-      { title: 'Counter Implementation', due: 'Dec 4' },
-    ],
-    'Embedded Systems': [
-      { title: 'Arduino Basics', due: 'Nov 16' },
-      { title: 'Sensor Integration', due: 'Nov 20' },
-      { title: 'I2C Communication', due: 'Nov 24' },
-      { title: 'PWM Control', due: 'Nov 28' },
-      { title: 'RTOS Basics', due: 'Dec 2' },
-    ],
-    'Network Security': [
-      { title: 'Encryption Protocols', due: 'Nov 19' },
-      { title: 'Firewall Configuration', due: 'Nov 23' },
-      { title: 'Penetration Testing', due: 'Nov 27' },
-      { title: 'SSL/TLS Setup', due: 'Dec 1' },
-      { title: 'Security Audit', due: 'Dec 5' },
-    ],
-    'Operating Systems': [
-      { title: 'Process Scheduling', due: 'Nov 17' },
-      { title: 'Memory Management', due: 'Nov 21' },
-      { title: 'File Systems', due: 'Nov 25' },
-      { title: 'Deadlock Handling', due: 'Nov 29' },
-    ],
-    'Computer Networks': [
-      { title: 'OSI Model Study', due: 'Nov 18' },
-      { title: 'TCP/IP Protocol', due: 'Nov 22' },
-      { title: 'Network Simulation', due: 'Nov 26' },
-      { title: 'Routing Algorithms', due: 'Nov 30' },
-    ],
-    'Software Engineering': [
-      { title: 'UML Diagrams', due: 'Nov 16' },
-      { title: 'Agile Methodology', due: 'Nov 20' },
-      { title: 'Testing Strategies', due: 'Nov 24' },
-      { title: 'Design Patterns', due: 'Nov 28' },
-    ],
-    'Mobile Development': [
-      { title: 'Android UI Design', due: 'Nov 19' },
-      { title: 'React Native App', due: 'Nov 23' },
-      { title: 'State Management', due: 'Nov 27' },
-      { title: 'API Integration', due: 'Dec 1' },
-    ],
-  };
-
-  const dummyStudents = [
-    { name: 'Alice Johnson', status: 'Submitted' },
-    { name: 'Bob Smith', status: 'Pending' },
-    { name: 'Charlie Brown', status: 'Submitted' },
-    { name: 'Diana Ross', status: 'Late Submission' },
-    { name: 'Eva Martinez', status: 'Submitted' },
-    { name: 'Frank Lee', status: 'Pending' },
-    { name: 'Grace Taylor', status: 'Submitted' },
-    { name: 'Henry Wilson', status: 'Late Submission' },
-  ];
-
-  useEffect(() => {
-    const dummyClassrooms = [
-      { _id: '1', name: 'Web Development 101', course: 'Frontend Basics' },
-      { _id: '2', name: 'Data Structures', course: 'Algorithms & Logic' },
-      { _id: '3', name: 'AI & Machine Learning', course: 'Intro to ML' },
-      { _id: '4', name: 'Database Systems', course: 'SQL & Design' },
-      { _id: '5', name: 'Cloud Computing', course: 'AWS & Azure' },
-      { _id: '6', name: 'Digital Circuits', course: 'Logic Design' },
-      { _id: '7', name: 'Embedded Systems', course: 'IoT & Microcontrollers' },
-      { _id: '8', name: 'Network Security', course: 'Cryptography & Defense' },
-      { _id: '9', name: 'Operating Systems', course: 'Linux & Windows' },
-      { _id: '10', name: 'Computer Networks', course: 'TCP/IP & Protocols' },
-      { _id: '11', name: 'Software Engineering', course: 'Development Practices' },
-      { _id: '12', name: 'Mobile Development', course: 'iOS & Android' },
-    ];
-
-    const dummyCircuits = [
-      { _id: 'c1', name: 'Full Adder Circuit', createdAt: new Date() },
-      { _id: 'c2', name: 'LED Blinker', createdAt: new Date() },
-      { _id: 'c3', name: 'Sensor Module', createdAt: new Date() },
-      { _id: 'c4', name: 'Amplifier Design', createdAt: new Date() },
-      { _id: 'c5', name: 'Filter Circuit', createdAt: new Date() },
-    ];
-
-    setTimeout(() => {
-      setClassrooms(dummyClassrooms);
-      setCircuits(dummyCircuits);
-      setStats({
-        totalClassrooms: dummyClassrooms.length,
-        assignmentsDue: 2,
-        totalProjects: dummyCircuits.length,
-        completionRate: 88,
-      });
-      setLoading(false);
-    }, 800);
-  }, []);
 
   useEffect(() => {
     if (rightBoxRef.current) {
@@ -177,31 +35,120 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
     return () => window.removeEventListener('resize', onResize);
   }, [classrooms]);
 
+  useEffect(() => {
+    const getClassrooms = async () => {
+      try {
+        const res = await api.get('/user/data/getClassrooms');
+        if (res.data.success) {
+          setClassrooms(res.data.classrooms);
+          setStats(prev => ({
+            ...prev,
+            totalClassrooms: res.data.classrooms.length
+          }));
+        } else {
+          error(res.data.message);
+        }
+      } catch (err) {
+        console.error("Failed to fetch classrooms:", err);
+        error(err.response?.data?.message || err.message || "Failed to load classrooms.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    const fetchData = async () => {
+      try {
+        const res = await api.get("/user/data/getCircuits");
+        if (res.data.success) setStats(prev => ({
+          ...prev,
+          totalProjects: res.data.circuits.length
+        }));
+        else error(res.data.message);
+      } catch (err) {
+        error("Failed to fetch circuits");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getClassrooms();
+    fetchData();
+  }, []);
+
+  const formatDate = (mongoDate) => {
+    const date = new Date(mongoDate);
+    return date.toLocaleDateString("en-US");
+  };
+
   const handleJoinClassroom = async (e) => {
     e.preventDefault();
     if (!joinCode.trim()) {
-      alert('Please enter a join code');
+      error('Please enter a join code');
       return;
     }
     setIsJoining(true);
-    setTimeout(() => {
-      alert(`Joined classroom with code: ${joinCode.trim()}`);
-      setJoinCode('');
+    try {
+      const res = await api.post("/classroom/data/joinClassroom", { joinCode });
+      if (res.data.success) {
+        success(res.data.message);
+      } else {
+        error(res.data.message);
+      }
+    } catch (err) {
+      error("Server Error");
+      console.log(err)
+    } finally {
+      setJoinCode("")
       setIsJoining(false);
-    }, 800);
+    }
   };
 
-  const handleDummyClick = (code) => {
-    setJoinCode(code);
-    alert(`Selected code: ${code}`);
+  const handleCopyClick = (joinCode) => {
+    navigator.clipboard.writeText(joinCode)
+      .then(() => {
+        info(`Copied "${joinCode}" to clipboard!`);
+      })
+      .catch(err => {
+        error('Failed to copy text: ', err);
+      });
   };
 
-  const handleClassClick = (className) => {
-    setSelectedClass(selectedClass === className ? null : className);
+  const handleClassClick = async (c_id, c_name) => {
+    setSelectedClass(selectedClass === c_id ? null : c_id);
+
+    if (assignments[c_name]) {
+      return;
+    }
+
+    try {
+      const res = await api.get(`/user/data/getClassAssStudData?c_id=${c_id}`);
+      
+      if (res.data.success) {
+        const formattedAssignments = res.data.assData.map(assignment => ({
+          _id: assignment._id, 
+          title: assignment.title,
+          dueDate: formatDate(assignment.dueDate),
+          subStudents: assignment.students
+        }));
+
+        setAssignments(prevAssignments => ({
+          ...prevAssignments,
+          [c_name]: formattedAssignments
+        }));
+
+      } else {
+        error(res.data.message);
+      }
+    } catch (err) {
+      console.error("Failed to fetch assignments:", err);
+      error(err.response?.data?.message || err.message || "Failed to load assignments.");
+    }
   };
 
   const handleAssignmentClick = (assignment) => {
     setSelectedAssignment(assignment);
+    setStudents(assignment.subStudents);
+    console.log(assignment.subStudents);
   };
 
   if (loading) {
@@ -291,19 +238,19 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
                 <p className="text-sm text-gray-400 mb-4">
                   Enter the code provided by your instructor
                 </p>
-                <form onSubmit={handleJoinClassroom} className="space-y-3">
+                <form className="space-y-3">
                   <input
                     type="text"
                     value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+                    onChange={(e) => setJoinCode(e.target.value)}
                     placeholder="ENTER CODE"
                     className="w-full p-3 rounded-lg text-center text-lg font-mono tracking-widest uppercase bg-[#0d1625]/60 border border-[#00D4FF]/20 text-white focus:border-cyan-400 focus:outline-none"
-                    maxLength={8}
                   />
                   <button
                     type="submit"
+                    onClick={(e) => { handleJoinClassroom(e) }}
                     disabled={isJoining || !joinCode.trim()}
-                    className="w-full py-3 rounded-lg font-semibold text-white transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500"
+                    className="w-full py-3 rounded-lg hover:cursor-pointer font-semibold text-white transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500"
                   >
                     {isJoining ? 'Joining...' : 'Join Now'}
                   </button>
@@ -311,22 +258,22 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
 
                 <div className="mt-6">
                   <h3 className="text-sm text-gray-400 mb-2">Available Classes</h3>
-                  <div 
+                  <div
                     className="space-y-2 overflow-y-auto pr-2"
-                    style={{ 
+                    style={{
                       height: '176px',
                       scrollbarWidth: 'thin',
                       scrollbarColor: 'rgba(34, 211, 238, 0.5) transparent'
                     }}
                   >
-                    {dummyJoinableClasses.map((cls) => (
+                    {classrooms.map((cls) => (
                       <button
-                        key={cls.code}
-                        onClick={() => handleDummyClick(cls.code)}
+                        key={cls.joinCode}
+                        onClick={() => handleCopyClick(cls.joinCode)}
                         className="w-full text-left px-3 py-2 rounded-lg border border-[#00D4FF]/20 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/50 transition-all bg-[#0d1625]/40 text-sm flex justify-between items-center"
                       >
                         <span className="font-medium truncate">{cls.name}</span>
-                        <span className="font-mono text-cyan-400">{cls.code}</span>
+                        <span className="font-mono text-cyan-400">{cls.joinCode}</span>
                       </button>
                     ))}
                   </div>
@@ -366,9 +313,9 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
                     </p>
                   </div>
                 ) : (
-                  <div 
+                  <div
                     className="grid grid-cols-1 sm:grid-cols-2 gap-4 overflow-y-auto pr-2"
-                    style={{ 
+                    style={{
                       maxHeight: '500px',
                       scrollbarWidth: 'thin',
                       scrollbarColor: 'rgba(34, 211, 238, 0.5) transparent'
@@ -378,7 +325,7 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
                       <div key={classroom._id}>
                         <div
                           className="block bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl p-4 hover:border-cyan-400 transition-all hover:shadow-lg hover:shadow-cyan-500/50 group cursor-pointer"
-                          onClick={() => handleClassClick(classroom.name)}
+                          onClick={() => handleClassClick(classroom._id, classroom.name)}
                         >
                           <div className="flex items-start justify-between">
                             <div>
@@ -389,28 +336,28 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
                           </div>
                         </div>
 
-                        {selectedClass === classroom.name && (
+                        {selectedClass === classroom._id && (
                           <div className="bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl mt-2 p-4">
                             <h4 className="text-md font-semibold mb-3 text-cyan-400">Assignments</h4>
-                            <div 
+                            <div
                               className="space-y-2 overflow-y-auto pr-2"
-                              style={{ 
+                              style={{
                                 maxHeight: '200px',
                                 scrollbarWidth: 'thin',
                                 scrollbarColor: 'rgba(20, 184, 166, 0.5) transparent'
                               }}
                             >
-                              {(dummyAssignments[classroom.name] || []).map((a, i) => (
+                              {(assignments[classroom.name] || []).map((a) => (
                                 <div
-                                  key={i}
+                                  key={a._id}
                                   onClick={() => handleAssignmentClick({ ...a, class: classroom.name })}
                                   className="flex justify-between items-center px-3 py-2 rounded-lg border border-[#00D4FF]/20 hover:border-teal-400 hover:shadow-lg hover:shadow-teal-500/50 cursor-pointer transition-all"
                                 >
                                   <span className="truncate">{a.title}</span>
-                                  <span className="text-xs text-gray-400">Due {a.due}</span>
+                                  <span className="text-xs text-gray-400">Due {a.dueDate}</span>
                                 </div>
                               ))}
-                              {!(dummyAssignments[classroom.name] || []).length && (
+                              {!(assignments[classroom.name] || []).length && (
                                 <p className="text-sm text-gray-400">No assignments yet.</p>
                               )}
                             </div>
@@ -431,29 +378,43 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <button className="bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl p-5 hover:border-cyan-400 transition-all hover:shadow-lg hover:shadow-cyan-500/50 group text-left">
+
+                  <Link
+                    to="/workspace/new"
+                    className="bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl p-5 hover:border-cyan-400 transition-all hover:shadow-lg hover:shadow-cyan-500/50 group text-left"
+                  >
                     <Trello className="text-2xl text-cyan-400 mb-3 group-hover:scale-110 transition-transform" size={24} />
-                    <h3 className="font-semibold mb-1">New Circuit</h3>
+                    <h3 className="font-semibold mb-1 text-white">New Circuit</h3>
                     <p className="text-sm text-gray-400">Start a new simulation project</p>
-                  </button>
+                  </Link>
 
-                  <button className="bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl p-5 hover:border-teal-400 transition-all hover:shadow-lg hover:shadow-teal-500/50 group text-left">
+                  <Link
+                    to="/workspace"
+                    className="bg-[#0d1625]/40 border hover:cursor-pointer border-[#00D4FF]/20 rounded-xl p-5 hover:border-teal-400 transition-all hover:shadow-lg hover:shadow-teal-500/50 group text-left"
+                  >
                     <Activity className="text-2xl text-teal-400 mb-3 group-hover:scale-110 transition-transform" size={24} />
-                    <h3 className="font-semibold mb-1">My Projects</h3>
+                    <h3 className="font-semibold mb-1 text-white">My Projects</h3>
                     <p className="text-sm text-gray-400">View all your circuits</p>
-                  </button>
+                  </Link>
 
-                  <button className="bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl p-5 hover:border-purple-400 transition-all hover:shadow-lg hover:shadow-purple-500/50 group text-left">
+                  <Link
+                    to="/classroom"
+                    className="bg-[#0d1625]/40 border hover:cursor-pointer border-[#00D4FF]/20 rounded-xl p-5 hover:border-purple-400 transition-all hover:shadow-lg hover:shadow-purple-500/50 group text-left"
+                  >
                     <BookOpen className="text-2xl text-purple-400 mb-3 group-hover:scale-110 transition-transform" size={24} />
-                    <h3 className="font-semibold mb-1">Classrooms</h3>
+                    <h3 className="font-semibold mb-1 text-white">Classrooms</h3>
                     <p className="text-sm text-gray-400">Access your learning spaces</p>
-                  </button>
+                  </Link>
 
-                  <button className="bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-xl p-5 hover:border-green-400 transition-all hover:shadow-lg hover:shadow-green-500/50 group text-left">
+                  <Link
+                    to="/about-us"
+                    className="bg-[#0d1625]/40 border hover:cursor-pointer border-[#00D4FF]/20 rounded-xl p-5 hover:border-green-400 transition-all hover:shadow-lg hover:shadow-green-500/50 group text-left"
+                  >
                     <Users className="text-2xl text-green-400 mb-3 group-hover:scale-110 transition-transform" size={24} />
-                    <h3 className="font-semibold mb-1">About Us</h3>
+                    <h3 className="font-semibold mb-1 text-white">About Us</h3>
                     <p className="text-sm text-gray-400">Learn about ProtoVolt</p>
-                  </button>
+                  </Link>
+
                 </div>
               </div>
             </div>
@@ -473,33 +434,34 @@ const Dashboard = ({ user = { name: 'Student' } }) => {
 
             <h3 className="text-2xl font-bold mb-2">{selectedAssignment.title}</h3>
             <p className="text-sm text-gray-400 mb-4">
-              Class: {selectedAssignment.class} • Due: {selectedAssignment.due}
+              Class: {selectedAssignment.class} • Due: {selectedAssignment.dueDate}
             </p>
 
-            <div 
+            <div
               className="border-t border-[#00D4FF]/20 pt-4 space-y-2 overflow-y-auto pr-2"
-              style={{ 
+              style={{
                 maxHeight: '256px',
                 scrollbarWidth: 'thin',
                 scrollbarColor: 'rgba(34, 211, 238, 0.5) transparent'
               }}
             >
-              {dummyStudents.map((student, i) => (
+              {students.map((student) => (
                 <div
-                  key={i}
+                  key={student._id}
                   className="flex justify-between items-center bg-[#0d1625]/40 border border-[#00D4FF]/20 rounded-lg p-3"
                 >
-                  <span>{student.name}</span>
+                  {/* THIS IS THE FIX */}
+                  <span>{student.owner.name}</span>
+                  
                   <span
-                    className={`text-sm ${
-                      student.status === 'Submitted'
+                    className={`text-sm ${student.completed 
                         ? 'text-green-400'
                         : student.status === 'Pending'
-                        ? 'text-yellow-400'
-                        : 'text-red-400'
-                    }`}
+                          ? 'text-yellow-400'
+                          : 'text-red-400'
+                      }`}
                   >
-                    {student.status}
+                    {student.completed ? "Submitted" : "Missing"}
                   </span>
                 </div>
               ))}

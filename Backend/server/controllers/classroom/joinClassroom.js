@@ -34,12 +34,8 @@ const joinClassroom = async (req, res) => {
     }
 
     // 3️⃣ Determine user role
-    const dbUser = await User.findById(userId);
-    if (!dbUser) {
-      return res.status(404).json({ success: false, message: 'User not found' });
-    }
 
-    const role = dbUser.role?.toLowerCase();
+    const role = user.role?.toLowerCase();
 
     // 4️⃣ Add to correct list in classroom
     if (role === 'professor') {
