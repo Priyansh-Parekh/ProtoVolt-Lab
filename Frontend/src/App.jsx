@@ -27,6 +27,7 @@ import Unauthorized from './pages/unathorized.jsx';
 import ErrorPage from './pages/errorPage.jsx';
 import SpecificAssignment from './pages/specificAssignment.jsx';
 import AboutUs from './pages/aboutUs.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 
 const MainContent = () => {
   const location = useLocation();
@@ -97,6 +98,9 @@ const MainContent = () => {
           {/* Professor-only */}
           <Route path="/classroom/createClassroom" element={user?.role === 'professor' ? <CreateClassroom /> : <Unauthorized />} />
           <Route path="/classroom/createAssignment" element={user?.role === 'professor' ? <CreateAssignment /> : <Unauthorized />} />
+
+          <Route path="/dashboard" element={user ? <Dashboard user={user} /> : <Navigate to="/user/login" />} />
+
 
           {/* Error routes */}
           <Route path="/error/unathorizedAscess" element={<Unauthorized />} />
