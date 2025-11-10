@@ -11,9 +11,9 @@ const userLogin = async (req, res) => {
 
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.Cookie_Secure==="true",          // ✅ must be true on HTTPS (Render uses HTTPS)
-        sameSite: process.env.Cookie_Same_site === "true" ? "none" : "lax",      // ✅ must be 'none' for cross-site cookies
-        path: "/",             // ✅ recommended so cookie applies everywhere
+        secure: process.env.Cookie_Secure === "true",  // false for local
+        sameSite: process.env.Cookie_Same_site === "true" ? "lax" : "none", // true → lax (your env)
+        path: "/", 
       });
 
       res.status(200).json({
