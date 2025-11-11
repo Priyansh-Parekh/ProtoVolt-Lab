@@ -107,7 +107,7 @@ const Navbar = ({ user = null }) => {
               <span>Classroom</span>
             </span>
           </NavLink>
-          {user.role === "professor" &&
+          {user?.role === "professor" &&
             <NavLink to="/dashboard" className={linkClasses}>
               <span className="relative z-10 flex items-center space-x-2">
                 <FiLayout />
