@@ -66,10 +66,10 @@ const otpGen = async (req, res) => {
         userExists.otp = otp;
         userExists.otpExpiresAt = expiry;
         userExists.save();
-        res.status(200).json({ redirectUrl: `${process.env.Frontend_Link}/user/otpVerification?type=${type}&email=${email}` });
+        res.status(200).json({ redirectUrl: `${process.env.FRONTEND_LINK}/user/otpVerification?type=${type}&email=${email}` });
       } else {
         console.log("user not exist");
-        res.status(200).json({ redirectUrl: `${process.env.Frontend_Link}/user/signup` })
+        res.status(200).json({ redirectUrl: `${process.env.FRONTEND_LINK}/user/signup` })
       }
     
     // In production: save `otp` in DB/Redis with expiry and don't return it directly

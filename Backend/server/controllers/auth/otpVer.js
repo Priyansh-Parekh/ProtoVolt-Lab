@@ -35,7 +35,7 @@ const otpVer = async (req, res) => {
         await user.save();
         return res.status(200).json({
           success: true,
-          redirectUrl: `${process.env.Frontend_Link}/user/login`,
+          redirectUrl: `${process.env.FRONTEND_LINK}/user/login`,
           message: "OTP verified. Account activated."
         });
       } else if (type === 'forgotPass') {
@@ -45,7 +45,7 @@ const otpVer = async (req, res) => {
         user.save();
         return res.status(200).json({
           success: true,
-          redirectUrl: `${process.env.Frontend_Link}/user/passwordChange?email=${email}`,
+          redirectUrl: `${process.env.FRONTEND_LINK}/user/passwordChange?email=${email}`,
           message: "OTP verified. Proceed to change password within 5 Mins."
         });
       } else {

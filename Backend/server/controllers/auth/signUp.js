@@ -30,7 +30,7 @@ const userSignUp = async (req, res) => {
   
    
     if (user) {
-      res.redirect(`/user/auth/otpGen?type=signUp&email=${email}`);
+      res.redirect(`${process.env.BACKEND_LINK}/user/auth/otpGen?type=signUp&email=${email}`);
     } else {
       res.status(400);
       throw new Error('Invalid user data');
