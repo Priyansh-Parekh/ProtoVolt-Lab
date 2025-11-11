@@ -3,13 +3,13 @@ import mongoose from "mongoose";
 const nodeSchema = new mongoose.Schema({
     id:{
         type:String,
-        unique:true,
+        required:true,
     },
     position: {
         x: { type: Number, required: true },
         y: { type: Number, required: true },
     }
-},{_id:false});
+});
 
 const Node = mongoose.model('Node', nodeSchema, 'Nodes');
 

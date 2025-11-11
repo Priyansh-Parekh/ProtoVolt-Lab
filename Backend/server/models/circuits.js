@@ -1,28 +1,34 @@
 import mongoose from "mongoose";
 
 const circuitSchema = new mongoose.Schema({
-    name:{
-        type: String,
-        required: true,
-    },
-    owner:{
+  name: {
+    type: String,
+    required: true,
+  },
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  analysed: {
+    type: Boolean,
+    default: false,
+  },
+  circuitdata: {
+    components: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
-    analysed:{
-        type: Boolean,
-        default: false,
-    },
-    circuitdata:{
-        conponents:[{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Component',
-        }]
-    }
-    
-});
+        ref: "Component",
+      },
+    ],
+    nodes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Node",
+      },
+    ],
+  },
+}, { timestamps: true });
 
-const Circuit = mongoose.model('Circuit', circuitSchema,'Circuits');
-
+const Circuit = mongoose.model("Circuit", circuitSchema, "Circuits");
 export default Circuit;

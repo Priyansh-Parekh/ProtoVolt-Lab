@@ -7,11 +7,7 @@ import { Link } from 'react-router-dom';
 //components
 
 
-const ClassHeader = ({setAssigned,setAnnounced}) => {
-
-    let id =1;//temp
-
-
+const ClassHeader = ({user,setAnnounced,className,class_id}) => {
 
     return (
         <header
@@ -35,36 +31,21 @@ const ClassHeader = ({setAssigned,setAnnounced}) => {
                     className=" 
           font-ChakraPetch text-4xl lg:text-5xl font-bold 
           bg-gradient-to-r from-[#a855f7] to-[#00d4ff]
-          bg-clip-text text-transparent
+          bg-clip-text text-transparent pb-3
           transition-all duration-300 ease-in-out
         "
                 >
-                    My Classroom
+                   {className}
                 </h1>
-                <p
-                    className="
-          font-serif italic
-          text-lg text-stone-200
-          mt-3
-          animate-float
-          opacity-90
-          transition-all duration-700 ease-in-out
-        "
-                >
-                    Your{" "}
-                    <span className="text-amber-500 font-semibold not-italic">
-                        learning journey
-                    </span>{" "}
-                    continues here.
-                </p>
+                
             </div>
 
             {/* Right Side: Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
 
                 {/* New Assignment Button */}
-                <button
-                onClick={()=> setAssigned(prev => !prev)}
+                {user.role==="professor" &&  <Link
+                    to={'/classroom/createAssignment'}
                     className=" 
           flex items-center gap-2
           font-ChakraPetch font-semibold
@@ -76,13 +57,14 @@ const ClassHeader = ({setAssigned,setAnnounced}) => {
           hover:scale-105 hover:shadow-lg hover:shadow-[#00d4ff]/30
           transform hover:-translate-y-1
         "
+        state={{C_id : class_id}}
                 >
                     <FaPlusCircle className="h-5 w-5" />
                     <span>New Assignment</span>
-                </button>
+                </Link>}
 
                 {/* New Announcement Button */}
-                <button
+               {user.role==="professor" && <button
                 onClick={()=> setAnnounced(prev => !prev)}
                     className="
      flex items-center gap-2
@@ -100,7 +82,7 @@ const ClassHeader = ({setAssigned,setAnnounced}) => {
                 >
                     <IoMegaphoneSharp className="h-5 w-5" />
                     <span>New Announcement</span>
-                </button>
+                </button>}
 
                 {/* View Members Button */}
                 

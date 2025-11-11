@@ -1,17 +1,43 @@
 import React from 'react';
-import { announcementSeed } from '../../../seeds/data';
-import { AiOutlineCalendar } from "react-icons/ai";
-import { GrAnnounce } from "react-icons/gr";
+import { MdAnnouncement, MdSchedule, MdPerson, MdAttachFile } from "react-icons/md";
 
-// Helper function to format dates consistently
-const formatDate = (dateStr) => {
-  const options = { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" };
-  return new Date(dateStr).toLocaleDateString(undefined, options);
+/**
+ * Formats a MongoDB createdAt/updatedAt date string or Date object
+ * Example output: "18 Oct 2025, 11:45 AM"
+ */
+const formatDate = (dateInput) => {
+  if (!dateInput) return "";
+
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true, // 12-hour format with AM/PM
+  };
+
+  return date.toLocaleString(undefined, options);
 };
 
-const ClassAnnouncementTimeline = () => {
+const ClassAnnouncementTimeline = ({ announcements = [] }) => {
   // Sort announcements by creation date, newest first
-  const sortedAnnouncements = [...announcementSeed].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedAnnouncements = [...announcements].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
+  if (!sortedAnnouncements.length) {
+    return (
+      <div className="ClassAnnouncementTimeline-container text-[var(--color-text-light)]">
+        <h2 className="text-[var(--color-text-bright)] text-3xl font-bold mb-4 font-ChakraPetch">
+          📢 Announcements
+        </h2>
+        <p>No announcements available.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="ClassAnnouncementTimeline-container">
@@ -22,29 +48,76 @@ const ClassAnnouncementTimeline = () => {
         {sortedAnnouncements.map((announcement) => (
           <div
             key={announcement._id}
-            className="ClassAnnouncementTimeline-card relative bg-[var(--color-secondary)] p-6 rounded-lg shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-neon)] transition w-full"
+            className="ClassAnnouncementTimeline-card relative bg-[var(--color-secondary)] p-6 rounded-xl shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-neon)] transition-all duration-300 w-full border border-transparent hover:border-[var(--color-accent-cyan)] hover:scale-[1.02] group"
           >
-            {/* Top-right type icon */}
-            <div className="ClassAnnouncementTimeline-icon-wrapper absolute top-4 right-4 text-xl">
-              <GrAnnounce
-                className="ClassAnnouncementTimeline-icon text-[var(--color-accent-cyan)]"
-                title="Announcement"
-              />
+            {/* Header with Announcement Icon */}
+            <div className="relative mb-4 pb-4 border-b border-[var(--color-border)]/30">
+              <div className="absolute top-0 right-0 text-2xl">
+                <MdAnnouncement
+                  className="text-[var(--color-accent-cyan)] group-hover:text-[var(--color-accent-teal)] transition-colors duration-300"
+                  title="Announcement"
+                />
+              </div>
+
+              <h3 className="ClassAnnouncementTimeline-title text-[var(--color-accent-cyan)] font-bold text-xl font-ChakraPetch pr-12">
+                {announcement.title}
+              </h3>
             </div>
 
-            {/* Title */}
-            <h3 className="ClassAnnouncementTimeline-title text-[var(--color-accent-cyan)] font-bold text-xl font-ChakraPetch">
-              {announcement.title}
-            </h3>
-
             {/* Content */}
-            <p className="ClassAnnouncementTimeline-content text-sm mt-3 text-[var(--color-text-light)]">{announcement.content}</p>
+            <div className="mb-4">
+              <p className="ClassAnnouncementTimeline-content text-sm text-[var(--color-text-light)] leading-relaxed">
+                {announcement.content}
+              </p>
+            </div>
 
-            {/* Date info */}
-            <div className="ClassAnnouncementTimeline-date-wrapper flex items-center gap-2 mt-4 text-xs text-[var(--color-placeholder)]">
-              <AiOutlineCalendar className="ClassAnnouncementTimeline-date-icon" />
-              <span className="ClassAnnouncementTimeline-date-text">
-                Posted: {formatDate(announcement.createdAt)}
+            {/* File Attachment */}
+            {announcement.file && (
+              <div className="mb-4 p-3 bg-[var(--color-primary)]/50 rounded-lg border border-[var(--color-border)]/20">
+                <a
+                  href={announcement.file}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 group/file hover:bg-[var(--color-primary)]/70 transition-colors duration-200 rounded-md p-2 -m-2"
+                >
+                  <div className="p-2 bg-[var(--color-accent-cyan)]/10 rounded-full group-hover/file:bg-[var(--color-accent-cyan)]/20 transition-colors duration-200">
+                    <MdAttachFile className="text-[var(--color-accent-cyan)] text-lg" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-[var(--color-placeholder)] font-medium">Attached File</p>
+                    <p className="text-sm text-[var(--color-accent-cyan)] font-ChakraPetch truncate group-hover/file:text-[var(--color-accent-teal)] transition-colors duration-200">
+                      View File
+                    </p>
+                  </div>
+                  <span className="text-xs text-[var(--color-placeholder)] opacity-0 group-hover/file:opacity-100 transition-opacity duration-200">
+                    Opens in new tab
+                  </span>
+                </a>
+              </div>
+            )}
+
+            {/* Professor Info */}
+            <div className="mb-4 p-3 bg-[var(--color-primary)]/50 rounded-lg border border-[var(--color-border)]/20">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[var(--color-accent-cyan)]/10 rounded-full">
+                  <MdPerson className="text-[var(--color-accent-cyan)] text-lg" />
+                </div>
+                <div>
+                  <p className="text-xs text-[var(--color-placeholder)] font-medium">Professor</p>
+                  <p className="text-sm text-[var(--color-text-bright)] font-ChakraPetch">
+                    {announcement.professor?.name || "Unknown"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Date Info */}
+            <div className="flex items-center gap-3 text-xs">
+              <div className="p-1.5 bg-[var(--color-accent-cyan)]/10 rounded-full">
+                <MdSchedule className="text-[var(--color-accent-cyan)]" />
+              </div>
+              <span className="text-[var(--color-placeholder)]">
+                <span className="font-medium">Posted:</span> {formatDate(announcement.createdAt)}
               </span>
             </div>
           </div>
@@ -55,4 +128,3 @@ const ClassAnnouncementTimeline = () => {
 };
 
 export default ClassAnnouncementTimeline;
-

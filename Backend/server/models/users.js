@@ -1,33 +1,77 @@
 import mongoose from "mongoose";
+import bcryptjs from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
+
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ['student', 'professor', 'admin'],
+    required: true,
+  },
+
+
+  profilePicture: {
+    type: String,
+    default: null,
+  },
+  bio: {
+    type: String,
+  },
+
+
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  otp: {
+    type: String,
+  },
+  otpExpiresAt: {
+    type: Date,
+  },
+
+
+  classrooms: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Classroom',
     },
-    email: {
-        type: String,
-        required: true,
+  ],
+  circuits: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Circuit',
     },
-    password: {
-        type: String,
-        required: true,
-    },
-    role:{
-        type: String,
-        enum: ['student','professor', 'admin'],
-        required: true,
-    },
-    profilePicture: {
-        type: String,
-        // here default cloudinary url will be provided
-        default: null,
-    },
-    bio:{
-        type: String,
-    }
+  ],
+}, { timestamps: true }); 
+
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcryptjs.genSalt(10);
+  this.password = await bcryptjs.hash(this.password, salt);
+  next();
 });
 
-const User = mongoose.model('User', userSchema,'Users');
 
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcryptjs.compare(enteredPassword, this.password);
+};
+
+
+
+const User = mongoose.model('User', userSchema, 'Users');
 export default User;

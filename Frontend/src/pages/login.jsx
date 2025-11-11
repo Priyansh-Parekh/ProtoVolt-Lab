@@ -5,15 +5,54 @@ import LeftHalf from '../components/Login/LeftHalf';
 
 // SVG Icon
 import CircuitIcons from '../assets/circuitIcons';
+import api from '../utils/axios';
+import { error, success } from '../utils/toastify.js';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
+    e.target.disabled = true;
+    e.target.style.opacity = 0.5;
     e.preventDefault();
     console.log('Logging in with:', { email, password });
+    const res = await api.post(`/user/auth/login`, { email, password });
+    if (res.data.success) {
+      success(res.data.message);
+      const redirectUrl = res.data.redirectUrl;
+      if (redirectUrl) {
+        setTimeout(() => {
+          // Manually redirect browser
+          window.location.href = redirectUrl;
+        }, 1000);
+      }
+    } else {
+      error(res.data.message);
+      e.target.disabled = false;
+      e.target.style.opacity = 1;
+    }
   };
+
+  const handleForgotPass = async () => {
+    try {
+      let type = "forgotPass";
+      const res = await api.get(`/user/auth/otpGen?type=${type}&email=${email}`);
+      console.log(res);
+      if (res.status === 200) {
+        const redirectUrl = res.data.redirectUrl;
+        if (redirectUrl) {
+          console.log("Redirect to:", redirectUrl);
+          // Manually redirect browser
+          window.location.href = redirectUrl;
+        }
+      }
+
+    } catch (error) {
+      console.error("Send OTP Error:", error);
+      alert(error.response?.data?.message || "Failed to send OTP. Please try again.");
+    }
+  }
 
   return (
     <div className='h-[91vh]'>
@@ -43,41 +82,47 @@ const Login = () => {
         `}
       </style>
 
-      <div className="h-full flex" style={{backgroundColor: 'var(--color-primary)'}}>
+      <div className="h-full flex" style={{ backgroundColor: 'var(--color-primary)' }}>
         {/* Left Visuals */}
         <LeftHalf />
 
         {/* Right Form */}
         <div className="w-full lg:w-1/2 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-md w-full p-8 rounded-2xl animate-fadeIn" style={{backgroundColor: 'var(--color-secondary)'}}>
+          <div className="max-w-md w-full p-8 rounded-2xl animate-fadeIn" style={{ backgroundColor: 'var(--color-secondary)' }}>
             <div className="flex items-center justify-center space-x-3 mb-6">
-             <CircuitIcons/>
-              <h1 className="text-4xl font-bold" style={{color: 'var(--color-text-bright)'}}>
-                Circuit<span style={{color: 'var(--color-accent-cyan)'}}>Sim</span>
+              <CircuitIcons />
+              <h1 className="text-4xl font-bold" style={{ color: 'var(--color-text-bright)' }}>
+                Circuit<span style={{ color: 'var(--color-accent-cyan)' }}>Sim</span>
               </h1>
             </div>
 
-            <h2 className="text-2xl font-bold text-center" style={{color: 'var(--color-text-bright)'}}>Welcome Back</h2>
-            <p className="mt-2 text-center text-sm" style={{color: 'var(--color-text-light)'}}>Enter your credentials to continue.</p>
+            <h2 className="text-2xl font-bold text-center" style={{ color: 'var(--color-text-bright)' }}>Welcome Back</h2>
+            <p className="mt-2 text-center text-sm" style={{ color: 'var(--color-text-light)' }}>Enter your credentials to continue.</p>
 
             <form className="mt-8 space-y-5" onSubmit={handleLogin}>
-              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email Address" className="custom-input w-full p-3 rounded-md text-sm"/>
-              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="custom-input w-full p-3 rounded-md text-sm"/>
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email Address" className="custom-input w-full p-3 rounded-md text-sm" />
+              <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="custom-input w-full p-3 rounded-md text-sm" />
 
               <div className="text-right text-sm">
-                <a href="/user/otpVerification" className="font-medium hover:underline" style={{color: 'var(--color-accent-cyan)'}}>
+                <a onClick={() => {
+                  if (email)
+                    handleForgotPass();
+                  else {
+                    alert("Email is Required");
+                  }
+                }} className="font-medium hover:cursor-pointer hover:underline" style={{ color: 'var(--color-accent-cyan)' }}>
                   Forgot Password?
                 </a>
               </div>
 
-              <button type="submit" className="w-full py-3 rounded-md text-sm font-bold text-white transition-all hover:shadow-lg" style={{backgroundImage: 'linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-teal), var(--color-accent-green))', boxShadow: 'var(--shadow-neon)'}}>
+              <button type="submit" className="w-full py-3 hover cursor-pointer rounded-md text-sm font-bold text-white transition-all hover:shadow-lg" style={{ backgroundImage: 'linear-gradient(to right, var(--color-accent-cyan), var(--color-accent-teal), var(--color-accent-green))', boxShadow: 'var(--shadow-neon)' }}>
                 Log In
               </button>
             </form>
 
-            <p className="mt-6 text-center text-sm" style={{color: 'var(--color-text-light)'}}>
+            <p className="mt-6 text-center text-sm" style={{ color: 'var(--color-text-light)' }}>
               Don't have an account?{' '}
-              <a href="/user/signup" className="font-medium hover:underline" style={{color: 'var(--color-accent-cyan)'}}>
+              <a href="/user/signup" className="font-medium hover:underline" style={{ color: 'var(--color-accent-cyan)' }}>
                 Sign Up
               </a>
             </p>

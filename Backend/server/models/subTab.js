@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Circuit from "./circuits";
+import Circuit from "./circuits.js";
 
 const subTabSchema = new mongoose.Schema({
     name:{

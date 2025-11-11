@@ -6,6 +6,10 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react()
+    react(),
   ],
+  css: {
+    // 👇 Force Vite to use PostCSS instead of LightningCSS (fixes build on Vercel)
+    transformer: 'postcss',
+  },
 })

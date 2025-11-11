@@ -24,7 +24,7 @@ const TransitionLogo = () => {
 
     return (
         <motion.div 
-            className="flex flex-col items-center justify-center h-screen w-screen bg-[#0A0E17]"
+            className="flex flex-col items-center justify-center h-screen w-screen bg-[#0A0E17]" // SAME BACKGROUND
             initial="hidden"
             animate="visible"
             variants={logoContainerVariants}

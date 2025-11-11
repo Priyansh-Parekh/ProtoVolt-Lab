@@ -12,6 +12,10 @@ const announcementSchema = new mongoose.Schema({
     },
     content:{
         type: String,
+        require:true
+    },
+    file:{
+        type:String
     }
 },{timestamps: true});
 
