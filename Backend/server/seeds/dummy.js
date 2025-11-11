@@ -49,78 +49,75 @@ const classroomNames = [
 // Function to create a VALID circuit (multiple components + shared nodes)
 // ----------------------------------------------------------
 const createValidCircuit = (owner, index) => {
-  // Create nodes (shared between components)
-  const nodeA = new Node({
-    _id: new mongoose.Types.ObjectId(),
-    id: `nA-${owner._id}-${index}`,
-    position: { x: 100, y: 100 },
-  });
-  const nodeB = new Node({
-    _id: new mongoose.Types.ObjectId(),
-    id: `nB-${owner._id}-${index}`,
-    position: { x: 200, y: 100 },
-  });
-  const nodeC = new Node({
-    _id: new mongoose.Types.ObjectId(),
-    id: `nC-${owner._id}-${index}`,
-    position: { x: 150, y: 200 },
-  });
-
-  // Components sharing common nodes (valid electrical path)
-  const r1 = new Component({
-    _id: new mongoose.Types.ObjectId(),
-    id: `R1-${owner._id}-${index}`,
-    type: 'resistor',
-    label: 'R1',
-    position: { x: 150, y: 90 },
-    properties: { resistance: 220 },
-    terminals: [{ id: 't1', node: nodeA._id }, { id: 't2', node: nodeB._id }]
-  });
-
-  const r2 = new Component({
-    _id: new mongoose.Types.ObjectId(),
-    id: `R2-${owner._id}-${index}`,
-    type: 'resistor',
-    label: 'R2',
-    position: { x: 180, y: 160 },
-    properties: { resistance: 330 },
-    terminals: [{ id: 't1', node: nodeB._id }, { id: 't2', node: nodeC._id }]
-  });
-
-  const v1 = new Component({
-    _id: new mongoose.Types.ObjectId(),
-    id: `V1-${owner._id}-${index}`,
-    type: 'dc-source',
-    label: 'V1',
-    position: { x: 120, y: 160 },
-    properties: { voltage: 12 },
-    terminals: [{ id: 'p', node: nodeC._id }, { id: 'n', node: nodeA._id }]
-  });
-
-  // Optionally add a wire
-  const wire = new Component({
-    _id: new mongoose.Types.ObjectId(),
-    id: `W1-${owner._id}-${index}`,
-    type: 'wire',
-    label: 'Wire1',
-    position: { x: 180, y: 120 },
-    properties: {},
-    terminals: [{ id: 'w1', node: nodeA._id }, { id: 'w2', node: nodeC._id }]
-  });
-
-  const circuit = new Circuit({
-    _id: new mongoose.Types.ObjectId(),
-    name: `Valid Circuit ${index + 1} - ${owner.name}`,
-    owner: owner._id,
-    analysed: Math.random() > 0.4,
-    circuitdata: {
-      components: [r1._id, r2._id, v1._id, wire._id],
-      nodes: [nodeA._id, nodeB._id, nodeC._id],
-    },
-  });
-
-  return { nodes: [nodeA, nodeB, nodeC], components: [r1, r2, v1, wire], circuit };
-};
+    // Create nodes (shared between components)
+    const nodeA = new Node({
+      _id: new mongoose.Types.ObjectId(),
+      id: `nA-${owner._id}-${index}`,
+      position: { x: 100, y: 100 },
+    });
+    const nodeB = new Node({
+      _id: new mongoose.Types.ObjectId(),
+      id: `nB-${owner._id}-${index}`,
+      position: { x: 200, y: 100 },
+    });
+    const nodeC = new Node({
+      _id: new mongoose.Types.ObjectId(),
+      id: `nC-${owner._id}-${index}`,
+      position: { x: 150, y: 200 },
+    });
+  
+    // Components sharing common nodes (valid electrical path)
+    const r1 = new Component({
+      _id: new mongoose.Types.ObjectId(),
+      id: `R1-${owner._id}-${index}`,
+      type: 'resistor',
+      label: 'R1',
+      position: { x: 150, y: 90 },
+      properties: { resistance: 220 },
+      terminals: [{ id: 't1', node: nodeA._id }, { id: 't2', node: nodeB._id }]
+    });
+  
+    const r2 = new Component({
+      _id: new mongoose.Types.ObjectId(),
+      id: `R2-${owner._id}-${index}`,
+      type: 'resistor',
+      label: 'R2',
+      position: { x: 180, y: 160 },
+      properties: { resistance: 330 },
+      terminals: [{ id: 't1', node: nodeB._id }, { id: 't2', node: nodeC._id }]
+    });
+  
+    const v1 = new Component({
+      _id: new mongoose.Types.ObjectId(),
+      id: `V1-${owner._id}-${index}`,
+      type: 'dc-source',
+      label: 'V1',
+      position: { x: 120, y: 160 },
+      properties: { voltage: 12 },
+      terminals: [{ id: 'p', node: nodeC._id }, { id: 'n', node: nodeA._id }]
+    });
+  
+    // --- Removed 'wire' component definition ---
+  
+    const circuit = new Circuit({
+      _id: new mongoose.Types.ObjectId(),
+      name: `Valid Circuit ${index + 1} - ${owner.name}`,
+      owner: owner._id,
+      analysed: Math.random() > 0.4,
+      circuitdata: {
+        // --- Removed 'wire._id' from this array ---
+        components: [r1._id, r2._id, v1._id], 
+        nodes: [nodeA._id, nodeB._id, nodeC._id],
+      },
+    });
+  
+    return { 
+      nodes: [nodeA, nodeB, nodeC], 
+      // --- Removed 'wire' from this returned array ---
+      components: [r1, r2, v1], 
+      circuit 
+    };
+  };
 
 // ----------------------------------------------------------
 // Main Seeder
