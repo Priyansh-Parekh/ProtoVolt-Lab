@@ -1,7 +1,7 @@
 // Import the Google AI SDK
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.Gemini_Key);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_KEY);
 
 const solve = async (req, res) => {
   try {

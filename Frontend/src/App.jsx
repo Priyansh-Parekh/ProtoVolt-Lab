@@ -72,7 +72,7 @@ const MainContent = () => {
       <Loading>
         <Routes location={location}>
           <Route path="/" element={<Home />} />
-          <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/workspace" element={<WorkspacePage user={user} />} />
           <Route path="/about-us" element={<AboutUs />} />
 
           {/* Auth Routes */}

@@ -5,45 +5,51 @@ import {
   FiActivity,
   FiZap,
   FiDatabase,
-  FiTrash2 ,
+  FiTrash2,
   FiChevronRight,
 } from "react-icons/fi";
 import { error, success } from "../utils/toastify.js";
 import api from "../utils/axios.js";
 
-const WorkspacePage = () => {
+const WorkspacePage = ({ user }) => {
   const [circuits, setCircuits] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [deleteCircuit,setDeleteCircuit] = useState(false);
+  const [loading, setLoading] = useState(user?true:false);
+  const [deleteCircuit, setDeleteCircuit] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await api.get("/user/data/getCircuits");
-        if (res.data.success) setCircuits(res.data.circuits);
-        else error(res.data.message);
-      } catch (err) {
-        error("Failed to fetch circuits");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [deleteCircuit]);
+  if (user) {
 
-  const handleDelete = async(e,id)=>{
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const res = await api.get("/user/data/getCircuits");
+          if (res.data.success) setCircuits(res.data.circuits);
+          else error(res.data.message);
+        } catch (err) {
+          error("Failed to fetch circuits");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }, [deleteCircuit]);
+
+  }
+ 
+  
+
+  const handleDelete = async (e, id) => {
     e.target.disabled = true;
     e.target.style.opacity = 0.5;
     try {
-      const res = await api.post('/circuit/data/deleteCircuit',{id})
-      if(res.data.success){
+      const res = await api.post('/circuit/data/deleteCircuit', { id })
+      if (res.data.success) {
         success("Deleted that Circuit");
-      }else{
+      } else {
         error("Failed to delete Circuit");
       }
     } catch (err) {
       error("server Error");
-    }finally{
+    } finally {
       e.target.disabled = false;
       e.target.style.opacity = 1;
       setDeleteCircuit(!deleteCircuit);
@@ -208,7 +214,7 @@ const WorkspacePage = () => {
                     onClick={(e) => {
                       e.stopPropagation(); // prevent Link click
                       e.preventDefault();
-                      handleDelete(e,circuit._id);
+                      handleDelete(e, circuit._id);
                     }}
                     className="absolute top-3 hover:cursor-pointer right-3 text-[var(--color-placeholder)] hover:text-red-500 transition-all"
                     title="Delete circuit"
