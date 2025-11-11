@@ -9,17 +9,19 @@ const userLogin = async (req, res) => {
     if (user && user.verified && (await user.matchPassword(password))) {
       const token = generateToken(email);
 
+      const isProduction = process.env.NODE_ENV === "production";
+
       res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.Cookie_Secure === "true",  // false for local
-        sameSite: process.env.Cookie_Same_site === "true" ? "lax" : "none", // true → lax (your env)
-        path: "/", 
+        secure: isProduction, // only true in production (Render + Vercel)
+        sameSite: isProduction ? "none" : "lax", // allow cross-site for production (Render <-> Vercel)
+        path: "/",
       });
 
       res.status(200).json({
         success: true,
         message: "Successfully logged in!",
-        redirectUrl: `${process.env.Frontend_Link}/`,
+        redirectUrl: `${process.env.FRONTEND_LINK}/`,
       });
     } else {
       if (!user?.verified) {

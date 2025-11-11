@@ -1,9 +1,12 @@
 const logout = async (req, res) => {
   try {
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.Cookie_Secure === "true",   // false from your .env
-      sameSite: process.env.Cookie_Same_site === "true" ? "lax" : "none", // true → lax
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
     });
 
     res.status(200).json({
