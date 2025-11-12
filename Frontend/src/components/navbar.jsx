@@ -38,7 +38,7 @@ const Navbar = ({ user = null }) => {
   const linkClasses = ({ isActive }) =>
     `relative flex items-center space-x-2 px-3 py-2 rounded-md font-medium text-sm overflow-hidden z-10 
      ${isActive ? 'text-white' : 'text-gray-300 hover:text-sky-400'}
-     before:absolute before:inset-0 before:bg-sky-700 before:transition-transform before:duration-300 before:ease-out before:scale-x-0 before:origin-left
+     before:absolute before:inset-0 before:bg-[#00D4FF] before:transition-transform before:duration-300 before:ease-out before:scale-x-0 before:origin-left
      ${isActive
       ? 'before:scale-x-100 before:opacity-100'
       : 'before:opacity-0 hover:before:scale-x-100 hover:before:opacity-30'
@@ -135,8 +135,8 @@ const Navbar = ({ user = null }) => {
           </NavLink>
         ) : (
           // User button if logged in
-          <>
-            <button className="bg-[#00D4FF] hover:bg-[#00B8E6] text-[#0A0E17] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2 shadow-lg">
+          <div className="flex items-center space-x-6">
+            <button className="bg-[#00D4FF] hover:bg-[#00B8E6] text-[#0A0E17] font-bold px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2 shadow-lg ml-32">
               {user?.name || 'User'}
             </button>
             <button
@@ -157,7 +157,7 @@ const Navbar = ({ user = null }) => {
               <FiLogOut className="text-xl" />
               <span className="font-medium">Logout</span>
             </button>
-          </>
+          </div>
         )}
       </div>
     </motion.div>

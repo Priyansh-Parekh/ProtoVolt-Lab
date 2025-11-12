@@ -1,17 +1,18 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { FiTrello, FiBookOpen, FiZap, FiCode } from "react-icons/fi";
+import { FiTrello, FiBookOpen, FiZap, FiUserCheck } from "react-icons/fi";
 // import Hero3D from "../components/Hero3D";
-import ParticleBackground from "../helper/ParticleBackground.jsx";
-import BackgroundGlow from "../helper/BackgroundGlow.jsx";
-import ParallaxSection from "../helper/ParallaxSection.jsx";
-import { SplitText, RevealText, ParallaxText, GlitchText, ScaleText } from "../helper/AnimatedText.jsx";
+import ParticleBackground from "../helper/ParticleBackground";
+import BackgroundGlow from "../helper/BackgroundGlow";
+import ParallaxSection from "../helper/ParallaxSection";
+import { SplitText, RevealText, ParallaxText, GlitchText, ScaleText } from "../helper/AnimatedText";
 
 const features = [
   { icon: FiTrello, title: "Drag-and-Drop Canvas", description: "Build complex circuits intuitively on a limitless digital canvas. Our workspace supports all standard components and custom modules.", delay: 0.2 },
   { icon: FiZap, title: "Real-Time Simulation Core", description: "Experience instantaneous analysis with our high-speed C++ core engine. Get live voltage, current, and waveform data.", delay: 0.4 },
   { icon: FiBookOpen, title: "Integrated Classroom Module", description: "Professors can deploy assignments, track student progress, and conduct virtual labs directly within the platform.", delay: 0.6 },
-  { icon: FiCode, title: "API and Data Protocol Ready", description: "Designed for collaboration. Seamless data exchange between Frontend, Backend, and the simulation engine for easy integration.", delay: 0.8 },
+  {icon: FiUserCheck,title: "Personalized Workspace",description: "A dedicated space tailored to each member—track your tasks, projects, and contributions with clarity and ease.",delay: 0.8},
+  
 ];
 
 const dotContent = [
@@ -38,9 +39,9 @@ const dotContent = [
   },
   {
     id: 4,
-    icon: FiCode,
-    title: "Deploy Anywhere",
-    description: "Export APIs and integrate seamlessly.",
+    icon: FiUserCheck,
+    title: "Your Own Workspace",
+    description: "Access a personal dashboard to manage tasks, files, and collaborations effortlessly.",
     link: "#",
   },
 ];
@@ -67,13 +68,14 @@ const Home = () => {
 
       {/* HERO 3D SECTION */}
      {/* HERO SECTION */}
-<section className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center overflow-hidden pt-32">
+     <section className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center overflow-hidden pt-10">
 
   {/* TITLE + SUBTEXT */}
   <div className="relative z-20 mb-10">
-    <h1 className="text-6xl md:text-8xl font-extrabold mb-4 bg-gradient-to-r from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] bg-clip-text text-transparent">
-      ProtoVolt
-    </h1>
+  <h1 className="text-7xl md:text-9xl font-extrabold mb-4 bg-gradient-to-r from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] bg-clip-text text-transparent">
+  ProtoVolt
+</h1>
+
     <p className="text-lg md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
       The Futuristic Circuit Simulator — Design, Simulate, and Collaborate in 3D.
     </p>
@@ -116,18 +118,9 @@ const Home = () => {
 
       {/* FEATURES SECTION WITH PARALLAX */}
       <section className="py-24 relative z-10 px-4 md:px-12">
-        <ParallaxSection speed={0.2}>
-          <motion.h2
-            className="text-4xl md:text-6xl font-bold mb-16 text-center"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <RevealText className="text-[#00D4FF]">
-              Built for the Future of Engineering
-            </RevealText>
-          </motion.h2>
-        </ParallaxSection>
+      <h2 className="text-4xl md:text-6xl font-bold mb-16 text-center text-[#00D4FF]">
+        Built for the Future of Engineering
+       </h2>
 
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10"
@@ -140,11 +133,11 @@ const Home = () => {
             <ParallaxSection key={index} speed={0.1 * (index + 1)}>
               <motion.div
                 variants={itemVariants}
-                className="group p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-md border border-white/10 hover:border-[#00D4FF] transition-all duration-500 shadow-xl hover:shadow-[0_0_30px_rgba(0,212,255,0.3)] hover:scale-105"
+                className="group p-6 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-md border border-white/10 hover:border-[#00D4FF] transition-all duration-500 shadow-xl hover:shadow-[0_0_30px_rgba(0,212,255,0.3)] hover:scale-105 flex flex-col h-full min-h-[320px]"
                 whileHover={{ y: -10 }}
               >
                 <motion.div
-                  whileHover={{ rotate: 360, scale: 1.2 }}
+                  whileHover={{ rotate: 15 , scale: 1.2 }}
                   transition={{ duration: 0.6 }}
                 >
                   <feature.icon className="w-12 h-12 text-[#00D4FF] mb-4 group-hover:drop-shadow-[0_0_10px_rgba(0,212,255,0.8)]" />
@@ -186,15 +179,21 @@ const Home = () => {
 
       <section className="py-24 px-4 md:px-12 relative overflow-hidden">
  <div className="max-w-7xl mx-auto relative">
-   <motion.h2
-     className="text-4xl md:text-5xl font-bold mb-20 text-center text-white"
-     initial={{ opacity: 0, y: 30 }}
-     whileInView={{ opacity: 1, y: 0 }}
-     viewport={{ once: true }}
-     transition={{ duration: 0.6 }}
-   >
-     The ProtoVolt Journey
-   </motion.h2>
+ <motion.h2
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.6 }}
+  className="text-5xl md:text-7xl font-extrabold mb-20 text-center"
+>
+  <GlitchText className="bg-gradient-to-r from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] bg-clip-text text-transparent">
+    The ProtoVolt Journey
+  </GlitchText>
+</motion.h2>
+
+
+
+
 
 
    {/* Timeline Container */}
@@ -300,9 +299,9 @@ const Home = () => {
         <ParallaxSection speed={0.3}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
-              { number: "10K+", label: "Active Users" },
-              { number: "50K+", label: "Circuits Simulated" },
-              { number: "500+", label: "Institutions" },
+              { number: "5+", label: "Circuit Components Supported" },
+              { number: "<10s", label: "Simulation Start Time" },
+              { number: "10+", label: "Simulated Experiments" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -334,14 +333,16 @@ const Home = () => {
       {/* VIDEO SHOWCASE WITH PARALLAX */}
       <section className="py-24 relative z-10 px-4 md:px-12 bg-gradient-to-b from-transparent to-black/70">
         <ParallaxSection speed={0.2}>
-          <motion.h2
-            className="text-4xl md:text-6xl font-bold mb-12 text-center text-white"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <RevealText>See ProtoVolt in Action</RevealText>
-          </motion.h2>
+        <motion.h2
+  className="text-4xl md:text-6xl font-extrabold mb-12 text-center bg-gradient-to-r from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] bg-clip-text text-transparent"
+  initial={{ opacity: 0, y: 30 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.6 }}
+>
+  See ProtoVolt in Action
+</motion.h2>
+
         </ParallaxSection>
 
         <ParallaxSection speed={0.1}>
@@ -355,7 +356,7 @@ const Home = () => {
             >
               <iframe
                 className="w-full h-full"
-                // src=""
+                src=""
                 title="ProtoVolt Demo"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
@@ -374,24 +375,25 @@ const Home = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6">
-              <GlitchText className="bg-gradient-to-r from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] bg-clip-text text-transparent">
-                Ready to Transform Your Learning?
-              </GlitchText>
-            </h2>
-            <p className="text-xl text-gray-400 mb-10">
-              <SplitText>
-                Join thousands of students and educators revolutionizing electronics education
-              </SplitText>
-            </p>
-            <motion.a
-              href="/workspace"
-              className="inline-block px-12 py-5 bg-gradient-to-r from-[#00D4FF] to-[#4F46E5] text-black font-bold text-xl rounded-full shadow-2xl hover:shadow-[0_0_50px_rgba(0,212,255,0.6)] transition-all duration-300"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Get Started Now
-            </motion.a>
+            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 bg-gradient-to-r from-[#00D4FF] via-[#4F46E5] to-[#00D4FF] bg-clip-text text-transparent">
+  Enter Your Classroom
+</h2>
+
+
+<p className="text-xl text-gray-400 mb-10">
+  Access announcements, assignments, and course updates instantly
+</p>
+
+
+<motion.a
+  href="/classroom"  
+  className="inline-block px-12 py-5 bg-gradient-to-r from-[#00D4FF] to-[#4F46E5] text-black font-bold text-xl rounded-full shadow-2xl hover:shadow-[0_0_50px_rgba(0,212,255,0.6)] transition-all duration-300"
+  whileHover={{ scale: 1.1 }}
+  whileTap={{ scale: 0.95 }}
+>
+  Go to Classroom
+</motion.a>
+
           </motion.div>
         </ParallaxSection>
       </section>

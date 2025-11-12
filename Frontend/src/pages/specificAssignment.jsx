@@ -9,10 +9,12 @@ import {
   FiFileText,
   FiTool,
   FiUser,
+  FiCpu
 } from "react-icons/fi";
 import { BsFileEarmarkText } from "react-icons/bs";
 import api from "../utils/axios.js";
 import { error, info, success } from "../utils/toastify.js";
+import Sidebar from '../components/classroom/sidebar.jsx';
 
 const FilePreviewModal = ({ file, onClose }) => {
   if (!file) return null;
@@ -184,9 +186,15 @@ const SpecificAssignment = ({ user }) => {
           if (res.data.success) {
             const newStudentWork = res.data.studentAssignment;
             setStudentWork(newStudentWork);
-            setSubtabs(newStudentWork?.subTabs || []);
+if (newStudentWork && newStudentWork.subTabs) {
+              setSubtabs(newStudentWork.subTabs);
+            } else {
+              setSubtabs([]);
+            }
+           // setSubtabs(newStudentWork?.subTabs || []);
           } else error(res.data.message);
-        } catch {
+        } catch (err){
+           console.log(err);
           error("Server Error");
         }
       };
@@ -205,7 +213,7 @@ const SpecificAssignment = ({ user }) => {
       });
       if (res.data.success) {
         success(res.data.message);
-        setStudAssApi((p) => !p);
+        setStudAssApi(prev => !prev);
         setNewTabName("");
         setShowNewTabInput(false);
       } else error(res.data.message);
@@ -261,7 +269,11 @@ const SpecificAssignment = ({ user }) => {
   const profFiles = getProfessorAttachments(attachments);
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6 font-[Chakra_Petch] text-gray-300">
+    <div className="flex min-h-screen bg-[var(--color-primary)] font-[Chakra_Petch] text-gray-300">
+       <Sidebar />
+
+        <div className="flex-1 p-6 overflow-y-auto flex justify-center items-start">
+          <div className={`w-full max-w-6xl ${user.role === 'professor' ? 'mx-auto' : ''}`}>
       <FilePreviewModal file={selectedPreviewFile} onClose={closePreview} />
 
       <div className="max-w-7xl mx-auto">
@@ -376,6 +388,83 @@ const SpecificAssignment = ({ user }) => {
               )}
             </div>
 
+
+
+            {user.role === "student" && (
+            <>
+              {/* Build Circuits (subtabs) */}
+              <div className="bg-gray-800 rounded-2xl p-4 border border-cyan-500/30 hover:border-cyan-400/50 transition-all shadow-md hover:shadow-cyan-500/20">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-xl font-semibold text-cyan-400 flex items-center gap-2">
+                    <FiCpu /> Build Circuits
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <button
+                      // 1. onClick now shows the input field
+                      onClick={() => setShowNewTabInput(true)}
+                      // 2. Hide the '+' button if the input is already open
+                      style={{ display: showNewTabInput ? "none" : "block" }}
+                      className="p-2 rounded bg-transparent border border-cyan-500/30 hover:bg-cyan-500/20 text-cyan-400 transition-all"
+                      title="Add new circuit tab"
+                    >
+                      <FiPlus />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3. NEW: This form appears when you click '+' */}
+                {showNewTabInput && (
+                  <div className="flex gap-2 mb-3 p-2 bg-gray-700/50 rounded-md border border-cyan-500/30">
+                    <input
+                      type="text"
+                      value={newTabName}
+                      onChange={(e) => setNewTabName(e.target.value)}
+                      placeholder="New circuit name..."
+                      className="flex-grow bg-transparent border-b border-cyan-500/30 focus:outline-none focus:border-cyan-400 text-gray-200 px-1"
+                      autoFocus
+                    />
+                    <button
+                      onClick={() => {
+                        setShowNewTabInput(false);
+                        setNewTabName("");
+                      }}
+                      className="p-1 text-gray-400 hover:text-red-400"
+                      title="Cancel"
+                    >
+                      <FiX />
+                    </button>
+                    <button
+                      onClick={createSubtab}
+                      disabled={isCreatingTab}
+                      className="px-3 py-1 rounded bg-cyan-400 text-black font-medium hover:bg-cyan-300 disabled:opacity-50"
+                    >
+                      {isCreatingTab ? "Creating..." : "Create"}
+                    </button>
+                  </div>
+                )}
+
+                {/* 4. Your existing subtab list */}
+                <div className="space-y-2">
+                  {subtabs.length === 0 && !showNewTabInput && (
+                    <div className="text-gray-400">
+                      No circuits yet. Click "+" to create one.
+                    </div>
+                  )}
+                  {subtabs.map((s) => (
+                    <Link
+                      key={s._id}
+                      to={`/classroom/${classroomId}/assignment/${assignmentId}/${s._id}/${s.circuit}`}
+                      className="block px-4 py-2 rounded-md bg-gray-700/50 hover:bg-gray-700 border border-transparent hover:border-cyan-400/30 text-cyan-400 transition-all"
+                    >
+                      {s.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+
             {/* Solution Toggle */}
             <div>
               <button
@@ -481,7 +570,10 @@ const SpecificAssignment = ({ user }) => {
         </div>
       </div>
     </div>
+    </div>
+    </div>
   );
 };
 
 export default SpecificAssignment;
+
