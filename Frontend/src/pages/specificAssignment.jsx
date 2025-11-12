@@ -14,6 +14,7 @@ import {
 import { BsFileEarmarkText } from "react-icons/bs";
 import api from "../utils/axios.js";
 import { error, info, success } from "../utils/toastify.js";
+import Sidebar from '../components/classroom/sidebar.jsx';
 
 const FilePreviewModal = ({ file, onClose }) => {
   if (!file) return null;
@@ -268,7 +269,11 @@ if (newStudentWork && newStudentWork.subTabs) {
   const profFiles = getProfessorAttachments(attachments);
 
   return (
-    <div className="min-h-screen bg-gray-900 p-6 font-[Chakra_Petch] text-gray-300">
+    <div className="flex min-h-screen bg-[var(--color-primary)] font-[Chakra_Petch] text-gray-300">
+       <Sidebar />
+
+        <div className="flex-1 p-6 overflow-y-auto flex justify-center items-start">
+          <div className={`w-full max-w-6xl ${user.role === 'professor' ? 'mx-auto' : ''}`}>
       <FilePreviewModal file={selectedPreviewFile} onClose={closePreview} />
 
       <div className="max-w-7xl mx-auto">
@@ -564,6 +569,8 @@ if (newStudentWork && newStudentWork.subTabs) {
           )}
         </div>
       </div>
+    </div>
+    </div>
     </div>
   );
 };
