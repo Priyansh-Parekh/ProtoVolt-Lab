@@ -1,97 +1,65 @@
-const fs = require("fs");
-const { execFile } = require("child_process");
+import fs from "fs";
+import { execFile } from "child_process";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const data = {
-  nodes: [
-    { id: "node-n1", position: { x: 100, y: 100 } },
-    { id: "node-n2", position: { x: 200, y: 100 } },
-    { id: "node-n3", position: { x: 300, y: 100 } },
-    { id: "node-n4", position: { x: 400, y: 100 } },
-    { id: "node-n5", position: { x: 500, y: 100 } }
-  ],
-  components: [
-    {
-      id: "r1",
-      type: "resistor",
-      label: "R1",
-      position: { x: 150, y: 100 },
-      properties: { resistance: { value: "100", unit: "Ω" } },
-      terminals: [
-        { id: "t1", nodeId: "node-n1" },
-        { id: "t2", nodeId: "node-n2" }
-      ]
-    },
-    {
-      id: "r2",
-      type: "resistor",
-      label: "R2",
-      position: { x: 250, y: 100 },
-      properties: { resistance: { value: "150", unit: "Ω" } },
-      terminals: [
-        { id: "t1", nodeId: "node-n2" },
-        { id: "t2", nodeId: "node-n3" }
-      ]
-    },
-    {
-      id: "r3",
-      type: "resistor",
-      label: "R3",
-      position: { x: 350, y: 100 },
-      properties: { resistance: { value: "200", unit: "Ω" } },
-      terminals: [
-        { id: "t1", nodeId: "node-n3" },
-        { id: "t2", nodeId: "node-n4" }
-      ]
-    },
-    {
-      id: "l1",
-      type: "inductor",
-      label: "L1",
-      position: { x: 450, y: 100 },
-      properties: { inductance: { value: "5", unit: "H" } },
-      terminals: [
-        { id: "t1", nodeId: "node-n4" },
-        { id: "t2", nodeId: "node-n5" }
-      ]
-    },
-    {
-      id: "l2",
-      type: "inductor",
-      label: "L2",
-      position: { x: 550, y: 100 },
-      properties: { inductance: { value: "10", unit: "H" } },
-      terminals: [
-        { id: "t1", nodeId: "node-n5" },
-        { id: "t2", nodeId: "node-n1" }
-      ]
-    }
-  ]
-};
+// --- FIX FOR __dirname ---
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// --- END FIX ---
 
-const filename = "circuit_input.json";
-fs.writeFileSync(filename, JSON.stringify(data, null, 2), "utf8");
-console.log(`✅ Written circuit JSON to ${filename}`);
+// 3. Execution Logic
+// This function is now EXPORTED and returns a Promise
+// It accepts circuitData as an argument
+export function runSimulation(circuitData) {
+    // We wrap the execFile in a Promise so the server can 'await' the result
+    return new Promise((resolve, reject) => {
+        // Use a unique filename for each simulation to avoid conflicts
+        const INPUT_FILE = `sim_input_${Date.now()}.json`; 
+        const ENGINE_PATH = path.join(__dirname, "engine.exe");
 
-const enginePath = "C:/Users/HP/Desktop/cpp_project/test.exe";
+        // A. Write Payload
+        try {
+            fs.writeFileSync(INPUT_FILE, JSON.stringify(circuitData, null, 2), "utf8");
+            console.log(`📦 Payload written to ${INPUT_FILE}`);
+        } catch (err) {
+            console.error("❌ Failed to write payload:", err);
+            return reject(new Error("Failed to write payload")); // Reject the promise on error
+        }
 
-execFile(enginePath, [filename], (error, stdout, stderr) => {
-  if (error) {
-    console.error("❌ Engine error:", error);
-  }
-  if (stderr) console.error("⚠️ Engine stderr:", stderr);
+        // B. Execute C++ Engine
+        console.log("⚙️ Running C++ Engine...");
+        execFile(ENGINE_PATH, [INPUT_FILE], (error, stdout, stderr) => {
+            // D. Cleanup (do this first, regardless of error)
+            try {
+                if (fs.existsSync(INPUT_FILE)) {
+                    fs.unlinkSync(INPUT_FILE);
+                }
+            } catch (cleanupErr) {
+                console.error("⚠️ Cleanup failed:", cleanupErr);
+                // Don't reject, we might still have a result
+            }
+            
+            // Handle errors from the C++ engine
+            if (stderr) console.error(`⚠️ [STDERR]: ${stderr}`);
+            if (error) {
+                console.error(`❌ Execution Error: ${error.message}`);
+                return reject(new Error(error.message)); // Reject the promise
+            }
 
-  try {
-    const result = JSON.parse(stdout);
-    console.log("⚡ Engine output:", result);
-  } catch (e) {
-    console.error("❌ Could not parse output:", stdout);
-  }
+            // C. Parse Results
+            try {
+                const result = JSON.parse(stdout);
+                console.log("✅ C++ Engine Finished.");
+                // This is the fix: We resolve the promise with the result object
+                resolve(result); 
+            } catch (e) {
+                console.error("❌ Could not parse engine output:", stdout);
+                reject(new Error("Could not parse engine output")); // Reject on parse error
+            }
+        });
+    });
+}
 
-  // cleanup
-  try {
-    fs.unlinkSync(filename);
-    console.log(`🧹 Cleaned up ${filename}`);
-  } catch (err) {
-    console.error("⚠️ Cleanup failed:", err);
-  }
-});
+// Exporting the function as default (matches your original code)
+export default runSimulation;

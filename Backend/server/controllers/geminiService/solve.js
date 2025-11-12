@@ -1,5 +1,6 @@
 // Import the Google AI SDK
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import runSimulation from "../../../../workspace.js";
 
 const genAI = new GoogleGenerativeAI(process.env.Gemini_Key);
 
@@ -9,7 +10,9 @@ const solve = async (req, res) => {
 
     const {circuit_data} = req.body;
 
-  
+    const anaRes =  runSimulation(circuit_data);
+    console.log(anaRes);
+
 
 
     const prompt = `

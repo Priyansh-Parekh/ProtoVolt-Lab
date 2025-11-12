@@ -3,8 +3,8 @@ import { FiMove, FiZap, FiRotateCcw, FiRotateCw, FiTrash2, FiDownload, FiActivit
 import { useParams,useSearchParams  } from 'react-router-dom';
 
 // Importing utils
-import { error, info, success } from '../utils/toastify';
-import api from '../utils/axios';
+import { error, info, success } from '../utils/toastify.js';
+import api from '../utils/axios.js';
 
 // --- Component Definition ---
 
