@@ -12,7 +12,7 @@ const otpGen = async (req, res) => {
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
-      secure: true,
+      secure: process.env.NODE_ENV!=="production",
       port: 465,
       auth: {
         user: "caggarwal025@gmail.com",
