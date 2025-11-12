@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { FiMove, FiZap, FiRotateCcw, FiRotateCw, FiTrash2, FiDownload, FiActivity } from "react-icons/fi";
-import { useParams,useSearchParams  } from 'react-router-dom';
+import { FiMove, FiZap, FiRotateCcw, FiRotateCw, FiCpu, FiTrash2, FiDownload, FiActivity } from "react-icons/fi";
+import { useParams, useSearchParams } from 'react-router-dom';
 
 // Importing utils
-import { error, info, success } from '../utils/toastify';
-import api from '../utils/axios';
+import { error, info, success, warning } from '../utils/toastify.js';
+import api from '../utils/axios.js';
 
 // --- Component Definition ---
 
@@ -107,10 +107,10 @@ const Workspace = () => {
 
         try {
             // Your API call to update would go here
-            const res = await api.post(`/circuit/data/updateCircuit`, { circuit:circuitData,_id:projectId });
-            if(res.data.success){
+            const res = await api.post(`/circuit/data/updateCircuit`, { circuit: circuitData, _id: projectId });
+            if (res.data.success) {
                 success(res.data.message);
-            }else{
+            } else {
                 error(res.data.message);
             }
         } catch (err) {
@@ -122,7 +122,54 @@ const Workspace = () => {
         }
     };
 
-    const analyzeCircuit = async () => {
+    const analyzeCircuit = async (e) => {
+        e.target.disabled = true;
+        e.target.style.opacity = 0.5;
+        try {
+            const circuit_data = {
+                name: circuitName,
+                nodes: state.nodes,
+                components: state.components,
+            };
+
+            // Sending data to your Node.js backend
+            const res = await api.post("/circuit/data/solveWithCpp", { circuit_data , project_id : projectId });
+
+            if (res.data.success) {
+                // *** Case 1: Success (Circuit is valid) ***
+                success(res.data.message); // e.g., "Circuit analysis successful."
+
+                const simulationResults = res.data.data;
+                if(!simulationResults.is_open){
+                    success("It's Close Circuit");
+                }else{
+                    warning("It's Open Circuit");
+                }
+
+            }
+            else {
+                // *** Case 2: Logical Error (Circuit is open, etc.) ***
+                // The API call was 200 OK, but success: false
+                error(res.data.message); // e.g., "Circuit analysis failed: Circuit is open."
+                console.warn("Analysis Failed:", res.data.data);
+
+                // TODO: Update your state to show the error
+                // You could highlight the 'dangling_nodes' from res.data.data
+                // e.g., setAnalysisResults(res.data.data);
+            }
+        } catch (err) {
+            // *** Case 3: Server Error (Node/C++ crashed) ***
+            console.error("Request Failed:", err);
+
+            const errorMsg = err.response?.data?.message || "Server Connection Error";
+            error(errorMsg);
+        } finally {
+            e.target.disabled = false;
+            e.target.style.opacity = 1;
+        }
+    };
+
+    const solveCircuit = async () => {
         info("Analyzing circuit...");
 
         try {
@@ -824,10 +871,10 @@ const Workspace = () => {
     // --- Return JSX ---
     return (
         <div className="flex flex-col  bg-[#111827] text-[#F3F4F6] overflow-hidden">
-    
+
             {/* --- Top Section (Sidebar | [Header + (Canvas + Properties)]) --- */}
             <div className="flex flex-1 overflow-hidden">
-    
+
                 {/* 1. Components Sidebar (Left) */}
                 <div className="w-56 flex-shrink-0 bg-[#1F2937] border-r border-[#4B5563] p-4 flex flex-col space-y-5 shadow-soft overflow-y-auto">
                     <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#FBBF24] to-[#F97316]">Components</h2>
@@ -848,34 +895,99 @@ const Workspace = () => {
                         <div className="component-btn group" draggable="true" onDragStart={(e) => handleDragStart(e, 'xor-gate')}><svg width="40" height="40" viewBox="0 0 40 40" className="text-[#9CA3AF] group-hover:text-[#F97316]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12 C20 12, 28 16, 30 20 C28 24, 20 28, 12 28 Z" /><path d="M8 12 Q13 20 8 28" /></svg><span className="text-xs mt-2">XOR Gate</span></div>
                     </div>
                 </div>
-    
+
                 {/* 2. Main Content Area (Center Column) */}
                 <div className="flex-1 flex flex-col p-4 gap-4 overflow-auto-y">
-                    
+
                     {/* Header/Toolbar */}
-                    <div className="flex-shrink-0 flex items-center space-x-3 bg-[#1F2937] p-2 rounded-lg border border-[#4B5563] shadow-soft">
+                    <div className="shrink-0 flex items-center space-x-3 bg-[#1F2937] p-2 rounded-lg border border-[#4B5563] shadow-soft">
                         <div className="flex-1 flex justify-center">
-                            <input type="text" value={circuitName} onChange={(e) => { setCircuitName(e.target.value); }} className="w-1/2 min-w-[200px] text-center rounded-md px-3 py-1.5 bg-[#111827] border border-[#4B5563] text-lg font-semibold text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition" placeholder="Circuit Name" />
+                            <input
+                                type="text"
+                                value={circuitName}
+                                onChange={(e) => { setCircuitName(e.target.value); }}
+                                className="w-1/2 min-w-[200px] text-center rounded-md px-3 py-1.5 bg-[#111827] border border-[#4B5563] text-lg font-semibold text-[#F3F4F6] placeholder-[#9CA3AF] focus:outline-none focus:border-[#F97316] focus:ring-1 focus:ring-[#F97316] transition"
+                                placeholder="Circuit Name"
+                            />
                         </div>
-                        <button onClick={() => setState(prev => ({ ...prev, wireMode: false }))} className={`flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 ${!state.wireMode ? 'bg-gradient-to-r from-[#FBBF24] to-[#F97316] text-[#111827] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}><FiMove className="text-lg" /> Drag</button>
-                        <button onClick={() => setState(prev => ({ ...prev, wireMode: true, wiringStartNodeId: null }))} className={`flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 ${state.wireMode ? 'bg-[#F97316] text-[#F3F4F6] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}><FiZap className="text-lg" /> Wire</button>
-                        <div className="flex-grow"></div>
-                        <button onClick={handleUndo} disabled={historyIndex.current <= 0} className="flex items-center gap-2 px-4 py-2 hover:cursor-pointer rounded-md font-semibold transition-all duration-300 bg-sky-500/10 border border-sky-500/30 text-sky-400 hover:bg-sky-500/20 hover:text-sky-300 hover:border-sky-500/70 disabled:opacity-50 disabled:cursor-not-allowed"><FiRotateCcw className="text-lg" /> Undo</button>
-                        <button onClick={handleRedo} disabled={historyIndex.current >= history.current.length - 1} className="flex hover:cursor-pointer items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-sky-500/10 border border-sky-500/30 text-sky-400 hover:bg-sky-500/20 hover:text-sky-300 hover:border-sky-500/70 disabled:opacity-50 disabled:cursor-not-allowed"><FiRotateCw className="text-lg" /> Redo</button>
-                        <button onClick={deleteSelected} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/70"><FiTrash2 className="text-lg" /> Delete</button>
-                        <button onClick={exportJson} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/70"><FiDownload className="text-lg" /> Export JSON</button>
-                        <button onClick={analyzeCircuit} className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/70"><FiActivity className="text-lg" /> Analyze</button>
-                        <button onClick={(e) => { if(view){error("maybe You Don't Have Access")}else{if (projectId === "new") createCircuit(e); else { saveCircuit(e) } }}} className="flex items-center hover:cursor-pointer gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"><FiDownload className="text-lg" /> Save</button>
+
+                        <button
+                            onClick={() => setState(prev => ({ ...prev, wireMode: false }))}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 ${!state.wireMode ? 'bg-linear-to-r from-[#FBBF24] to-[#F97316] text-[#111827] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}
+                        >
+                            <FiMove className="text-lg" /> Drag
+                        </button>
+
+                        <button
+                            onClick={() => setState(prev => ({ ...prev, wireMode: true, wiringStartNodeId: null }))}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 ${state.wireMode ? 'bg-[#F97316] text-[#F3F4F6] shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-[#374151] border border-transparent text-[#9CA3AF] hover:border-[#F97316] hover:text-[#F3F4F6]'}`}
+                        >
+                            <FiZap className="text-lg" /> Wire
+                        </button>
+
+                        <div className="grow"></div>
+
+                        <button
+                            onClick={handleUndo}
+                            disabled={historyIndex.current <= 0}
+                            className="flex items-center gap-2 px-4 py-2 hover:cursor-pointer rounded-md font-semibold transition-all duration-300 bg-sky-500/10 border border-sky-500/30 text-sky-400 hover:bg-sky-500/20 hover:text-sky-300 hover:border-sky-500/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <FiRotateCcw className="text-lg" /> Undo
+                        </button>
+
+                        <button
+                            onClick={handleRedo}
+                            disabled={historyIndex.current >= history.current.length - 1}
+                            className="flex hover:cursor-pointer items-center gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-sky-500/10 border border-sky-500/30 text-sky-400 hover:bg-sky-500/20 hover:text-sky-300 hover:border-sky-500/70 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            <FiRotateCw className="text-lg" /> Redo
+                        </button>
+
+                        <button
+                            onClick={deleteSelected}
+                            className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:text-red-300 hover:border-red-500/70"
+                        >
+                            <FiTrash2 className="text-lg" /> Delete
+                        </button>
+
+                        <button
+                            onClick={exportJson}
+                            className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 hover:text-amber-300 hover:border-amber-500/70"
+                        >
+                            <FiDownload className="text-lg" /> Export JSON
+                        </button>
+
+                        <button
+                            onClick={analyzeCircuit}
+                            className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 hover:border-emerald-500/70"
+                        >
+                            <FiActivity className="text-lg" /> Analyze
+                        </button>
+
+                        {/* NEW BUTTON: Solve */}
+                        <button
+                            onClick={solveCircuit}
+                            className="flex items-center gap-2 px-4 py-2 rounded-md font-semibold hover:cursor-pointer transition-all duration-300 bg-violet-500/10 border border-violet-500/30 text-violet-400 hover:bg-violet-500/20 hover:text-violet-300 hover:border-violet-500/70"
+                        >
+                            <FiCpu className="text-lg" /> Solve
+                        </button>
+
+                        <button
+                            onClick={(e) => { if (view) { error("maybe You Don't Have Access") } else { if (projectId === "new") createCircuit(e); else { saveCircuit(e) } } }}
+                            className="flex items-center hover:cursor-pointer gap-2 px-4 py-2 rounded-md font-semibold transition-all duration-300 bg-green-500/10 border border-green-500/30 text-green-400 hover:bg-green-500/20 hover:text-green-300 hover:border-green-500/70"
+                        >
+                            <FiDownload className="text-lg" /> Save
+                        </button>
                     </div>
-    
+
                     {/* Canvas + Properties Row */}
                     <div className="flex flex-1 gap-4 overflow-hidden min-h-[80vh]">
-                        
+
                         {/* Workspace Canvas (Primary Area) */}
                         <div className="flex-1 bg-[#1F2937] rounded-lg border border-[#4B5563] shadow-inner overflow-hidden">
                             <canvas ref={canvasRef} className="w-full h-full" onDrop={handleDrop} onDragOver={(e) => e.preventDefault()} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp} />
                         </div>
-    
+
                         {/* 3. Properties Panel (Right of Canvas) */}
                         <div className="w-72 flex-shrink-0 bg-[#1F2937] border border-[#4B5563] rounded-lg p-4 flex flex-col">
                             <h3 className="text-xl font-bold mb-4 pb-2 border-b border-[#4B5563] bg-clip-text text-transparent bg-gradient-to-r from-[#FBBF24] to-[#F97316]">Properties</h3>
@@ -928,7 +1040,7 @@ const Workspace = () => {
                     </div>
                 </div>
             </div>
-    
+
             {/* --- Bottom Section (Analysis Results) --- */}
             <div className=" flex-shrink-0 bg-[#1F2937] border-t border-[#4B5563] p-4 flex flex-col gap-4">
                 <h3 className="text-xl font-bold pb-2 border-b border-[#4B5563] bg-clip-text text-transparent bg-gradient-to-r from-[#60A5FA] to-[#34D399]">
@@ -991,7 +1103,7 @@ const Workspace = () => {
                     )}
                 </div>
             </div>
-    
+
             {/* JSON Export Modal */}
             {showJsonModal && (
                 <div className="fixed inset-0 bg-[#111827]/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">

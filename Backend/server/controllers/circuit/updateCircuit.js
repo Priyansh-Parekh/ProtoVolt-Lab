@@ -82,6 +82,7 @@ const updateCircuit = async (req, res) => {
             components: createdComps.map(c => c._id),
             nodes: createdNodes.map(n => n._id),
         };
+        existingCircuit.analysed = false;
 
         const updatedCircuit = await existingCircuit.save();
 
