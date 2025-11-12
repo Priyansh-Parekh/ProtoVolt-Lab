@@ -35,8 +35,8 @@ const SpecificClass = ({user}) => {
       }
     };
 
-    fetchData();
-  }, [callAnnounApi]);
+    if (_id) fetchData();
+  }, [_id, callAnnounApi]);
 
   return (
     <div className="flex bg-[var(--color-primary)] min-h-screen">
