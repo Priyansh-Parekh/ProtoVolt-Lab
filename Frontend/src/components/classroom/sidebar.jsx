@@ -36,8 +36,8 @@ const Sidebar = () => {
 
   return (
     <motion.div
-      initial={{ width: isOpen ? 260 : 80 }}
-      animate={{ width: isOpen ? 260 : 80 }}
+      initial={{ width: isOpen ? 220 : 70 }}
+      animate={{ width: isOpen ? 220 : 70 }}
       transition={{ type: "spring", stiffness: 150, damping: 20 }}
       className={`h-screen sticky top-0 bg-[var(--color-primary)] shadow-lg border-r border-[var(--color-border)] flex flex-col justify-between z-40`}
     >
@@ -87,19 +87,22 @@ const Sidebar = () => {
             classrooms.map((cls) => (
               <motion.div
                 key={cls._id}
-                onClick={() => handleClassClick(cls._id)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className={`flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                  activeId === cls._id
-                    ? "bg-[var(--color-accent-cyan)]/20 text-[var(--color-accent-cyan)]"
-                    : "hover:bg-[var(--color-primary)] hover:text-[var(--color-accent-cyan)] text-[var(--color-text-light)]"
-                }`}
               >
-                <BsBook size={18} className="text-white" />
-                {isOpen && (
-                  <span className="truncate font-medium">{cls.name}</span>
-                )}
+                <Link
+                  to={`/classroom/class?id=${cls._id}`}
+                  className={`flex items-center gap-3 py-2 px-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                    activeId === cls._id
+                      ? "bg-[var(--color-accent-cyan)]/20 text-[var(--color-accent-cyan)]"
+                      : "hover:bg-[var(--color-primary)] hover:text-[var(--color-accent-cyan)] text-[var(--color-text-light)]"
+                  }`}
+                >
+                  <BsBook size={18} className="text-white" />
+                  {isOpen && (
+                    <span className="truncate font-medium">{cls.name}</span>
+                  )}
+                </Link>
               </motion.div>
             ))
           ) : (
