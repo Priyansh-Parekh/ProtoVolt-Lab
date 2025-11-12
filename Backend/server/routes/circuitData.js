@@ -6,6 +6,7 @@ import createCircuit from "../controllers/circuit/createCircuit.js";
 import updateCircuit from "../controllers/circuit/updateCircuit.js";
 import deleteCircuit from "../controllers/circuit/deleteCircuit.js";
 import attachToSubtab from "../controllers/circuit/attachToSubtab.js";
+import solveWithCpp from "../controllers/circuit/solveWithCpp.js";
 
 //importing middlewares
 import loginMiddelware from "../middleware/login.js";
@@ -21,6 +22,8 @@ route.post('/updateCircuit',updateCircuit);
 
 route.post('/deleteCircuit',deleteCircuit);
 route.post("/attachToSubtab", attachToSubtab);
+
+route.post("/solveWithCpp", solveWithCpp);
 
 
 

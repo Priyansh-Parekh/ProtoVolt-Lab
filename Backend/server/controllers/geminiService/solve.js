@@ -10,10 +10,6 @@ const solve = async (req, res) => {
 
     const {circuit_data} = req.body;
 
-    const anaRes =  runSimulation(circuit_data);
-    console.log(anaRes);
-
-
 
     const prompt = `
     You are a highly advanced expert in electrical and electronic circuit analysis. Your capabilities include DC analysis, AC steady-state analysis, basic transistor biasing, and digital logic evaluation.

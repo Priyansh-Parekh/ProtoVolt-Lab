@@ -210,7 +210,6 @@ public:
         map<string, int> nodeDegree;
 
         // 1. Calculate Node Connectivity Degree
-        // A "degree" is how many component terminals touch a specific node.
         for (const auto& comp : components) {
             for (const auto& term : comp->getTerminals()) {
                 nodeDegree[term.nodeId]++;
@@ -222,10 +221,6 @@ public:
         res.componentCount = components.size();
 
         // 2. Check for Open Circuits
-        // Logic: If a node is connected to fewer than 2 things, current cannot flow *through* it.
-        // Exception: Ground. But even ground needs to connect to something else to be useful.
-        // So the rule "Degree < 2 == Dangling" is generally robust for connectivity checks.
-        
         for (const auto& pair : nodeDegree) {
             if (pair.second < 2) {
                 res.isOpen = true;
@@ -244,13 +239,13 @@ public:
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         cerr << "Usage: engine.exe <json_file>" << endl;
-        return 1;
+        return 1; // Standard error
     }
 
     ifstream file(argv[1]);
     if (!file.is_open()) {
         cerr << "Error opening file" << endl;
-        return 1;
+        return 1; // Standard error
     }
 
     json jInput;
@@ -258,13 +253,13 @@ int main(int argc, char* argv[]) {
         file >> jInput;
     } catch (exception& e) {
         cerr << "JSON Parse Error: " << e.what() << endl;
-        return 1;
+        return 1; // Standard error
     }
 
     vector<shared_ptr<Component>> circuit;
 
-    if (jInput.contains("components")) {
-        for (const auto& jComp : jInput["components"]) {
+    if (jInput.contains("circuit_data") && jInput["circuit_data"].contains("components")) {
+        for (const auto& jComp : jInput["circuit_data"]["components"]) {
             circuit.push_back(ComponentFactory::createComponent(jComp));
         }
     }
@@ -272,11 +267,30 @@ int main(int argc, char* argv[]) {
     auto result = CircuitAnalyzer::analyze(circuit);
 
     json jOutput;
-    jOutput["is_open"] = result.isOpen;
     jOutput["component_count"] = result.componentCount;
     jOutput["dangling_nodes"] = result.danglingNodes;
 
-    cout << jOutput.dump(4) << endl;
-
-    return 0;
+    // *** NEW LOGIC ***
+    // We create a "report" for the frontend.
+    if (result.isOpen) {
+        jOutput["status"] = "error";
+        jOutput["message"] = "Circuit analysis failed: Circuit is open.";
+        jOutput["is_open"] = true;
+        
+        // Print the error report to stdout
+        cout << jOutput.dump(4) << endl;
+        
+        // Return 1 to signal an "error" (a logical one)
+        return 1; 
+    } else {
+        jOutput["status"] = "ok";
+        jOutput["message"] = "Circuit analysis successful.";
+        jOutput["is_open"] = false;
+        
+        // Print the success report to stdout
+        cout << jOutput.dump(4) << endl;
+        
+        // Return 0 to signal success
+        return 0;
+    }
 }
