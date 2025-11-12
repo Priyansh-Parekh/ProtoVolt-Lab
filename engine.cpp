@@ -5,16 +5,12 @@
 #include <map>
 #include <memory>
 #include <algorithm>
-#include "json.hpp" // Using local include
+#include "json.hpp"
 
 using namespace std;
 using json = nlohmann::json;
 
-// ==========================================
-// 1. UTILITIES & DATA STRUCTURES
-// ==========================================
 
-// Helper to handle empty strings in JSON values (e.g. "value": "")
 double safeStod(const string& str) {
     if (str.empty()) return 0.0;
     try {
@@ -29,8 +25,8 @@ struct Position {
 };
 
 struct Terminal {
-    string id;     // e.g., "positive", "base", "input1"
-    string nodeId; // The net this connects to
+    string id;    
+    string nodeId;
 };
 
 void from_json(const json& j, Position& p) {
@@ -43,9 +39,6 @@ void from_json(const json& j, Terminal& t) {
     j.at("nodeId").get_to(t.nodeId);
 }
 
-// ==========================================
-// 2. COMPONENT HIERARCHY (OOP)
-// ==========================================
 
 class Component {
 protected:
@@ -132,9 +125,6 @@ public:
         : Component(id, type, lbl, pos, terms), logicState(state) {}
 };
 
-// ==========================================
-// 3. FACTORY PATTERN
-// ==========================================
 
 class ComponentFactory {
 public:
@@ -194,10 +184,6 @@ public:
     }
 };
 
-// ==========================================
-// 4. CIRCUIT & ANALYSIS
-// ==========================================
-
 class CircuitAnalyzer {
 public:
     struct Result {
@@ -209,7 +195,6 @@ public:
     static Result analyze(const vector<shared_ptr<Component>>& components) {
         map<string, int> nodeDegree;
 
-        // 1. Calculate Node Connectivity Degree
         for (const auto& comp : components) {
             for (const auto& term : comp->getTerminals()) {
                 nodeDegree[term.nodeId]++;
@@ -232,9 +217,6 @@ public:
     }
 };
 
-// ==========================================
-// 5. MAIN
-// ==========================================
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
