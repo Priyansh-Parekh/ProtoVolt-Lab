@@ -145,6 +145,7 @@ const Workspace = () => {
                 success(res.data.message); // e.g., "Circuit analysis successful."
 
                 const simulationResults = res.data.data;
+                console.log(simulationResults.is_open)
                 if(!simulationResults.is_open){
                     success("It's Close Circuit");
                 }else{

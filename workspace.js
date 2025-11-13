@@ -14,9 +14,13 @@ function runSimulation(circuit_data) {
         const INPUT_FILE = `sim_input_${Date.now()}.json`; 
         const ENGINE_PATH = path.join(__dirname, "engine.exe");
 
+        console.log(circuit_data)
+
+        const solveData = {"circuit_data":circuit_data};
+
         // A. Write Payload
         try {
-            fs.writeFileSync(INPUT_FILE, JSON.stringify(circuit_data, null, 2), "utf8");
+            fs.writeFileSync(INPUT_FILE, JSON.stringify(solveData, null, 2), "utf8");
             console.log(`📦 Payload written to ${INPUT_FILE}`);
         } catch (err) {
             console.error("❌ Failed to write payload:", err);

@@ -212,7 +212,7 @@ public:
                 res.danglingNodes.push_back(pair.first);
             }
         }
-        
+            
         return res;
     }
 };
