@@ -132,6 +132,11 @@ const Workspace = () => {
                 components: state.components,
             };
 
+            if(projectId === "new"){
+                warning("Save Circuit First");
+                return;
+            }
+
             // Sending data to your Node.js backend
             const res = await api.post("/circuit/data/solveWithCpp", { circuit_data , project_id : projectId });
 
@@ -148,14 +153,8 @@ const Workspace = () => {
 
             }
             else {
-                // *** Case 2: Logical Error (Circuit is open, etc.) ***
-                // The API call was 200 OK, but success: false
-                error(res.data.message); // e.g., "Circuit analysis failed: Circuit is open."
+                error(res.data.message); 
                 console.warn("Analysis Failed:", res.data.data);
-
-                // TODO: Update your state to show the error
-                // You could highlight the 'dangling_nodes' from res.data.data
-                // e.g., setAnalysisResults(res.data.data);
             }
         } catch (err) {
             // *** Case 3: Server Error (Node/C++ crashed) ***
